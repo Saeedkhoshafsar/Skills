@@ -5,8 +5,8 @@
     "url": "https://github.com/Saeedkhoshafsar"
   },
   "metadata": {
-    "description": "SMART skill-manager ecosystem: phase-aware skill orchestration, atomic planning, persistent project memory, step-by-step execution, systematic debugging, and security auditing.",
-    "version": "1.0.0"
+    "description": "SMART skill-manager ecosystem: phase-aware skill orchestration, atomic planning, persistent project memory, step-by-step execution, local code review, systematic debugging, and security auditing.",
+    "version": "1.1.0"
   },
   "plugins": [
     {
@@ -44,6 +44,15 @@
       "author": { "name": "Saeedkhoshafsar" },
       "keywords": ["execution", "tdd", "verify", "gate"],
       "category": "workflow"
+    },
+    {
+      "name": "code-review",
+      "source": "./skills/code-review",
+      "description": "Local diff review before merge/release — no GitHub required. Five axes: correctness, readability, security smells, tests, plan conformance. Verdict with severity-sorted findings.",
+      "version": "1.0.0",
+      "author": { "name": "Saeedkhoshafsar" },
+      "keywords": ["code-review", "quality", "diff"],
+      "category": "quality"
     },
     {
       "name": "debug-detective",

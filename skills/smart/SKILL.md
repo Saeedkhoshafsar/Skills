@@ -1,141 +1,129 @@
 ---
 name: smart
 description: >
-  اسکیل مادر مدیریت اسکیل‌ها. با هر فراخوانی: (۱) وضعیت پروژه را می‌سنجد و فاز آن را تشخیص می‌دهد،
-  (۲) از کاتالوگ اسکیل‌ها فقط اسکیل‌های متناسب با فاز فعلی را انتخاب و on-demand از گیت‌هاب دانلود می‌کند،
-  (۳) نقشه‌ی راه اسکیلی می‌دهد (الان چی، بعداً چی). Use when starting any project, resuming work,
-  or when the user says "smart" / "اسمارت" / asks which skills to activate.
+  Mother skill / skill manager. On every invocation: (1) senses project state and
+  detects the current phase, (2) selects only the skills that phase needs from the
+  catalog and installs them on-demand from GitHub, (3) reports a skill roadmap
+  (what is active now, what comes next). Use when starting any project, resuming
+  work, entering a new phase, or when the user says "smart" / "اسمارت" or asks
+  which skills to activate.
 tools: Read, Glob, Grep, Bash
 ---
 
-# 🧠 SMART — مدیر هوشمند اسکیل‌ها
+# SMART — Skill Manager
 
-> **فلسفه:** کاربر فقط SMART را فعال می‌کند. بقیه را SMART تصمیم می‌گیرد.
-> هیچ اسکیلی از قبل در پروژه نیست — هر چه لازم شد، همان لحظه از گیت‌هاب دانلود می‌شود.
-> **قانون طلایی: کمترین تعداد اسکیل که کار را جلو ببرد (ضد طمع!)**
+**Philosophy:** The user activates only SMART. SMART decides the rest.
+No skill lives in the project up front — skills are downloaded the moment they are needed.
 
----
+**Golden rule:** Install the MINIMUM number of skills that moves the work forward. Never hoard.
 
-## 🔄 چرخه‌ی اجرا (هر بار که SMART فعال شد، دقیقاً این ترتیب)
+## Execution Cycle (run these 5 steps in order, every invocation)
 
-```
-SMART فعال شد
-│
-├── گام 1️⃣ سنجش وضعیت (Sense)
-│   ├── ls -la  ← پروژه خالی است یا نه؟
-│   ├── وجود docs/PLAN.md یا PLAN*.md  ← پلن داریم؟
-│   ├── وجود docs/STATE.md  ← حافظه/وضعیت داریم؟ تسک جاری (→ current) کدام است؟
-│   ├── وجود کد (src/, apps/, package.json, ...)  ← وسط توسعه‌ایم؟
-│   ├── وجود CI/CD (.github/workflows)  ← آماده‌ی انتشاریم؟
-│   └── bash scripts/fetch-skill.sh --installed  ← کدام اسکیل‌ها الان نصب‌اند؟
-│
-├── گام 2️⃣ تشخیص فاز (Diagnose)
-│   └── با جدول فازها (پایین) فاز فعلی را تعیین کن
-│
-├── گام 3️⃣ انتخاب اسکیل (Select)
-│   ├── از SKILLS_CATALOG.md اسکیل‌های فاز را بردار
-│   ├── قوانین سطح: 🟢 پیش‌فرض مجاز | 🟡 فقط با دلیل | 🔴 فقط پروژه‌ی بزرگ | ⚫ هرگز
-│   └── حداکثر ۳ اسکیل جدید در هر فراخوانی (جلوی شلوغی را بگیر)
-│
-├── گام 4️⃣ نصب و فعال‌سازی (Act)
-│   └── bash scripts/fetch-skill.sh <skill-name>   ← فقط اسکیل‌های انتخابی
-│
-└── گام 5️⃣ گزارش و نقشه‌ی راه (Report)
-    ├── درخت وضعیت پروژه را رسم کن (نمونه پایین)
-    ├── «الان این‌ها فعال شد چون …»
-    └── «بعد از فاز بعدی، این‌ها لازم می‌شوند: …»
-```
+### Step 1 — Sense (gather facts)
 
----
+Run these checks and record the answers:
 
-## 🗺️ جدول فازها و اسکیل‌های هر فاز
+| Check | Command / File | Question answered |
+|---|---|---|
+| Project empty? | `ls -la` | Anything beyond git/README? |
+| Plan exists? | `docs/PLAN.md` or `PLAN*.md` | Do we have a plan? |
+| Memory exists? | `docs/STATE.md` | What is the current task (`-> current`)? |
+| Code exists? | `src/`, `apps/`, `package.json`, ... | Are we mid-development? |
+| CI/CD exists? | `.github/workflows/` | Ready for release? |
+| Installed skills? | `bash scripts/fetch-skill.sh --installed` | What is already installed? |
 
-| # | فاز | نشانه‌ی تشخیص | اسکیل‌های این فاز (به‌ترتیب اولویت) |
-|---|---|---|---|
-| 0 | 🌱 **کشف** — پروژه خالی | هیچ فایلی نیست (جز git/README) | `project-planner` (محلی) → مصاحبه با کاربر و ساخت PLAN.md |
-| 1 | 📋 **راه‌اندازی** — پلن هست، کد نیست | PLAN.md هست، src نیست | `project-memory` (محلی) + `step-pilot` (محلی) + در صورت نیاز `agentdb-memory-patterns` |
-| 2 | ⚙️ **توسعه** — وسط کد | src هست، تسک باز در STATE.md | `sparc-methodology` + `verification-quality` + `pair-programming` (در صورت TDD) |
-| 3 | ✅ **تثبیت** — کد کامل، تست/کیفیت | تسک‌های فاز تمام، ریلیز نه | `github-code-review` + `performance-analysis` (اگر کندی هست) + `browser` (اگر UI هست) |
-| 4 | 🚀 **انتشار** — آماده‌ی دیپلوی | همه‌چیز سبز | `security-check` (محلی — دروازه‌ی اجباری!) + `github-release-management` + `github-workflow-automation` + `hooks-automation` |
-| 5 | 🔁 **نگهداری** — بعد از انتشار | ریلیز موجود، ایشو باز | `github-project-management` + `github-multi-repo` (اگر چندریپو) |
+### Step 2 — Diagnose (detect phase)
 
-**اسکیل‌های همیشه‌فعال از فاز ۱ به بعد (هوشیاری ایجنت):**
-- `project-memory` — فایل‌های STATE.md محلی: تسک جاری، ارورها، باگ‌ها، جای ناتمام. با هر قطعی، ایجنت بعدی از همین‌جا ادامه می‌دهد.
-- `step-pilot` — اجرای استپ‌به‌استپ پلن با تست و معیار پذیرش هر استپ.
+Match the facts against the Phase Table below. Pick exactly one phase.
 
-**اسکیل‌های رویدادی (هر فازی — با ماشه‌ی مشخص):**
-- `debug-detective` (محلی) — ماشه: باگ گزارش شد، تستی مدام قرمز است، یا step-pilot ۳ بار پشت‌سرهم Verify قرمز خورد.
-- `security-check` (محلی) — ماشه: قبل از هر دیپلوی/ریلیز، بعد از اضافه‌شدن Auth/پرداخت/دیتای کاربر.
+### Step 3 — Select (choose skills)
 
-**اسکیل‌های 🔴 فقط اگر:** پروژه چند-ایجنتی/خیلی بزرگ شد → `swarm-orchestration`، نیاز RAG شد → `agentdb-vector-search`.
-**اسکیل‌های ⚫ (v3-*, flow-nexus-*, worker-benchmarks): هرگز — داخلیِ ruflo هستند.**
+- Take the phase's skill list from the Phase Table and `SKILLS_CATALOG.md`.
+- Apply tier rules: GREEN = allowed by default | YELLOW = only with a stated reason | RED = large projects only | BLACK = never (ruflo-internal).
+- Install at most **3 new skills** per invocation.
 
----
-
-## 📥 نحوه‌ی نصب اسکیل (on-demand)
-
-اسکیل‌ها **در پروژه نگهداری نمی‌شوند** — لحظه‌ی نیاز دانلود می‌شوند:
+### Step 4 — Act (install)
 
 ```bash
-# لیست اسکیل‌های موجود در منابع گیت‌هاب:
-bash <path-to-smart>/scripts/fetch-skill.sh --list
-
-# نصب یک اسکیل (فقط همان پوشه، نه کل ریپو — با sparse-checkout):
-bash <path-to-smart>/scripts/fetch-skill.sh sparc-methodology
-
-# اسکیل‌های نصب‌شده‌ی فعلی:
-bash <path-to-smart>/scripts/fetch-skill.sh --installed
+bash scripts/fetch-skill.sh <skill-name>   # only the selected skills
 ```
 
-اسکیل‌های **محلی** (project-planner، step-pilot، project-memory) کنار خود SMART در همین ریپو هستند:
+### Step 5 — Report (mandatory — never skip)
+
+Emit the status report using the template at the bottom, including:
+- Current phase and evidence
+- Skills activated now, with one-line reasons
+- Skill roadmap: what the next phase will need
+
+## Phase Table
+
+| # | Phase | Detection signal | Skills for this phase (priority order) |
+|---|---|---|---|
+| 0 | Discovery — empty project | No files beyond git/README | `project-planner` (local) — interview the user, produce PLAN.md |
+| 1 | Setup — plan exists, no code | PLAN.md exists, no src | `project-memory` (local) + `step-pilot` (local); `agentdb-memory-patterns` only if needed |
+| 2 | Development — coding | src exists, open task in STATE.md | `sparc-methodology` + `verification-quality`; `pair-programming` if TDD |
+| 3 | Stabilization — code done, testing/quality | Phase tasks done, not released | `code-review` (local) + `github-code-review` (if PRs); `performance-analysis` if slow; `browser` if UI |
+| 4 | Release — ready to deploy | Everything green | `security-check` (local — MANDATORY gate) + `github-release-management` + `github-workflow-automation` + `hooks-automation` |
+| 5 | Maintenance — post-release | Release exists, open issues | `github-project-management`; `github-multi-repo` if multi-repo |
+
+**Always active from Phase 1 onward:**
+- `project-memory` — STATE.md: current task, errors, bugs, unfinished work. Any agent resumes from it after a disconnect.
+- `step-pilot` — step-by-step plan execution with tests and acceptance criteria per step.
+
+**Event-driven skills (any phase, specific trigger):**
+
+| Skill | Trigger |
+|---|---|
+| `debug-detective` (local) | A bug is reported, a test keeps failing, or step-pilot hits 3 consecutive red verifies |
+| `security-check` (local) | Before any deploy/release; after adding auth, payments, or user data |
+
+**RED-tier only if:** project becomes multi-agent/very large → `swarm-orchestration`; RAG needed → `agentdb-vector-search`.
+**BLACK-tier (`v3-*`, `flow-nexus-*`, `worker-benchmarks`): never — they are ruflo internals.**
+
+## Installing Skills On-Demand
+
+Skills are NOT stored in the project — they are downloaded when needed:
+
+```bash
+bash <path-to-smart>/scripts/fetch-skill.sh --list          # list skills available in sources
+bash <path-to-smart>/scripts/fetch-skill.sh <skill-name>    # install one skill (sparse-checkout, not the whole repo)
+bash <path-to-smart>/scripts/fetch-skill.sh --installed     # list currently installed skills
+```
+
+Local skills (project-planner, project-memory, step-pilot, code-review, debug-detective, security-check) live next to SMART in this repo:
+
 ```bash
 cp -r <this-repo>/skills/project-planner .claude/skills/
 ```
 
-> ⚠️ پوشه‌ی `.claude/skills/` باید در `.gitignore` پروژه باشد (جز اسکیل‌های اختصاصی خود پروژه) —
-> چون هر چیزی دوباره قابل دانلود است، ریپوی پروژه را سنگین نکن.
+Keep `.claude/skills/` in the project's `.gitignore` (except project-specific skills) — everything is re-downloadable, do not bloat the project repo.
 
----
+## Output Report Template (mandatory)
 
-## 📊 قالب گزارش خروجی SMART (اجباری — هر دو نسخه)
-
-### نسخه‌ی درختی (اصلی):
 ```
-🧠 SMART — گزارش وضعیت [تاریخ]
-│
-├── 📍 فاز فعلی: ⚙️ توسعه (فاز 2)
-│   ├── ✔ پلن: docs/PLAN.md (فاز 1 از 4)
-│   ├── ✔ حافظه: docs/STATE.md → تسک جاری: P1-T3
-│   └── ⚠ آخرین ارور ثبت‌شده: [از STATE.md]
-│
-├── 🎛 اسکیل‌های فعال (3)
-│   ├── ✅ project-memory ──── حافظه‌ی پروژه
-│   ├── ✅ step-pilot ──────── اجرای استپ‌به‌استپ
-│   └── ✅ sparc-methodology ─ متد توسعه
-│
-├── ➕ الان فعال شد (و چرا)
-│   └── verification-quality ← چون وارد استپ تست P1-T3 شدیم
-│
-└── 🔮 نقشه‌ی راه اسکیلی
-    ├── بعد از پایان فاز 2 → github-code-review
-    └── قبل از انتشار → github-release-management + hooks-automation
+SMART — Status Report [date]
+
+Phase        : 2 - Development
+Evidence     : PLAN.md present (phase 1/4) | STATE.md -> current: P1-T3 | last recorded error: <from STATE.md>
+
+Active skills (3):
+  - project-memory      project memory
+  - step-pilot          step-by-step execution
+  - sparc-methodology   development method
+
+Activated now (+why):
+  - verification-quality  <- entering the test step of P1-T3
+
+Skill roadmap:
+  - after Phase 2  -> code-review + github-code-review
+  - before release -> security-check + github-release-management + hooks-automation
 ```
 
-### نسخه‌ی معمولی (جدول):
-| بخش | وضعیت |
-|---|---|
-| فاز | ⚙️ توسعه |
-| تسک جاری | P1-T3 |
-| فعال‌شده‌ی جدید | verification-quality |
-| بعدی‌ها | github-code-review (بعد فاز 2) |
+## Anti-Patterns (SMART never does these)
 
----
-
-## 🚫 ضدالگوها (SMART هرگز این کارها را نمی‌کند)
-
-1. **نصب همه‌ی اسکیل‌ها یک‌جا** — فقط نیاز لحظه (حداکثر ۳ تای جدید).
-2. **agentdb-\* برای دیتابیس پروژه** — این‌ها حافظه‌ی *ایجنت*اند نه DB محصول! برای DB محصول از پلن/معماری خود پروژه استفاده کن.
-3. **اسکیل ⚫ (داخلی ruflo)** — هرگز.
-4. **رد شدن از گزارش** — هر فراخوانی SMART باید با درخت وضعیت تمام شود.
-5. **فراموشی حافظه** — اگر STATE.md نیست و پروژه از فاز ۱ گذشته، اول project-memory را راه بینداز.
-6. **شروع کد بدون پلن** — اگر PLAN.md نیست، اول project-planner.
+1. **Install everything at once** — only what the moment needs (max 3 new).
+2. **Use `agentdb-*` for the product database** — those are AGENT memory, not the product DB. The product DB comes from the project's own plan/architecture.
+3. **Install any BLACK-tier skill** — never (ruflo internals).
+4. **Skip the report** — every SMART invocation must end with the status report.
+5. **Forget memory** — if STATE.md is missing and the project is past Phase 1, set up `project-memory` first.
+6. **Code without a plan** — if PLAN.md is missing, run `project-planner` first.

@@ -1,224 +1,169 @@
-# 🗂️ کاتالوگ اسکیل‌ها — بررسی کامل دو ریپو
+# SKILLS_CATALOG — Verified Skill Catalog (SMART's decision source)
 
-> ورودیِ اسکیل مادر **SMART** (مدیر اسکیل‌ها). هر اسکیل: نام معنادار + یک جمله کاربرد + سطح نیاز.
+> Input for the **SMART** mother skill. Each skill: name + one-line purpose + tier.
+> Verified complete on 2026-07-08: both source repos re-cloned and diffed folder-by-folder — **40/40 skills, nothing missing, nothing extra.**
 
-**منابع بررسی‌شده:**
-- `ruflo/.claude` → ۳۹ اسکیل، ۱۰۸ ایجنت، ۱۶۸ کامند، ۴۰ هلپر، ۲ ورک‌فلو
-- `claude-plugins-official/plugins/claude-code-setup` → ۱ اسکیل
-
-> ✅ **تأیید کامل‌بودن (2026-07-08):** هر دو ریپو مجدداً کلون و با `comm` پوشه‌به‌پوشه با این کاتالوگ مقابله شد —
-> **هیچ اسکیلی جا نیفتاده و هیچ مورد اضافی ثبت نشده (۳۹+۱ = ۴۰/۴۰).** فقط شمارش سرصفحه اصلاح شد.
-
-**راهنمای سطح نیاز:** 🟢 عمومی (هر پروژه‌ای) | 🟡 موقعیتی (فقط شرایط خاص) | 🔴 تخصصی/سنگین (پروژه‌های بزرگ) | ⚫ داخلیِ ruflo (به درد پروژه‌ی تو نمی‌خورد)
-
----
-
-## 🌳 نسخه‌ی درختی
-
-```
-📦 کل اسکیل‌ها (40 = 39 ruflo + 1 plugin)
-│
-├── 🧠 1. حافظه و یادگیری (7)
-│   ├── 🟡 agentdb-memory-patterns ── حافظه‌ی ماندگار بین جلسات (session + long-term)
-│   ├── 🔴 agentdb-vector-search ──── جست‌وجوی معنایی اسناد (RAG، شباهت‌یابی)
-│   ├── 🔴 agentdb-learning ───────── آموزش ایجنت با ۹ الگوریتم یادگیری تقویتی
-│   ├── 🔴 agentdb-optimization ───── بهینه‌سازی سرعت/حجم دیتابیس حافظه
-│   ├── 🔴 agentdb-advanced ───────── همگام‌سازی حافظه بین چند سیستم توزیع‌شده
-│   ├── 🔴 reasoningbank-intelligence ─ یادگیری از موفقیت/شکست‌های قبلی (الگوشناسی)
-│   └── 🔴 reasoningbank-agentdb ──── نسخه‌ی ترکیبی: ReasoningBank روی AgentDB
-│
-├── 📋 2. متدولوژی و برنامه‌ریزی (3)
-│   ├── 🟢 sparc-methodology ──────── متد ۵مرحله‌ای توسعه: مشخصات→شبه‌کد→معماری→بهبود→تکمیل
-│   ├── 🟢 skill-builder ──────────── ساخت اسکیل جدید با ساختار استاندارد (ابزارِ ساختِ SMART!)
-│   └── 🟢 claude-automation-recommender ─ اسکن پروژه و پیشنهاد ابزار مناسب (پدربزرگِ SMART!)
-│
-├── ✅ 3. کیفیت و تست (3)
-│   ├── 🟢 verification-quality ───── امتیازدهی صحت کد + rollback خودکار زیر آستانه‌ی 0.95
-│   ├── 🟢 pair-programming ───────── برنامه‌نویسی جفتی با AI (حالت TDD، دیباگ، ریفکتور)
-│   └── 🟡 performance-analysis ───── یافتن گلوگاه‌های کارایی + پیشنهاد بهینه‌سازی
-│
-├── 🌿 4. گیت‌هاب و CI/CD (6)
-│   ├── 🟢 github-code-review ─────── ریویوی خودکار و چندجانبه‌ی Pull Request ها
-│   ├── 🟡 github-workflow-automation ─ ساخت و مدیریت پایپ‌لاین‌های GitHub Actions
-│   ├── 🟡 github-release-management ── نسخه‌بندی، تست و انتشار خودکار ریلیزها
-│   ├── 🟡 github-project-management ── مدیریت ایشوها، بورد پروژه و اسپرینت‌ها
-│   ├── 🟡 github-multi-repo ──────── هماهنگ‌سازی تغییرات بین چند ریپوی هم‌زمان
-│   └── 🔴 agentic-jujutsu ────────── کنترل نسخه‌ی آزمایشی جایگزین git (خیلی خاص)
-│
-├── 🐝 5. هماهنگی چند-ایجنتی (5)
-│   ├── 🟡 swarm-orchestration ────── اجرای موازی چند ایجنت روی تسک‌های مستقل
-│   ├── 🔴 swarm-advanced ─────────── الگوهای پیشرفته‌ی گروه ایجنت‌ها (تحقیق/توسعه/تست)
-│   ├── 🔴 hive-mind-advanced ─────── سیستم «ملکه + کارگرها» با حافظه‌ی جمعی و رأی‌گیری
-│   ├── 🔴 stream-chain ───────────── زنجیره‌کردن خروجی یک ایجنت به ورودی بعدی (پایپ‌لاین)
-│   └── 🟡 hooks-automation ───────── اجرای خودکار کارها قبل/بعد هر عملیات (فرمت، کامیت، لاگ)
-│
-├── 🔧 6. ابزارهای اجرایی (2)
-│   ├── 🟢 browser ────────────────── اتوماسیون مرورگر برای تست UI و وب‌گردی ایجنت
-│   └── 🟡 worker-integration ─────── توزیع هوشمند تسک‌ها بین workerها + رهگیری کارایی
-│
-└── ⚫ 7. داخلیِ ruflo — مخصوص توسعه‌ی خودِ claude-flow (14)
-    ├── ⚫ v3-* (9 اسکیل) ────────── پیاده‌سازی نسخه‌ی ۳ خودِ ruflo (معماری DDD، امنیت،
-    │                                  حافظه، CLI، MCP، کارایی، هماهنگی ۱۵ ایجنت و...)
-    ├── ⚫ dual-mode ──────────────── هماهنگی Claude Code + کارگرهای headless Codex (نیاز به Codex)
-    ├── ⚫ flow-nexus-platform/swarm/neural (3) ─ سرویس ابری اختصاصی Flow Nexus (نیاز به اکانت)
-    └── ⚫ worker-benchmarks ───────── بنچمارک سیستم worker خودِ ruflo
-```
-
----
-
-## 📋 نسخه‌ی جدولی (معمولی)
-
-### 🧠 دسته ۱ — حافظه و یادگیری
-
-| اسکیل | نام معنادار | کاربرد در یک جمله | سطح |
-|---|---|---|---|
-| agentdb-memory-patterns | حافظه‌ی ماندگار | ایجنت بین جلسات فراموش نکند (session + بلندمدت) | 🟡 |
-| agentdb-vector-search | جست‌وجوگر معنایی | پیدا کردن اسناد/کد مشابه با معنا نه کلمه (RAG) | 🔴 |
-| agentdb-learning | ایجنت یادگیرنده | آموزش ایجنت با یادگیری تقویتی (Q-Learning و...) | 🔴 |
-| agentdb-optimization | بهینه‌ساز حافظه | کاهش ۴-۳۲ برابری حجم + جست‌وجوی ۱۵۰x سریع‌تر | 🔴 |
-| agentdb-advanced | حافظه‌ی توزیع‌شده | همگام‌سازی دیتابیس حافظه بین چند سیستم | 🔴 |
-| reasoningbank-intelligence | بانک تجربه | یادگیری از الگوی موفقیت/شکست‌های گذشته | 🔴 |
-| reasoningbank-agentdb | بانک تجربه‌ی توربو | همان بالا ولی روی دیتابیس سریع AgentDB | 🔴 |
-
-### 📋 دسته ۲ — متدولوژی و برنامه‌ریزی
-
-| اسکیل | نام معنادار | کاربرد در یک جمله | سطح |
-|---|---|---|---|
-| sparc-methodology | متد ۵ مرحله‌ای | مسیر سیستماتیک: مشخصات → شبه‌کد → معماری → بهبود → تکمیل | 🟢 |
-| skill-builder | اسکیل‌ساز | ساخت اسکیل جدید استاندارد — **ابزار ساخت SMART** | 🟢 |
-| claude-automation-recommender | مشاور اتوماسیون | اسکن پروژه و پیشنهاد ابزار/هوک/اسکیل مناسب — **الگوی SMART** | 🟢 |
-
-### ✅ دسته ۳ — کیفیت و تست
-
-| اسکیل | نام معنادار | کاربرد در یک جمله | سطح |
-|---|---|---|---|
-| verification-quality | بازرس صحت | امتیاز صحت به خروجی + برگشت خودکار اگر زیر ۰.۹۵ | 🟢 |
-| pair-programming | هم‌برنامه‌نویس | جفت‌کاری با AI: راننده/ناوبر، TDD، دیباگ، ریفکتور | 🟢 |
-| performance-analysis | شکارچی گلوگاه | یافتن نقاط کند + پیشنهاد بهینه‌سازی | 🟡 |
-
-### 🌿 دسته ۴ — گیت‌هاب و CI/CD
-
-| اسکیل | نام معنادار | کاربرد در یک جمله | سطح |
-|---|---|---|---|
-| github-code-review | ریویوگر PR | بازبینی خودکار و چندزاویه‌ی Pull Request | 🟢 |
-| github-workflow-automation | خط تولید CI/CD | ساخت/مدیریت پایپ‌لاین GitHub Actions | 🟡 |
-| github-release-management | مدیر انتشار | نسخه‌بندی، تست و ریلیز خودکار + rollback | 🟡 |
-| github-project-management | مدیر ایشوها | ایشو، بورد پروژه، اسپرینت — همه خودکار | 🟡 |
-| github-multi-repo | هماهنگ‌گر چندریپو | همگام‌سازی تغییرات بین چند مخزن | 🟡 |
-| agentic-jujutsu | گیتِ آینده | کنترل نسخه‌ی جایگزین git (آزمایشی و خاص) | 🔴 |
-
-### 🐝 دسته ۵ — هماهنگی چند-ایجنتی
-
-| اسکیل | نام معنادار | کاربرد در یک جمله | سطح |
-|---|---|---|---|
-| swarm-orchestration | رهبر ارکستر | اجرای موازی چند ایجنت روی تسک‌های مستقل | 🟡 |
-| swarm-advanced | ارکستر پیشرفته | الگوهای پیچیده‌ی گروهی (تحقیق/توسعه/تست هم‌زمان) | 🔴 |
-| hive-mind-advanced | کندوی عسل | ملکه فرمان می‌دهد، کارگرها اجرا، رأی‌گیری جمعی | 🔴 |
-| stream-chain | زنجیره‌ی داده | خروجی ایجنت A → ورودی ایجنت B (پایپ‌لاین) | 🔴 |
-| hooks-automation | ماشه‌های خودکار | قبل/بعد هر عمل: فرمت، لینت، کامیت، ثبت لاگ | 🟡 |
-
-### 🔧 دسته ۶ — ابزارهای اجرایی
-
-| اسکیل | نام معنادار | کاربرد در یک جمله | سطح |
-|---|---|---|---|
-| browser | چشم و دست وب | اتوماسیون مرورگر: تست UI، اسکرین‌شات، فرم | 🟢 |
-| worker-integration | توزیع‌گر تسک | پخش هوشمند کارها بین workerها + رهگیری | 🟡 |
-
-### ⚫ دسته ۷ — داخلیِ ruflo (برای پروژه‌های تو کاربرد ندارد)
-
-| اسکیل | چیست |
-|---|---|
-| v3-core-implementation, v3-ddd-architecture, v3-security-overhaul, v3-memory-unification, v3-performance-optimization, v3-mcp-optimization, v3-cli-modernization, v3-integration-deep, v3-swarm-coordination | ۹ اسکیل برای ساختن **نسخه‌ی ۳ خودِ claude-flow** — نقشه‌ی داخلی تیم ruflo |
-| dual-mode | هماهنگی Claude Code با کارگرهای headless Codex (سه کامند spawn/coordinate/collect — نیاز به نصب Codex) |
-| flow-nexus-platform / swarm / neural | اتصال به سرویس ابری اختصاصی Flow Nexus (نیاز به ثبت‌نام/اعتبار) |
-| worker-benchmarks | بنچمارک سیستم داخلی ruflo |
-
----
-
-## 🧩 غیر از اسکیل‌ها، در ruflo چه بود؟
-
-```
-ruflo/.claude/
-├── skills/    (39) ← بررسی شد ↑
-├── agents/   (108) ← تعریف «نقش‌ها»: coder، planner، reviewer، tester،
-│                     queen-coordinator، pr-manager و... (پرسونای ایجنت، نه اسکیل)
-├── commands/ (168) ← میان‌برهای اسلش‌کامند برای همان اسکیل‌ها/ایجنت‌ها
-├── helpers/   (40) ← اسکریپت‌های شِل: checkpoint خودکار، auto-commit، health-monitor
-└── workflows/  (2) ← تست کل سیستم
-```
-
-💡 نکته برای SMART: ایده‌ی «نقش‌های agents» (coder/planner/reviewer/tester) همان چیزی است که ما در `00-team-orchestrator` به شکل سبک پیاده کرده‌ایم.
-
----
-
-## 🗺️ نگاشت به لایه‌های یک پروژه‌ی حرفه‌ای (تصویر ۱۳ لایه)
-
-| لایه‌ی پروژه | اسکیل‌های پوشش‌دهنده‌ی موجود | وضعیت پوشش |
+**Sources:**
+| Source | Count | Path |
 |---|---|---|
-| Frontend | browser (تست UI) | 🟡 ناقص |
-| APIs & Backend Logic | sparc-methodology + pair-programming | 🟡 عمومی |
-| Database & Storage | agentdb-* (فقط حافظه‌ی ایجنت، نه DB پروژه!) | 🔴 خالی |
-| Auth & Permissions | — | 🔴 خالی |
-| Hosting & Deployment | github-release-management | 🟡 ناقص |
-| Cloud & Compute | flow-nexus-* (فقط سرویس خودشان) | 🔴 خالی |
-| CI/CD & Version Control | github-workflow-automation + hooks-automation | 🟢 خوب |
-| Security & RLS | 🔐 **security-check (محلی — جدید)** | 🟢 پوشش داده شد |
-| Rate Limiting | — | 🔴 خالی |
-| Caching & CDN | — | 🔴 خالی |
-| Load Balancing & Scaling | swarm-* (فقط ایجنت‌ها، نه اپ!) | 🔴 خالی |
-| Error Tracking & Logs | 🕵️ **debug-detective (محلی — جدید)** + hooks-automation | 🟢 خوب |
-| Availability & Recovery | verification-quality (rollback کد) | 🟡 ناقص |
+| `Saeedkhoshafsar/Skills` (this repo) | 7 local | `skills/` |
+| `Saeedkhoshafsar/ruflo` | 39 | `.claude/skills/` |
+| `Saeedkhoshafsar/claude-plugins-official` | 1 | `plugins/claude-code-setup/skills/` |
 
-⚠️ **یافته‌ی مهم:** بیشتر اسکیل‌های ruflo درباره‌ی «مدیریت خودِ ایجنت‌ها» هستند، نه لایه‌های واقعی محصول. SMART باید این را بداند تا اسکیل اشتباه پیشنهاد ندهد — مثلاً برای «دیتابیس پروژه» نباید agentdb را فعال کند!
+**Tier legend (selection rules for SMART):**
+
+| Tier | Meaning | Rule |
+|---|---|---|
+| GREEN | General — useful in any project | Allowed by default |
+| YELLOW | Situational — specific conditions only | Only with a stated reason |
+| RED | Specialized/heavy — large projects | Only for big/multi-agent projects |
+| BLACK | ruflo-internal | NEVER install |
 
 ---
 
-## 🎯 جمع‌بندی برای طراحی SMART
+## Category 1 — Memory & Learning (7)
 
-```
-ورودی SMART در هر فراخوانی:
-│
-├── 1️⃣ وضعیت پروژه را بسنج
-│     ├── خالی است؟ ──────────► فاز کشف ایده + پلن
-│     ├── پلن دارد، کد ندارد؟ ─► فاز راه‌اندازی (حافظه + معماری)
-│     ├── وسط توسعه است؟ ─────► فاز اجرا (کد + تست + گیت)
-│     └── آماده‌ی انتشار؟ ─────► فاز دیپلوی (CI/CD + ریلیز)
-│
-├── 2️⃣ از این کاتالوگ، اسکیل‌های «متناسب با فاز و سطح» را انتخاب کن
-│     ├── قانون: کمترین تعداد اسکیل که کار را جلو ببرد (ضد طمع!)
-│     ├── 🟢 ها پیش‌فرض مجازند، 🟡 ها فقط با دلیل، 🔴 ها فقط پروژه‌ی بزرگ
-│     └── ⚫ ها هرگز (داخلی ruflo)
-│
-└── 3️⃣ نقشه‌ی راه اسکیلی بده: «الان این ۳ تا؛ بعد از فاز ۲، آن ۲ تا»
-```
+| Skill | Purpose (one line) | Tier |
+|---|---|---|
+| agentdb-memory-patterns | Persistent agent memory across sessions (session + long-term) | YELLOW |
+| agentdb-vector-search | Semantic document/code search (RAG, similarity) | RED |
+| agentdb-learning | Train the agent with 9 reinforcement-learning algorithms | RED |
+| agentdb-optimization | Shrink memory DB 4-32x + 150x faster search | RED |
+| agentdb-advanced | Sync the memory database across distributed systems | RED |
+| reasoningbank-intelligence | Learn from past success/failure patterns | RED |
+| reasoningbank-agentdb | Same as above, backed by the fast AgentDB store | RED |
+
+> WARNING: `agentdb-*` = memory for the AGENT, never the product's database. For the product DB use the project's own plan/architecture.
+
+## Category 2 — Methodology & Planning (3)
+
+| Skill | Purpose (one line) | Tier |
+|---|---|---|
+| sparc-methodology | 5-step dev method: Specification -> Pseudocode -> Architecture -> Refinement -> Completion | GREEN |
+| skill-builder | Build new skills with the standard structure (the tool that built SMART) | GREEN |
+| claude-automation-recommender | Scan project and suggest suitable tools/hooks/skills (SMART's ancestor) | GREEN |
+
+## Category 3 — Quality & Testing (3)
+
+| Skill | Purpose (one line) | Tier |
+|---|---|---|
+| verification-quality | Correctness scoring + automatic rollback below the 0.95 threshold | GREEN |
+| pair-programming | AI pair programming: driver/navigator, TDD, debug, refactor modes | GREEN |
+| performance-analysis | Find performance bottlenecks + suggest optimizations | YELLOW |
+
+## Category 4 — GitHub & CI/CD (6)
+
+| Skill | Purpose (one line) | Tier |
+|---|---|---|
+| github-code-review | Automated multi-angle Pull Request review | GREEN |
+| github-workflow-automation | Build/manage GitHub Actions pipelines | YELLOW |
+| github-release-management | Versioning, testing, automated releases + rollback | YELLOW |
+| github-project-management | Issues, project boards, sprints — automated | YELLOW |
+| github-multi-repo | Coordinate changes across multiple repos | YELLOW |
+| agentic-jujutsu | Experimental git-alternative version control (very niche) | RED |
+
+## Category 5 — Multi-Agent Coordination (5)
+
+| Skill | Purpose (one line) | Tier |
+|---|---|---|
+| swarm-orchestration | Run multiple agents in parallel on independent tasks | YELLOW |
+| swarm-advanced | Advanced agent-group patterns (research/dev/test concurrently) | RED |
+| hive-mind-advanced | Queen + workers with collective memory and voting | RED |
+| stream-chain | Pipe agent A's output into agent B (pipeline) | RED |
+| hooks-automation | Auto-run actions before/after operations: format, lint, commit, log | YELLOW |
+
+## Category 6 — Execution Tools (2)
+
+| Skill | Purpose (one line) | Tier |
+|---|---|---|
+| browser | Browser automation: UI testing, screenshots, forms, web browsing | GREEN |
+| worker-integration | Smart task distribution across workers + performance tracking | YELLOW |
+
+## Category 7 — ruflo-internal — NEVER install (14, all BLACK)
+
+| Skill(s) | What it is |
+|---|---|
+| v3-core-implementation, v3-ddd-architecture, v3-security-overhaul, v3-memory-unification, v3-performance-optimization, v3-mcp-optimization, v3-cli-modernization, v3-integration-deep, v3-swarm-coordination | 9 skills for building **claude-flow v3 itself** — ruflo team's internal roadmap |
+| dual-mode | Claude Code + headless Codex workers coordination (requires Codex) |
+| flow-nexus-platform / flow-nexus-swarm / flow-nexus-neural | Proprietary Flow Nexus cloud service (requires account/credits) |
+| worker-benchmarks | Benchmarks for ruflo's internal worker system |
 
 ---
 
-## 🏠 اسکیل‌های محلی این ریپو (ساخته‌شده روی همین کاتالوگ)
+## Local Skills in This Repo (7)
+
+| Skill | Purpose | Phase / trigger |
+|---|---|---|
+| smart | Skill manager: detects the project phase, installs the right skills on-demand | Every session start / phase change |
+| project-planner | User interview + S/M/L sizing + atomic PLAN.md (13 layers, CTB style) | Phase 0 (empty project) |
+| project-memory | File-based memory STATE.md: current task, errors, decisions (disconnect-proof) | Phase 1+ (always active) |
+| step-pilot | Step-by-step execution: implement -> test -> verify -> record -> commit | Phase 1+ (always active) |
+| code-review | Local diff review: correctness, readability, tests, plan conformance | Phase 3 / before merge |
+| debug-detective | Systematic debugging: reproduce -> isolate -> hypothesize -> minimal fix -> regression | Trigger: bug / 3 red verifies |
+| security-check | 5-axis pre-release security audit: secrets, deps, input, auth/RLS, defaults | Phase 4 gate (mandatory) |
+
+---
+
+## Coverage Map: 13 Professional Project Layers
+
+| Project layer | Covering skills | Coverage |
+|---|---|---|
+| Frontend | browser (UI testing) | PARTIAL |
+| APIs & Backend Logic | sparc-methodology + pair-programming | GENERIC |
+| Database & Storage | agentdb-* is AGENT memory only, NOT the product DB! | NONE |
+| Auth & Permissions | security-check (audit only) | PARTIAL |
+| Hosting & Deployment | github-release-management | PARTIAL |
+| Cloud & Compute | flow-nexus-* (their own service only) | NONE |
+| CI/CD & Version Control | github-workflow-automation + hooks-automation | GOOD |
+| Security & RLS | **security-check (local)** | GOOD |
+| Rate Limiting | security-check flags it (audit only) | PARTIAL |
+| Caching & CDN | — | NONE |
+| Load Balancing & Scaling | swarm-* scales AGENTS, not the app! | NONE |
+| Error Tracking & Logs | **debug-detective (local)** + hooks-automation | GOOD |
+| Availability & Recovery | verification-quality (code rollback only) | PARTIAL |
+
+> KEY INSIGHT: most ruflo skills manage the AGENTS themselves, not real product layers.
+> SMART must know this so it never suggests the wrong skill — e.g. never `agentdb-*` for "the project's database".
+
+---
+
+## What Else Is in ruflo (besides skills)?
+
+| Folder | Count | Content |
+|---|---|---|
+| `agents/` | 108 | Role definitions: coder, planner, reviewer, tester, queen-coordinator, pr-manager... (agent personas, not skills) |
+| `commands/` | 168 | Slash-command shortcuts for the same skills/agents |
+| `helpers/` | 40 | Shell scripts: auto-checkpoint, auto-commit, health-monitor |
+| `workflows/` | 2 | Whole-system tests |
+
+---
+
+## SMART Decision Recipe (summary)
 
 ```
-skills/
-├── 🧠 smart ──────────── مدیر اسکیل‌ها: فاز پروژه را می‌سنجد، اسکیل مناسب را on-demand نصب می‌کند
-│   └── scripts/fetch-skill.sh ← دانلود تک‌اسکیل از گیت‌هاب (sparse-checkout، بدون کل ریپو)
-├── 📋 project-planner ── مصاحبه با کاربر + سنجش سطح + PLAN.md اتمی (۱۳ لایه، الگوی CTB)
-├── 💾 project-memory ─── حافظه‌ی فایلی STATE.md: تسک جاری، ارورها، تصمیم‌ها (ضد قطعی)
-├── ✈️ step-pilot ─────── اجرای استپ‌به‌استپ: پیاده‌سازی → تست → Verify → ثبت → کامیت
-├── 🕵️ debug-detective ── دیباگ سیستماتیک: بازتولید → ایزوله → فرضیه → فیکس حداقلی → رگرسیون
-│                          (پرکننده‌ی خلأ «Error Tracking» جدول ۱۳ لایه — ماشه: ۳ Verify قرمز)
-└── 🔐 security-check ─── ممیزی امنیتی ۵محوره قبل از انتشار: سکرت، وابستگی، ورودی، Auth/RLS، تنظیمات
-                           (پرکننده‌ی خلأ «Security & RLS» جدول ۱۳ لایه — دروازه‌ی اجباری فاز ۴)
+Every SMART invocation:
+1. SENSE the project state
+   - empty?              -> Phase 0: discovery + planning
+   - plan but no code?   -> Phase 1: setup (memory + steps)
+   - mid-development?    -> Phase 2: code + test + git
+   - ready to release?   -> Phase 4: security gate + CI/CD + release
+2. SELECT skills matching phase and tier from this catalog
+   - rule: minimum skill count that moves the work forward (anti-greed)
+   - GREEN default-allowed | YELLOW with reason | RED big projects only | BLACK never
+3. REPORT the skill roadmap: "these 3 now; those 2 after Phase 2"
 ```
 
-**نصب به‌صورت پلاگین Claude Code:** ریپو حالا `.claude-plugin/marketplace.json` دارد و هر اسکیل
-`plugin.json` خودش را — پس مستقیم قابل نصب است:
+## Install Commands
+
+As a Claude Code plugin (this repo ships `.claude-plugin/marketplace.json`):
 ```bash
 claude plugin marketplace add Saeedkhoshafsar/Skills
 claude plugin install smart@saeed-skills
 ```
 
-**دانلود on-demand (اسکیل‌ها فضای پروژه را نمی‌گیرند):**
+On-demand download (skills never bloat the project):
 ```bash
-bash skills/smart/scripts/fetch-skill.sh --list            # چه اسکیل‌هایی موجود است
-bash skills/smart/scripts/fetch-skill.sh sparc-methodology  # نصب فقط همین یکی
-bash skills/smart/scripts/fetch-skill.sh --installed        # چی نصب است
+bash skills/smart/scripts/fetch-skill.sh --list             # what is available
+bash skills/smart/scripts/fetch-skill.sh sparc-methodology  # install just this one
+bash skills/smart/scripts/fetch-skill.sh --installed        # what is installed
 ```

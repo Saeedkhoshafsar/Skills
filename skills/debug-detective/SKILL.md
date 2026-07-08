@@ -1,84 +1,77 @@
 ---
 name: debug-detective
 description: >
-  کارآگاه دیباگ — روش سیستماتیک رفع باگ: بازتولید → ایزوله‌سازی → فرضیه → فیکس حداقلی →
-  تست رگرسیون → ثبت ریشه‌ی مشکل در STATE.md. ضد چرخیدن در حلقه‌ی ارور!
-  Use when a bug appears, a test keeps failing, step-pilot hits 3 consecutive red verifies,
-  or the user says "باگ" / "ارور" / "debug" / "درست نمیشه".
+  Systematic debugging method: reproduce -> isolate -> hypothesize -> minimal
+  fix -> regression test -> record root cause in STATE.md. Stops agents from
+  thrashing in error loops. Use when a bug appears, a test keeps failing,
+  step-pilot hits 3 consecutive red verifies, or the user says
+  "bug" / "error" / "debug" / "باگ" / "ارور" / "درست نمیشه".
 tools: Read, Grep, Glob, Bash, Edit, Write
 ---
 
-# 🕵️ Debug Detective — کارآگاه دیباگ
+# Debug Detective
 
-> **فلسفه:** باگ را «حل» نکن — اول **بفهم**. فیکسِ بدون فهم = باگِ برگشتی.
-> **قانون طلایی:** هرگز بیش از ۲ تغییر هم‌زمان برای تست یک فرضیه نده.
+**Philosophy:** don't "solve" the bug — UNDERSTAND it first. A fix without understanding = a returning bug.
+**Golden rule:** never change more than 2 things at once to test one hypothesis.
 
----
+## Execution Cycle (in order — skip nothing)
 
-## 🔄 چرخه‌ی اجرا (به‌ترتیب — هیچ گامی را رد نکن)
+### Step 1 — Reproduce
+- Find the smallest command that shows the bug.
+- Can't reproduce? Gather more info (env, input, versions).
+- Record the reproduction command in STATE.md's bug table.
 
-```
-باگ گزارش شد
-│
-├── 1️⃣ بازتولید (Reproduce)
-│   ├── کوچک‌ترین دستوری که باگ را نشان می‌دهد پیدا کن
-│   ├── اگر بازتولید نمی‌شود → اطلاعات بیشتر بگیر (env، ورودی، نسخه)
-│   └── ✍️ دستور بازتولید را در STATE.md (جدول باگ‌ها) ثبت کن
-│
-├── 2️⃣ ایزوله‌سازی (Isolate)
-│   ├── خطای دقیق را بخوان — کل stack trace، نه فقط خط اول
-│   ├── با git log/diff چک کن: آخرین تغییرِ مرتبط چه بود؟
-│   ├── دامنه را نصف‌کن (binary search): این نیمه یا آن نیمه؟
-│   └── به کوچک‌ترین فایل/تابع/خط مقصر برس
-│
-├── 3️⃣ فرضیه (Hypothesize)
-│   ├── «فکر می‌کنم X به دلیل Y خراب است» — صریح بنویس
-│   ├── راه تأیید/رد فرضیه را قبل از تغییر کد مشخص کن (log، تست، breakpoint)
-│   └── فرضیه رد شد؟ → فرضیه‌ی بعدی (برنگرد کد را شخم بزن!)
-│
-├── 4️⃣ فیکس حداقلی (Minimal Fix)
-│   ├── فقط ریشه را فیکس کن — نه علامت را (symptom patching ممنوع)
-│   ├── تغییر ≤ چند خط؛ ریفکتور جدا از فیکس (بدهی فنی ثبت شود)
-│   └── هرگز try/except خالی یا silence کردن ارور به‌جای فیکس
-│
-├── 5️⃣ تست رگرسیون (Prove)
-│   ├── تستی بنویس که «قبل از فیکس قرمز، بعد از فیکس سبز» است
-│   ├── کل تست‌سوئیت را اجرا کن — فیکس چیز دیگری را نشکسته باشد
-│   └── دستور بازتولید گام ۱ را دوباره اجرا کن → باید پاک باشد
-│
-└── 6️⃣ ثبت و بستن (Record)
-    ├── STATE.md: باگ → «حل شد» + ریشه‌ی مشکل + راه‌حل (یک خط)
-    ├── commit: "fix(scope): <ریشه> — <راه‌حل>"
-    └── اگر الگوی تکرارشونده است → به «تصمیم‌های مهم» STATE.md اضافه کن
-```
+### Step 2 — Isolate
+- Read the EXACT error — the whole stack trace, not just line 1.
+- Check `git log`/`git diff`: what was the last related change?
+- Binary-search the scope: this half or that half?
+- Narrow down to the smallest guilty file/function/line.
 
----
+### Step 3 — Hypothesize
+- Write it explicitly: "I think X is broken because Y."
+- Decide how to confirm/refute BEFORE changing code (log, test, breakpoint).
+- Hypothesis refuted? → next hypothesis. Do NOT start plowing through the code.
 
-## 🧰 جعبه‌ابزار ایزوله‌سازی
+### Step 4 — Minimal fix
+- Fix ONLY the root cause — never the symptom (no symptom patching).
+- Change ≤ a few lines; refactoring is separate from fixing (record as tech debt).
+- Never an empty try/except or silencing the error instead of fixing it.
 
-| موقعیت | تکنیک |
+### Step 5 — Prove (regression test)
+- Write a test that is RED before the fix and GREEN after.
+- Run the whole test suite — the fix must not break anything else.
+- Re-run the Step 1 reproduction command → must be clean.
+
+### Step 6 — Record & close
+- STATE.md: bug → "solved" + root cause + solution (one line).
+- Commit: `fix(scope): <root cause> — <solution>`.
+- Recurring pattern? → add it to STATE.md's "Key decisions".
+
+## Isolation Toolbox
+
+| Situation | Technique |
 |---|---|
-| نمی‌دانم از کِی خراب شد | `git bisect` یا مرور `git log --oneline -20` |
-| نمی‌دانم کجا خراب می‌شود | لاگ نقطه‌گذاری‌شده (ورودی/خروجی هر مرحله) |
-| فقط در production خراب است | تفاوت env: نسخه‌ها، ENV varها، دیتا |
-| گاهی خراب می‌شود (flaky) | حلقه‌ی اجرا ×۲۰ + ثبت شرایط شکست (زمان‌بندی/race؟) |
-| ارور مبهم third-party | نسخه‌ی دقیق پکیج + جست‌وجوی متن دقیق ارور |
+| Don't know WHEN it broke | `git bisect` or review `git log --oneline -20` |
+| Don't know WHERE it breaks | Checkpoint logging (input/output at each stage) |
+| Only broken in production | Env diff: versions, ENV vars, data |
+| Flaky (sometimes breaks) | Run in a x20 loop + record failure conditions (timing/race?) |
+| Cryptic third-party error | Exact package version + search the exact error text |
 
-## 🚫 ضدالگوها
+## Anti-Patterns
 
-1. **شات‌گان دیباگ** — تغییر ۵ جای مختلف هم‌زمان «شاید درست شود».
-2. **فیکس علامت** — مثلا `if x is None: return` بدون فهم چرا None شد.
-3. **حذف تستِ قرمز** به‌جای فیکس کد.
-4. **دیباگ نامحدود** — بعد از ۳ فرضیه‌ی ناموفق: توقف + گزارش کامل به کاربر (یافته‌ها + فرضیه‌های ردشده).
-5. **ثبت نکردن** — باگ حل‌شده‌ی ثبت‌نشده = باگی که ایجنت بعدی دوباره می‌خورد.
+1. **Shotgun debugging** — changing 5 places at once hoping something works.
+2. **Symptom fix** — e.g. `if x is None: return` without understanding why x became None.
+3. **Deleting the red test** instead of fixing the code.
+4. **Unbounded debugging** — after 3 failed hypotheses: STOP + full report to the user (findings + refuted hypotheses).
+5. **Not recording** — an unrecorded solved bug = a bug the next agent hits again.
 
-## 📊 قالب گزارش پایان دیباگ
+## Closing Report Template
 
 ```
-🕵️ Debug Detective — باگ #N بسته شد
-├── 🐛 علامت: <چه دیده می‌شد>
-├── 🔬 ریشه: <دلیل واقعی — دقیق: فایل:خط>
-├── 🔧 فیکس: <چه تغییری، چند خط>
-├── 🧪 اثبات: تست <نام> (قبل قرمز → حالا سبز) + کل سوئیت سبز
-└── 💾 STATE.md آپدیت + کامیت <hash>
+Debug Detective — bug #N closed
+  Symptom : <what was observed>
+  Root    : <the real cause — precise: file:line>
+  Fix     : <what changed, how many lines>
+  Proof   : test <name> (was RED -> now GREEN) + full suite GREEN
+  Record  : STATE.md updated + commit <hash>
 ```

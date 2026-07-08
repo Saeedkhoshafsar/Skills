@@ -1,64 +1,66 @@
 ---
 name: project-memory
 description: >
-  حافظه‌ی ماندگار پروژه بدون هیچ وابستگی خارجی — فایل docs/STATE.md که تسک جاری،
-  ارورها، باگ‌ها، تصمیم‌ها و جاهای ناتمام را نگه می‌دارد تا ایجنت بعد از هر قطعی
-  دقیقاً از همان‌جا ادامه دهد. Use at start of every session, after every completed
-  task, after every error, and before every disconnect-prone long operation.
+  Zero-dependency persistent project memory — docs/STATE.md holds the current
+  task, errors, bugs, decisions, and unfinished work so any agent resumes
+  exactly where the last one stopped after any disconnect. Use at the start of
+  every session, after every completed task, after every error, and before
+  every disconnect-prone long operation.
 tools: Read, Write, Edit, Bash
 ---
 
-# 💾 Project Memory — حافظه‌ی پروژه (هوشیاری ایجنت)
+# Project Memory (agent continuity)
 
-> **قانون اول:** STATE.md در **همان کامیتی** آپدیت می‌شود که کدِ توصیف‌شده‌اش کامیت می‌شود.
-> **قانون دوم:** ایجنتی که تازه وصل شده، قبل از هر کاری `docs/STATE.md` را می‌خواند.
+**Rule 1:** STATE.md is updated in the **same commit** as the code it describes.
+**Rule 2:** A freshly connected agent reads `docs/STATE.md` BEFORE doing anything else.
 
-## 📄 قالب docs/STATE.md
+## docs/STATE.md Template
 
 ```markdown
-# STATE — <نام پروژه>
+# STATE — <project name>
 
-## → current (تسک جاری)
+## -> current (active task)
 ```
-Phase     : <فاز فعلی>
-Task      : P1-T3 · <عنوان> — IN PROGRESS
-Progress  : <تا کجا رسیدیم — دقیق: کدام فایل، کدام تابع>
-Blockers  : <چیزی جلوی کار را گرفته؟ none اگر نه>
-Branch    : <برنچ فعال>
+Phase     : <current phase>
+Task      : P1-T3 - <title> — IN PROGRESS
+Progress  : <exactly how far: which file, which function>
+Blockers  : <anything blocking? "none" if not>
+Branch    : <active branch>
 ```
 
-## 🐛 ارورها و باگ‌های باز
-| # | شرح | فایل | وضعیت |
+## Open errors & bugs
+| # | Description | File | Status |
 |---|---|---|---|
 
-## 📌 تصمیم‌های مهم (چرا این‌طوری؟)
-- <تاریخ> — <تصمیم + دلیل یک‌خطی>
+## Key decisions (why this way?)
+- <date> — <decision + one-line reason>
 
-## ✅ تسک‌های تمام‌شده (جدیدترین بالا)
-- P1-T2 · <عنوان> — DONE — <یک خط: چه ساخته شد + نتیجه‌ی verify>
-- P1-T1 · ...
+## Completed tasks (newest first)
+- P1-T2 - <title> — DONE — <one line: what was built + verify result>
+- P1-T1 - ...
 
-## ⚠️ ناتمام‌ها / بدهی فنی
-- <هر چیزی که «بعداً» شد>
+## Unfinished / tech debt
+- <anything deferred to "later">
 ```
 
-## 🔄 چه زمانی آپدیت کن؟
+## When to Update
 
-```
-رویداد ──────────────► عمل
-├── شروع جلسه ───────► بخوان (فقط بخوان، دست نزن)
-├── شروع تسک جدید ───► → current را آپدیت کن
-├── وسط تسک طولانی ──► Progress را ریز آپدیت کن (ضد قطعی!)
-├── ارور خوردی ──────► به جدول باگ‌ها اضافه کن — حتی اگر حل شد بنویس چطور
-├── تسک تمام شد ─────► به تمام‌شده‌ها منتقل + verify نتیجه + همان کامیتِ کد
-└── تصمیم معماری ────► به تصمیم‌ها اضافه کن با دلیل
-```
+| Event | Action |
+|---|---|
+| Session start | READ only — do not modify |
+| New task starts | Update `-> current` |
+| Mid long task | Update Progress in small increments (disconnect-proof!) |
+| Error occurs | Add to bug table — even if solved, record HOW |
+| Task completes | Move to completed + verify result + same commit as the code |
+| Architecture decision | Add to decisions with the reason |
 
-## 📈 قانون رشد فایل
-اگر STATE.md از ~۴۰۰ خط گذشت: تسک‌های قدیمی را به `docs/STATE-archive.md` منتقل کن
-و فقط «→ current + ۱۰ تسک آخر + باگ‌های باز» را نگه دار (الگوی STATE2.md در CTB).
+## File Growth Rule
 
-## 🔗 ارتقا به AgentDB (اختیاری)
-اگر پروژه بزرگ شد و جست‌وجوی معنایی در تاریخچه لازم شد، SMART اسکیل
-`agentdb-memory-patterns` را اضافه می‌کند — ولی STATE.md همیشه منبع حقیقت می‌ماند
-(چون بدون هیچ ابزاری خواندنی است).
+If STATE.md exceeds ~400 lines: move old tasks to `docs/STATE-archive.md` and
+keep only `-> current` + last 10 tasks + open bugs.
+
+## Optional Upgrade: AgentDB
+
+If the project grows and semantic search over history becomes necessary, SMART
+adds the `agentdb-memory-patterns` skill — but STATE.md always remains the
+source of truth (it is readable with zero tooling).

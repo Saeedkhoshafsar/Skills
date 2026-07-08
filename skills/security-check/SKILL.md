@@ -1,83 +1,80 @@
 ---
 name: security-check
 description: >
-  ممیزی امنیتی قبل از انتشار — پنج محور: سکرت‌های لو رفته، آسیب‌پذیری وابستگی‌ها،
-  اعتبارسنجی ورودی، سطح دسترسی (Auth/RLS)، و تنظیمات امن — با لیست اولویت‌بندی‌شده‌ی فیکس.
-  Use before every deploy/release, after adding auth or payment, when handling user data,
-  or when the user says "امنیت" / "security" / "audit".
+  Pre-release security audit across five axes: leaked secrets, dependency
+  vulnerabilities, input validation, auth/access control (Auth/RLS), and safe
+  defaults — with a prioritized fix list. Use before every deploy/release,
+  after adding auth or payments, when handling user data, or when the user
+  says "security" / "audit" / "امنیت".
 tools: Read, Grep, Glob, Bash
 ---
 
-# 🔐 Security Check — بازرس امنیت
+# Security Check
 
-> **فلسفه:** امنیت «فیچر آخر» نیست — دروازه‌ی انتشار است.
-> خروجی همیشه: گزارش یافته‌ها با شدت (🔴/🟡/🟢) + فیکس پیشنهادی هر مورد.
+**Philosophy:** security is not "the last feature" — it is the release gate.
+**Output is always:** a findings report with severity (CRITICAL/IMPORTANT/SUGGESTED) + a proposed fix per item.
 
----
+## Execution Cycle (5 axes, ordered by risk severity)
 
-## 🔄 چرخه‌ی اجرا (۵ محور — به‌ترتیب شدت ریسک)
+### Axis 1 — Leaked secrets (worst kind of leak)
+- Grep for patterns: API keys, tokens, passwords, private keys, connection strings.
+  - Common signatures: `sk-`, `ghp_`, `AKIA`, `-----BEGIN`, `postgres://user:pass@`
+- Dangerous files tracked in git: `.env`, `*.pem`, `credentials*`, configs with real values.
+- Also check git HISTORY: e.g. `git log -p -S "SECRET"`.
+- **Pass criterion:** no secret in the repo; everything comes from ENV / a secret manager.
 
-```
-security-check فعال شد
-│
-├── 1️⃣ 🔑 سکرت‌های لو رفته (بدترین نوع نشتی)
-│   ├── grep الگوها: API key، token، password، private key، connection string
-│   │   └── الگوهای رایج: sk-, ghp_, AKIA, -----BEGIN, postgres://user:pass@
-│   ├── فایل‌های خطرناک در git: .env، *.pem، credentials*, config با مقدار واقعی
-│   ├── تاریخچه‌ی git را هم چک کن: git log -p -S "SECRET" (نمونه‌ای)
-│   └── ✅ معیار: هیچ سکرتی در ریپو نیست؛ همه از ENV/secret-manager می‌آیند
-│
-├── 2️⃣ 📦 وابستگی‌های آسیب‌پذیر
-│   ├── Node: npm audit --omit=dev | Python: pip-audit یا pip list --outdated
-│   ├── نسخه‌های pin نشده یا خیلی قدیمی را علامت بزن
-│   └── ✅ معیار: هیچ critical/high باز نیست (یا آگاهانه ثبت شده)
-│
-├── 3️⃣ 🧹 اعتبارسنجی ورودی (Injection)
-│   ├── SQL: کوئری با رشته‌سازی؟ → فقط پارامتری/ORM
-│   ├── Shell: exec/system با ورودی کاربر؟ → allowlist یا escape
-│   ├── Path: باز کردن فایل با ورودی کاربر؟ → جلوگیری از ../ traversal
-│   ├── XSS: خروجی HTML بدون escape؟ (dangerouslySetInnerHTML, |safe, v-html)
-│   └── ✅ معیار: هیچ ورودی کاربر مستقیم به SQL/shell/path/HTML نمی‌رسد
-│
-├── 4️⃣ 🚪 احراز هویت و سطح دسترسی
-│   ├── هر endpoint حساس auth دارد؟ (لیست route ها را دربیاور و تیک بزن)
-│   ├── IDOR: کاربر A می‌تواند دیتای کاربر B را با تغییر id ببیند؟
-│   ├── RLS دیتابیس (اگر Supabase/Postgres): روی همه‌ی جدول‌های کاربری فعال؟
-│   ├── پسورد: hash با bcrypt/argon2 (نه md5/sha1/plain)
-│   └── ✅ معیار: دسترسی هر منبع = مالک آن یا نقش مجاز
-│
-└── 5️⃣ ⚙️ تنظیمات امن (Safe Defaults)
-    ├── CORS: * روی endpoint احرازشده؟ → محدود به origin مشخص
-    ├── Debug mode / stack trace در production خاموش؟
-    ├── HTTPS اجباری؟ کوکی‌ها Secure+HttpOnly+SameSite؟
-    ├── Rate limiting روی login / API عمومی هست؟ (اگر نه → بدهی ثبت شود)
-    └── هدرها: X-Content-Type-Options، X-Frame-Options / CSP (وب)
-```
+### Axis 2 — Vulnerable dependencies
+- Node: `npm audit --omit=dev` | Python: `pip-audit` or `pip list --outdated`.
+- Flag unpinned or very old versions.
+- **Pass criterion:** no open critical/high (or consciously recorded as accepted risk).
 
----
+### Axis 3 — Input validation (injection)
+| Vector | Check | Required fix |
+|---|---|---|
+| SQL | Queries built by string concatenation? | Parameterized queries / ORM only |
+| Shell | `exec`/`system` with user input? | Allowlist or escape |
+| Path | Opening files from user input? | Block `../` traversal |
+| XSS | HTML output without escaping? (`dangerouslySetInnerHTML`, `|safe`, `v-html`) | Escape / sanitize |
+- **Pass criterion:** no user input reaches SQL/shell/path/HTML directly.
 
-## 📊 قالب گزارش (اجباری)
+### Axis 4 — Authentication & access control
+- Does every sensitive endpoint have auth? (list all routes and tick them off)
+- IDOR: can user A see user B's data by changing an id?
+- Database RLS (if Supabase/Postgres): enabled on all user tables?
+- Passwords: hashed with bcrypt/argon2 (never md5/sha1/plaintext).
+- **Pass criterion:** access to every resource = its owner or an authorized role.
+
+### Axis 5 — Safe defaults
+- CORS: `*` on an authenticated endpoint? → restrict to explicit origins.
+- Debug mode / stack traces OFF in production?
+- HTTPS enforced? Cookies `Secure` + `HttpOnly` + `SameSite`?
+- Rate limiting on login / public APIs? (if not → record as debt)
+- Headers: `X-Content-Type-Options`, `X-Frame-Options` / CSP (web).
+
+## Report Template (mandatory)
 
 ```
-🔐 Security Check — گزارش [تاریخ]
-│
-├── 🔴 بحرانی (انتشار ممنوع تا فیکس)
-│   └── [S1] سکرت OpenAI در src/config.py:12 → به ENV منتقل کن + کلید را rotate کن
-├── 🟡 مهم (قبل از رشد کاربر فیکس شود)
-│   └── [S2] rate limit روی /login نیست → slowapi/express-rate-limit
-├── 🟢 پیشنهادی
-│   └── [S3] هدر CSP اضافه شود
-│
-├── ✅ پاس‌شده‌ها: dependencies (0 high)، SQL پارامتری، پسورد bcrypt
-└── 🎯 حکم: ❌ انتشار بلاک است (1 مورد 🔴) / ✅ قابل انتشار
+Security Check — Report [date]
+
+CRITICAL (release BLOCKED until fixed):
+  [S1] OpenAI key in src/config.py:12 -> move to ENV + ROTATE the key
+
+IMPORTANT (fix before user growth):
+  [S2] no rate limit on /login -> slowapi / express-rate-limit
+
+SUGGESTED:
+  [S3] add CSP header
+
+PASSED: dependencies (0 high), parameterized SQL, bcrypt passwords
+VERDICT: RELEASE BLOCKED (1 CRITICAL)   |   or: OK TO RELEASE
 ```
 
-- هر یافته‌ی 🔴/🟡 را در STATE.md (جدول باگ‌ها یا بدهی فنی) هم ثبت کن.
-- فیکس سکرت لو رفته = **جابه‌جایی + rotate کلید** (حذف از کد کافی نیست — در تاریخچه مانده).
+- Record every CRITICAL/IMPORTANT finding in STATE.md too (bug table or tech debt).
+- Fixing a leaked secret = **move it + ROTATE the key** (removing it from code is not enough — it stays in git history).
 
-## 🚫 ضدالگوها
+## Anti-Patterns
 
-1. **گزارش بدون فیکس پیشنهادی** — هر یافته باید راه‌حل یک‌خطی داشته باشد.
-2. **فیکس خودسرانه‌ی 🔴 بدون اطلاع کاربر** — اول گزارش، بعد با تأیید فیکس (rotate کلید تصمیم کاربر است).
-3. **امنیت‌نمایشی** — اضافه‌کردن ۱۰ هدر ولی رد شدن از IDOR.
-4. **یک‌بار برای همیشه** — این چک قبل از *هر* انتشار تکرار می‌شود (SMART در فاز ۴ صدا می‌زند).
+1. **Report without a proposed fix** — every finding needs a one-line solution.
+2. **Silently fixing CRITICALs without telling the user** — report first, fix after approval (key rotation is the user's call).
+3. **Security theater** — adding 10 headers while skipping the IDOR check.
+4. **"Once and done"** — this check repeats before EVERY release (SMART invokes it in Phase 4).
