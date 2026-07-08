@@ -3,8 +3,11 @@
 > ورودیِ اسکیل مادر **SMART** (مدیر اسکیل‌ها). هر اسکیل: نام معنادار + یک جمله کاربرد + سطح نیاز.
 
 **منابع بررسی‌شده:**
-- `ruflo/.claude` → ۳۸ اسکیل، ۱۰۸ ایجنت، ۱۶۸ کامند
+- `ruflo/.claude` → ۳۹ اسکیل، ۱۰۸ ایجنت، ۱۶۸ کامند، ۴۰ هلپر، ۲ ورک‌فلو
 - `claude-plugins-official/plugins/claude-code-setup` → ۱ اسکیل
+
+> ✅ **تأیید کامل‌بودن (2026-07-08):** هر دو ریپو مجدداً کلون و با `comm` پوشه‌به‌پوشه با این کاتالوگ مقابله شد —
+> **هیچ اسکیلی جا نیفتاده و هیچ مورد اضافی ثبت نشده (۳۹+۱ = ۴۰/۴۰).** فقط شمارش سرصفحه اصلاح شد.
 
 **راهنمای سطح نیاز:** 🟢 عمومی (هر پروژه‌ای) | 🟡 موقعیتی (فقط شرایط خاص) | 🔴 تخصصی/سنگین (پروژه‌های بزرگ) | ⚫ داخلیِ ruflo (به درد پروژه‌ی تو نمی‌خورد)
 
@@ -13,7 +16,7 @@
 ## 🌳 نسخه‌ی درختی
 
 ```
-📦 کل اسکیل‌ها (39)
+📦 کل اسکیل‌ها (40 = 39 ruflo + 1 plugin)
 │
 ├── 🧠 1. حافظه و یادگیری (7)
 │   ├── 🟡 agentdb-memory-patterns ── حافظه‌ی ماندگار بین جلسات (session + long-term)
@@ -53,9 +56,10 @@
 │   ├── 🟢 browser ────────────────── اتوماسیون مرورگر برای تست UI و وب‌گردی ایجنت
 │   └── 🟡 worker-integration ─────── توزیع هوشمند تسک‌ها بین workerها + رهگیری کارایی
 │
-└── ⚫ 7. داخلیِ ruflo — مخصوص توسعه‌ی خودِ claude-flow (13)
-    ├── ⚫ v3-* (10 اسکیل) ─────────── پیاده‌سازی نسخه‌ی ۳ خودِ ruflo (معماری DDD، امنیت،
+└── ⚫ 7. داخلیِ ruflo — مخصوص توسعه‌ی خودِ claude-flow (14)
+    ├── ⚫ v3-* (9 اسکیل) ────────── پیاده‌سازی نسخه‌ی ۳ خودِ ruflo (معماری DDD، امنیت،
     │                                  حافظه، CLI، MCP، کارایی، هماهنگی ۱۵ ایجنت و...)
+    ├── ⚫ dual-mode ──────────────── هماهنگی Claude Code + کارگرهای headless Codex (نیاز به Codex)
     ├── ⚫ flow-nexus-platform/swarm/neural (3) ─ سرویس ابری اختصاصی Flow Nexus (نیاز به اکانت)
     └── ⚫ worker-benchmarks ───────── بنچمارک سیستم worker خودِ ruflo
 ```
@@ -124,7 +128,8 @@
 
 | اسکیل | چیست |
 |---|---|
-| v3-core-implementation, v3-ddd-architecture, v3-security-overhaul, v3-memory-unification, v3-performance-optimization, v3-mcp-optimization, v3-cli-modernization, v3-integration-deep, v3-swarm-coordination, dual-mode | ۱۰ اسکیل برای ساختن **نسخه‌ی ۳ خودِ claude-flow** — نقشه‌ی داخلی تیم ruflo |
+| v3-core-implementation, v3-ddd-architecture, v3-security-overhaul, v3-memory-unification, v3-performance-optimization, v3-mcp-optimization, v3-cli-modernization, v3-integration-deep, v3-swarm-coordination | ۹ اسکیل برای ساختن **نسخه‌ی ۳ خودِ claude-flow** — نقشه‌ی داخلی تیم ruflo |
+| dual-mode | هماهنگی Claude Code با کارگرهای headless Codex (سه کامند spawn/coordinate/collect — نیاز به نصب Codex) |
 | flow-nexus-platform / swarm / neural | اتصال به سرویس ابری اختصاصی Flow Nexus (نیاز به ثبت‌نام/اعتبار) |
 | worker-benchmarks | بنچمارک سیستم داخلی ruflo |
 
@@ -134,7 +139,7 @@
 
 ```
 ruflo/.claude/
-├── skills/    (38) ← بررسی شد ↑
+├── skills/    (39) ← بررسی شد ↑
 ├── agents/   (108) ← تعریف «نقش‌ها»: coder، planner، reviewer، tester،
 │                     queen-coordinator، pr-manager و... (پرسونای ایجنت، نه اسکیل)
 ├── commands/ (168) ← میان‌برهای اسلش‌کامند برای همان اسکیل‌ها/ایجنت‌ها
@@ -185,4 +190,24 @@ ruflo/.claude/
 │     └── ⚫ ها هرگز (داخلی ruflo)
 │
 └── 3️⃣ نقشه‌ی راه اسکیلی بده: «الان این ۳ تا؛ بعد از فاز ۲، آن ۲ تا»
+```
+
+---
+
+## 🏠 اسکیل‌های محلی این ریپو (ساخته‌شده روی همین کاتالوگ)
+
+```
+skills/
+├── 🧠 smart ──────────── مدیر اسکیل‌ها: فاز پروژه را می‌سنجد، اسکیل مناسب را on-demand نصب می‌کند
+│   └── scripts/fetch-skill.sh ← دانلود تک‌اسکیل از گیت‌هاب (sparse-checkout، بدون کل ریپو)
+├── 📋 project-planner ── مصاحبه با کاربر + سنجش سطح + PLAN.md اتمی (۱۳ لایه، الگوی CTB)
+├── 💾 project-memory ─── حافظه‌ی فایلی STATE.md: تسک جاری، ارورها، تصمیم‌ها (ضد قطعی)
+└── ✈️ step-pilot ─────── اجرای استپ‌به‌استپ: پیاده‌سازی → تست → Verify → ثبت → کامیت
+```
+
+**دانلود on-demand (اسکیل‌ها فضای پروژه را نمی‌گیرند):**
+```bash
+bash skills/smart/scripts/fetch-skill.sh --list            # چه اسکیل‌هایی موجود است
+bash skills/smart/scripts/fetch-skill.sh sparc-methodology  # نصب فقط همین یکی
+bash skills/smart/scripts/fetch-skill.sh --installed        # چی نصب است
 ```
