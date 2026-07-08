@@ -56,12 +56,16 @@ SMART فعال شد
 | 1 | 📋 **راه‌اندازی** — پلن هست، کد نیست | PLAN.md هست، src نیست | `project-memory` (محلی) + `step-pilot` (محلی) + در صورت نیاز `agentdb-memory-patterns` |
 | 2 | ⚙️ **توسعه** — وسط کد | src هست، تسک باز در STATE.md | `sparc-methodology` + `verification-quality` + `pair-programming` (در صورت TDD) |
 | 3 | ✅ **تثبیت** — کد کامل، تست/کیفیت | تسک‌های فاز تمام، ریلیز نه | `github-code-review` + `performance-analysis` (اگر کندی هست) + `browser` (اگر UI هست) |
-| 4 | 🚀 **انتشار** — آماده‌ی دیپلوی | همه‌چیز سبز | `github-release-management` + `github-workflow-automation` + `hooks-automation` |
+| 4 | 🚀 **انتشار** — آماده‌ی دیپلوی | همه‌چیز سبز | `security-check` (محلی — دروازه‌ی اجباری!) + `github-release-management` + `github-workflow-automation` + `hooks-automation` |
 | 5 | 🔁 **نگهداری** — بعد از انتشار | ریلیز موجود، ایشو باز | `github-project-management` + `github-multi-repo` (اگر چندریپو) |
 
 **اسکیل‌های همیشه‌فعال از فاز ۱ به بعد (هوشیاری ایجنت):**
 - `project-memory` — فایل‌های STATE.md محلی: تسک جاری، ارورها، باگ‌ها، جای ناتمام. با هر قطعی، ایجنت بعدی از همین‌جا ادامه می‌دهد.
 - `step-pilot` — اجرای استپ‌به‌استپ پلن با تست و معیار پذیرش هر استپ.
+
+**اسکیل‌های رویدادی (هر فازی — با ماشه‌ی مشخص):**
+- `debug-detective` (محلی) — ماشه: باگ گزارش شد، تستی مدام قرمز است، یا step-pilot ۳ بار پشت‌سرهم Verify قرمز خورد.
+- `security-check` (محلی) — ماشه: قبل از هر دیپلوی/ریلیز، بعد از اضافه‌شدن Auth/پرداخت/دیتای کاربر.
 
 **اسکیل‌های 🔴 فقط اگر:** پروژه چند-ایجنتی/خیلی بزرگ شد → `swarm-orchestration`، نیاز RAG شد → `agentdb-vector-search`.
 **اسکیل‌های ⚫ (v3-*, flow-nexus-*, worker-benchmarks): هرگز — داخلیِ ruflo هستند.**

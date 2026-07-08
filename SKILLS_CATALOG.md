@@ -162,11 +162,11 @@ ruflo/.claude/
 | Hosting & Deployment | github-release-management | 🟡 ناقص |
 | Cloud & Compute | flow-nexus-* (فقط سرویس خودشان) | 🔴 خالی |
 | CI/CD & Version Control | github-workflow-automation + hooks-automation | 🟢 خوب |
-| Security & RLS | v3-security-overhaul (داخلی ruflo) | 🔴 خالی |
+| Security & RLS | 🔐 **security-check (محلی — جدید)** | 🟢 پوشش داده شد |
 | Rate Limiting | — | 🔴 خالی |
 | Caching & CDN | — | 🔴 خالی |
 | Load Balancing & Scaling | swarm-* (فقط ایجنت‌ها، نه اپ!) | 🔴 خالی |
-| Error Tracking & Logs | hooks-automation (جزئی) | 🟡 ناقص |
+| Error Tracking & Logs | 🕵️ **debug-detective (محلی — جدید)** + hooks-automation | 🟢 خوب |
 | Availability & Recovery | verification-quality (rollback کد) | 🟡 ناقص |
 
 ⚠️ **یافته‌ی مهم:** بیشتر اسکیل‌های ruflo درباره‌ی «مدیریت خودِ ایجنت‌ها» هستند، نه لایه‌های واقعی محصول. SMART باید این را بداند تا اسکیل اشتباه پیشنهاد ندهد — مثلاً برای «دیتابیس پروژه» نباید agentdb را فعال کند!
@@ -202,7 +202,18 @@ skills/
 │   └── scripts/fetch-skill.sh ← دانلود تک‌اسکیل از گیت‌هاب (sparse-checkout، بدون کل ریپو)
 ├── 📋 project-planner ── مصاحبه با کاربر + سنجش سطح + PLAN.md اتمی (۱۳ لایه، الگوی CTB)
 ├── 💾 project-memory ─── حافظه‌ی فایلی STATE.md: تسک جاری، ارورها، تصمیم‌ها (ضد قطعی)
-└── ✈️ step-pilot ─────── اجرای استپ‌به‌استپ: پیاده‌سازی → تست → Verify → ثبت → کامیت
+├── ✈️ step-pilot ─────── اجرای استپ‌به‌استپ: پیاده‌سازی → تست → Verify → ثبت → کامیت
+├── 🕵️ debug-detective ── دیباگ سیستماتیک: بازتولید → ایزوله → فرضیه → فیکس حداقلی → رگرسیون
+│                          (پرکننده‌ی خلأ «Error Tracking» جدول ۱۳ لایه — ماشه: ۳ Verify قرمز)
+└── 🔐 security-check ─── ممیزی امنیتی ۵محوره قبل از انتشار: سکرت، وابستگی، ورودی، Auth/RLS، تنظیمات
+                           (پرکننده‌ی خلأ «Security & RLS» جدول ۱۳ لایه — دروازه‌ی اجباری فاز ۴)
+```
+
+**نصب به‌صورت پلاگین Claude Code:** ریپو حالا `.claude-plugin/marketplace.json` دارد و هر اسکیل
+`plugin.json` خودش را — پس مستقیم قابل نصب است:
+```bash
+claude plugin marketplace add Saeedkhoshafsar/Skills
+claude plugin install smart@saeed-skills
 ```
 
 **دانلود on-demand (اسکیل‌ها فضای پروژه را نمی‌گیرند):**

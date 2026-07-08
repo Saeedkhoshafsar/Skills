@@ -16,7 +16,7 @@ set -euo pipefail
 
 # ---------- منابع اسکیل (repo|branch|path-inside-repo) ----------
 SOURCES=(
-  "tivanmelhotra-creator/Skills|genspark_ai_developer|skills"
+  "Saeedkhoshafsar/Skills|genspark_ai_developer|skills"
   "Saeedkhoshafsar/ruflo|main|.claude/skills"
   "Saeedkhoshafsar/claude-plugins-official|main|plugins/claude-code-setup/skills"
 )

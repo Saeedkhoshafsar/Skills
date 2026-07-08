@@ -1,0 +1,7 @@
+{
+  "name": "step-pilot",
+  "description": "Step-by-step plan executor: implement, test, verify, record in STATE.md, commit. No step starts before the previous gate is green.",
+  "version": "1.0.0",
+  "author": { "name": "Saeedkhoshafsar" },
+  "keywords": ["execution", "verify", "gate"]
+}

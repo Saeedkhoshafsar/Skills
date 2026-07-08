@@ -1,0 +1,7 @@
+{
+  "name": "project-memory",
+  "description": "Zero-dependency persistent project memory via docs/STATE.md: current task, errors, decisions, unfinished work — resume exactly where the last agent stopped.",
+  "version": "1.0.0",
+  "author": { "name": "Saeedkhoshafsar" },
+  "keywords": ["memory", "state", "resume"]
+}

@@ -1,0 +1,7 @@
+{
+  "name": "smart",
+  "description": "Mother skill / skill manager: senses project state, detects the current phase, and installs only the skills that phase needs (on-demand from GitHub).",
+  "version": "1.0.0",
+  "author": { "name": "Saeedkhoshafsar" },
+  "keywords": ["skill-manager", "orchestration", "phase-detection"]
+}
