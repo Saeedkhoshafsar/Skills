@@ -1,7 +1,14 @@
 {
   "name": "debug-detective",
   "description": "Systematic debugging: reproduce, isolate, hypothesize, minimal fix, regression test, record root cause in STATE.md. Anti error-loop.",
-  "version": "1.0.0",
-  "author": { "name": "Saeedkhoshafsar" },
-  "keywords": ["debugging", "root-cause", "errors"]
+  "version": "1.0.1",
+  "author": {
+    "name": "Saeedkhoshafsar"
+  },
+  "keywords": [
+    "debugging",
+    "root-cause",
+    "errors"
+  ],
+  "license": "MIT"
 }

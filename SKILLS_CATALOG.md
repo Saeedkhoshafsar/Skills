@@ -1,16 +1,17 @@
 # SKILLS_CATALOG — Verified Skill Catalog (SMART's decision source)
 
 > Input for the **SMART** mother skill. Each skill: name + one-line purpose + tier.
-> Verified on 2026-07-08: all five sources cloned/listed and checked skill-by-skill — **79 installable skills** (7 local + 72 external; the 14 BLACK-tier ruflo internals are listed but never installed), duplicates resolved by source priority.
+> Verified on 2026-07-08: all six sources listed and checked skill-by-skill — **86 installable skills** (7 local + 79 external; the 14 BLACK-tier ruflo internals and obra's `using-superpowers` are listed but never installed), duplicates resolved by source priority.
 
 **Sources (priority order — first source that has a skill wins):**
 | # | Source | Count | Path | Content |
 |---|---|---|---|---|
-| 1 | `Saeedkhoshafsar/Skills` (this repo) | 7 local | `skills/` | SMART ecosystem |
+| 1 | `Saeedkhoshafsar/Skills` (this repo) | 7 local | `skills/<plugin>/skills/<skill>/` | SMART ecosystem |
 | 2 | `anthropics/skills` (official Anthropic) | 17 | `skills/` | documents, design, testing, MCP |
-| 3 | `obra/superpowers` | 13 | `skills/` | engineering-process craft skills |
+| 3 | `obra/superpowers` | 13 (+1 blocked) | `skills/` | engineering-process craft skills |
 | 4 | `Saeedkhoshafsar/ruflo` | 39 | `.claude/skills/` | memory, GitHub, swarm, quality |
 | 5 | `Saeedkhoshafsar/claude-plugins-official` | 17 | `plugins/*/skills/` | Claude Code plugin dev + tools |
+| 6 | `nextlevelbuilder/ui-ux-pro-max-skill` | 7 | `.claude/skills/` | UI/UX design intelligence: styles, palettes, fonts, brand, banners, slides |
 
 **Duplicate resolution (same capability in several sources):**
 | Capability | Winner | Losers (do NOT fetch) | Why |
@@ -19,6 +20,7 @@
 | Debugging method | `debug-detective` (local) | `systematic-debugging` (obra) | local, integrated with STATE.md |
 | TDD | `test-driven-development` (obra) | `pair-programming` TDD-mode (ruflo) | focused, includes anti-patterns file |
 | Frontend design | `frontend-design` (anthropics ≡ cpo, identical) | — | fetch-skill resolves to anthropics |
+| Design-system depth (palettes, fonts, industry rules) | `ui-ux-pro-max` (nextlevelbuilder) | — complements `frontend-design` | 67+ styles / 161 palettes / 57 font pairings + reasoning engine; use when the task needs a FULL design system, keep `frontend-design` for creative art direction |
 | Planning | `project-planner` (local) | `writing-plans` (obra) | local interview+13-layer flow; obra's is a good supplement for plan FORMAT only |
 | Plan execution | `step-pilot` (local) | `executing-plans` (obra) | local, gated + STATE.md |
 | Verify-before-done | `step-pilot` GATE (local) | `verification-before-completion` (obra) | already enforced locally |
@@ -31,7 +33,7 @@
 | GREEN | General — useful in any project | Allowed by default |
 | YELLOW | Situational — specific conditions only | Only with a stated reason |
 | RED | Specialized/heavy — large projects | Only for big/multi-agent projects |
-| BLACK | ruflo-internal | NEVER install |
+| BLACK | Internal/foreign-infrastructure skills (ruflo internals + obra's `using-superpowers`) | NEVER install — fetch-skill.sh refuses them |
 
 ---
 
@@ -93,7 +95,7 @@
 | browser | Browser automation: UI testing, screenshots, forms, web browsing | GREEN |
 | worker-integration | Smart task distribution across workers + performance tracking | YELLOW |
 
-## Category 8 — Documents & Files (anthropics/skills) (5)
+## Category 7 — Documents & Files (anthropics/skills) (5)
 
 | Skill | Purpose (one line) | Tier |
 |---|---|---|
@@ -103,7 +105,7 @@
 | pptx | Create and edit PowerPoint presentations | GREEN |
 | doc-coauthoring | Structured co-authoring workflow for specs, proposals, decision docs | GREEN |
 
-## Category 9 — Frontend, Design & Web (anthropics/skills) (7)
+## Category 8 — Frontend, Design & Web (anthropics/skills) (7)
 
 | Skill | Purpose (one line) | Tier |
 |---|---|---|
@@ -115,7 +117,7 @@
 | algorithmic-art | Generative/algorithmic art with p5.js (flow fields, particles) | YELLOW |
 | slack-gif-creator | Animated GIFs optimized for Slack | YELLOW |
 
-## Category 10 — Anthropic Platform & Meta (anthropics/skills) (5)
+## Category 9 — Anthropic Platform & Meta (anthropics/skills) (5)
 
 | Skill | Purpose (one line) | Tier |
 |---|---|---|
@@ -125,7 +127,7 @@
 | brand-guidelines | Apply Anthropic's official brand style to artifacts | YELLOW |
 | internal-comms | Write status reports, newsletters, FAQs in internal-comms style | YELLOW |
 
-## Category 11 — Engineering Process (obra/superpowers) (13)
+## Category 10 — Engineering Process (obra/superpowers) (13 installable + 1 blocked)
 
 | Skill | Purpose (one line) | Tier |
 |---|---|---|
@@ -142,8 +144,9 @@
 | dispatching-parallel-agents | Dispatch parallel subagents for independent problems | RED |
 | subagent-driven-development | Execute a plan via fresh subagents per task + two-stage review | RED |
 | writing-skills | (overlaps skill-creator — prefer skill-creator) | YELLOW |
+| using-superpowers | obra's meta-skill that wires its OWN plugin infrastructure — useless outside the superpowers plugin | BLACK (blocked by fetch-skill.sh) |
 
-## Category 12 — Claude Code Plugin/Tooling Dev (claude-plugins-official) (16)
+## Category 11 — Claude Code Plugin/Tooling Dev (claude-plugins-official) (16)
 
 | Skill | Purpose (one line) | Tier |
 |---|---|---|
@@ -167,7 +170,21 @@
 > `claude-automation-recommender` from this repo is already listed in Category 2.
 > The repo also ships plugins with no skills (commands/agents/hooks only): code-review, security-guidance, feature-dev, pr-review-toolkit, code-simplifier, ralph-loop, commit-commands, hookify engine, LSP servers, external_plugins (telegram, discord, github MCP...). Those are Claude Code **plugins**, installable via `/plugin`, not fetchable as skills.
 
-## Category 7 — ruflo-internal — NEVER install (14, all BLACK)
+## Category 12 — UI/UX Design Intelligence (nextlevelbuilder/ui-ux-pro-max-skill) (7)
+
+| Skill | Purpose (one line) | Tier |
+|---|---|---|
+| ui-ux-pro-max | Design-intelligence engine: 67+ UI styles, 161 industry color palettes, 57 font pairings, 25 chart types, 99 UX guidelines, 161 reasoning rules — generates a complete tailored design system (pattern + style + colors + typography + anti-patterns + pre-delivery checklist) for 22 stacks (React, Next.js, Vue, Svelte, SwiftUI, Flutter, Tailwind, shadcn/ui, …). Search scripts require Python 3. | GREEN |
+| ui-styling | shadcn/ui + Radix + Tailwind implementation: accessible components, theming, dark mode, canvas designs | YELLOW |
+| design-system | Three-layer design tokens (primitive→semantic→component), CSS variables, component specs | YELLOW |
+| brand | Brand voice, visual identity, messaging frameworks, style-guide consistency | YELLOW |
+| banner-design | Social/ad/web/print banners with multiple art-direction options (visuals need an AI image generator) | YELLOW |
+| slides | Strategic HTML presentations: Chart.js, design tokens, copywriting formulas | YELLOW |
+| design | Umbrella skill: logos, CIP, mockups, icons, social photos (heavy — depends on Gemini image APIs; prefer the focused skills above) | RED |
+
+> `ui-ux-pro-max` is the flagship: SMART's default pick whenever a task needs a FULL design system (industry-matched colors + typography + layout pattern). For pure creative art direction keep `frontend-design` (anthropics); the two complement each other.
+
+## Category 13 — ruflo-internal — NEVER install (14, all BLACK)
 
 | Skill(s) | What it is |
 |---|---|
@@ -196,7 +213,7 @@
 
 | Project layer | Covering skills | Coverage |
 |---|---|---|
-| Frontend | **frontend-design** + **webapp-testing** + browser + theme-factory | GOOD |
+| Frontend | **ui-ux-pro-max** + **frontend-design** + **webapp-testing** + browser + theme-factory | GOOD |
 | APIs & Backend Logic | sparc-methodology + test-driven-development + pair-programming | GOOD |
 | Database & Storage | agentdb-* is AGENT memory only, NOT the product DB! | NONE |
 | Auth & Permissions | security-check (audit only) | PARTIAL |
@@ -240,7 +257,7 @@ Every SMART invocation:
 2. SELECT skills matching phase and tier from this catalog
    - rule: minimum skill count that moves the work forward (anti-greed)
    - GREEN default-allowed | YELLOW with reason | RED big projects only | BLACK never
-   - SMART has FREE HAND across all 5 sources: pick by capability need,
+   - SMART has FREE HAND across all 6 sources: pick by capability need,
      not by source. Check the duplicate-resolution table first.
 3. REPORT the skill roadmap: "these 3 now; those 2 after Phase 2"
 ```
@@ -251,7 +268,13 @@ Every SMART invocation:
 |---|---|
 | PDF / Word / Excel / PowerPoint output | pdf / docx / xlsx / pptx |
 | Writing a spec, proposal, decision doc | doc-coauthoring |
+| Full design system per industry (styles + palettes + fonts) | ui-ux-pro-max |
 | Beautiful, non-generic UI | frontend-design (+ theme-factory) |
+| shadcn/ui + Tailwind implementation | ui-styling |
+| Design tokens / component specs | design-system |
+| Brand identity / style guide | brand |
+| Banners & social creatives | banner-design |
+| HTML slide decks | slides |
 | Testing a local web app | webapp-testing (or browser) |
 | Strict TDD discipline | test-driven-development |
 | Vague idea → validated design | brainstorming |
@@ -273,7 +296,8 @@ claude plugin install smart@saeed-skills
 
 On-demand download (skills never bloat the project):
 ```bash
-bash skills/smart/scripts/fetch-skill.sh --list             # what is available
-bash skills/smart/scripts/fetch-skill.sh sparc-methodology  # install just this one
-bash skills/smart/scripts/fetch-skill.sh --installed        # what is installed
+bash skills/smart/skills/smart/scripts/fetch-skill.sh --list             # what is available
+bash skills/smart/skills/smart/scripts/fetch-skill.sh sparc-methodology  # install just this one
+bash skills/smart/skills/smart/scripts/fetch-skill.sh ui-ux-pro-max      # UI/UX design intelligence
+bash skills/smart/skills/smart/scripts/fetch-skill.sh --installed        # what is installed
 ```

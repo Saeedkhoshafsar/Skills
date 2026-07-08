@@ -6,7 +6,7 @@ description: >
   13-layer checklist, and produces docs/PLAN.md with atomic tasks + acceptance
   criteria + an executable verify command per task. Use when the project is
   empty or the user asks for a plan / roadmap / "پلن".
-tools: Read, Glob, Grep, Bash, Write
+allowed-tools: Read, Glob, Grep, Bash, Write
 ---
 
 # Project Planner

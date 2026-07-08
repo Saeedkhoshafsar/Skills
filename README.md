@@ -2,7 +2,7 @@
 
 > The user activates only **SMART**; SMART selects the other skills by project phase **and by capability need** and installs them **on-demand from GitHub** — no skill wastes project space.
 >
-> **79 installable skills** across **5 sources**: 7 local + Anthropic's official skills (pdf/docx/xlsx/pptx, frontend-design, webapp-testing, skill-creator, mcp-builder…) + obra/superpowers engineering-process skills (TDD, brainstorming…) + ruflo + claude-plugins-official plugin-dev skills.
+> **86 installable skills** across **6 sources**: 7 local + Anthropic's official skills (pdf/docx/xlsx/pptx, frontend-design, webapp-testing, skill-creator, mcp-builder…) + obra/superpowers engineering-process skills (TDD, brainstorming…) + ruflo + claude-plugins-official plugin-dev skills + nextlevelbuilder/ui-ux-pro-max UI/UX design intelligence (67+ styles, 161 palettes, 57 font pairings…).
 
 ## Repo Map
 
@@ -10,14 +10,18 @@
 Skills/
 ├── .claude-plugin/
 │   └── marketplace.json      # plugin catalog (install via /plugin in Claude Code)
+├── LICENSE                   # MIT
+├── CHANGELOG.md              # version history (bump versions here + marketplace.json)
 ├── README.md                 # this file
 ├── CLAUDE.md                 # agent entry point (read this first if you are an AI agent)
-├── SKILLS_CATALOG.md         # verified catalog of 40 external skills (SMART's decision source)
-└── skills/                   # each skill = one plugin (SKILL.md + .claude-plugin/plugin.json)
-    ├── smart/                # MOTHER SKILL (skill manager)
-    │   ├── SKILL.md          #   cycle: Sense -> Diagnose -> Select -> Act -> Report
-    │   └── scripts/
-    │       └── fetch-skill.sh#   single-skill download via sparse-checkout (tested)
+├── SKILLS_CATALOG.md         # verified catalog of 86 skills across 6 sources (SMART's decision source)
+└── skills/                   # each plugin uses the standard Claude Code layout:
+    ├── smart/                #   <plugin>/.claude-plugin/plugin.json + <plugin>/skills/<skill>/SKILL.md
+    │   ├── .claude-plugin/plugin.json
+    │   └── skills/smart/
+    │       ├── SKILL.md      #   cycle: Sense -> Diagnose -> Select -> Act -> Report
+    │       └── scripts/
+    │           └── fetch-skill.sh  # single-skill download via sparse-checkout (tested)
     ├── project-planner/      # planner (interview + 13 layers + atomic PLAN.md)
     ├── project-memory/       # project memory (STATE.md — disconnect/amnesia-proof)
     ├── step-pilot/           # gated step-by-step execution (test + verify per step)
@@ -25,6 +29,8 @@ Skills/
     ├── debug-detective/      # systematic debugging (reproduce -> root cause -> fix -> regression)
     └── security-check/       # pre-release security audit (secrets, deps, auth, ...)
 ```
+
+> **Prerequisites for on-demand fetching:** `git` and `curl` (the script checks and tells you if they are missing). On Windows use Git Bash. Some fetched skills (e.g. `ui-ux-pro-max`) additionally need Python 3 for their own scripts.
 
 ## Install on Claude Code (primary path — plugin marketplace)
 
@@ -63,8 +69,8 @@ claude plugin marketplace update saeed-skills && claude plugin update smart@saee
 mkdir -p .claude/skills
 git clone --depth 1 --filter=blob:none --sparse \
   https://github.com/Saeedkhoshafsar/Skills.git /tmp/sk
-git -C /tmp/sk sparse-checkout set skills/smart
-cp -r /tmp/sk/skills/smart .claude/skills/ && rm -rf /tmp/sk
+git -C /tmp/sk sparse-checkout set skills/smart/skills/smart
+cp -r /tmp/sk/skills/smart/skills/smart .claude/skills/ && rm -rf /tmp/sk
 
 # 2. Tell the agent: "activate the smart skill"
 #    It detects and installs everything else by itself.
@@ -76,21 +82,22 @@ cp -r /tmp/sk/skills/smart .claude/skills/ && rm -rf /tmp/sk
 |---|---|---|
 | Empty project | `project-planner` | interview + PLAN.md; `brainstorming` first if the idea is vague |
 | Plan ready | `project-memory` + `step-pilot` | memory + gated steps |
-| Mid-development | `sparc-methodology` + `verification-quality` (from GitHub) | TDD? → `test-driven-development`; UI? → `frontend-design`; recurring bug? → `debug-detective` |
+| Mid-development | `sparc-methodology` + `verification-quality` (from GitHub) | TDD? → `test-driven-development`; UI? → `ui-ux-pro-max` / `frontend-design`; recurring bug? → `debug-detective` |
 | Ready to release | `security-check` (GATE) + `github-release-management` + `hooks-automation` | security gate is mandatory |
 | Maintenance | `github-project-management` | issues, boards |
 
-**Capability triggers (any phase):** the task itself can demand a skill regardless of phase — PDF/Word/Excel/PowerPoint output → `pdf`/`docx`/`xlsx`/`pptx`, web-app testing → `webapp-testing`, building a skill → `skill-creator`, building an MCP server → `mcp-builder`, Claude Code hooks/commands/plugins → the `plugin-dev` suite. Full index in [`SKILLS_CATALOG.md`](SKILLS_CATALOG.md).
+**Capability triggers (any phase):** the task itself can demand a skill regardless of phase — PDF/Word/Excel/PowerPoint output → `pdf`/`docx`/`xlsx`/`pptx`, full design system → `ui-ux-pro-max`, web-app testing → `webapp-testing`, building a skill → `skill-creator`, building an MCP server → `mcp-builder`, Claude Code hooks/commands/plugins → the `plugin-dev` suite. Full index in [`SKILLS_CATALOG.md`](SKILLS_CATALOG.md).
 
 ## Skill Sources (what fetch-skill.sh pulls from)
 
 | # | Source | Count | Content |
 |---|---|---|---|
-| 1 | this repo, `skills/` | 7 | smart, planner, memory, step-pilot, code-review, debug-detective, security-check |
+| 1 | this repo, `skills/*/skills/*` | 7 | smart, planner, memory, step-pilot, code-review, debug-detective, security-check |
 | 2 | `anthropics/skills` → `skills/` | 17 | pdf, docx, xlsx, pptx, doc-coauthoring, frontend-design, webapp-testing, skill-creator, mcp-builder, claude-api, canvas-design, theme-factory, … |
-| 3 | `obra/superpowers` → `skills/` | 13 | test-driven-development, brainstorming, writing-plans, git-worktrees, parallel agents, … |
+| 3 | `obra/superpowers` → `skills/` | 13 | test-driven-development, brainstorming, writing-plans, git-worktrees, parallel agents, … (`using-superpowers` is blocked) |
 | 4 | `Saeedkhoshafsar/ruflo` → `.claude/skills` | 39 | memory, GitHub, swarm, quality, … (14 BLACK-tier internals are blocked) |
 | 5 | `Saeedkhoshafsar/claude-plugins-official` → `plugins/*/skills` | 17 | claude-automation-recommender, playground, claude-md-improver, plugin-dev suite, mcp-server-dev suite, … |
+| 6 | `nextlevelbuilder/ui-ux-pro-max-skill` → `.claude/skills` | 7 | ui-ux-pro-max (67+ styles / 161 palettes / 57 font pairings / design-system generator), ui-styling, design-system, brand, banner-design, slides, design |
 
 Priority: first source that has the skill wins — duplicates (skill-creator vs skill-builder, TDD variants, …) are resolved in the catalog's duplicate-resolution table.
 
@@ -110,5 +117,6 @@ claude plugin update smart@saeed-skills         # 2. pull the new plugin version
 Skills fetched on-demand into `.claude/skills/` are also pinned snapshots — refresh any of them with:
 
 ```bash
-bash skills/smart/scripts/fetch-skill.sh --update <skill-name>
+bash skills/smart/skills/smart/scripts/fetch-skill.sh --update <skill-name>
 ```
+(`--update` re-downloads from the skill's ORIGINAL source, recorded in `.claude/skills/.installed.log`.)

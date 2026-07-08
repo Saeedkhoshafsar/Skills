@@ -6,7 +6,7 @@ description: >
   thrashing in error loops. Use when a bug appears, a test keeps failing,
   step-pilot hits 3 consecutive red verifies, or the user says
   "bug" / "error" / "debug" / "باگ" / "ارور" / "درست نمیشه".
-tools: Read, Grep, Glob, Bash, Edit, Write
+allowed-tools: Read, Grep, Glob, Bash, Edit, Write
 ---
 
 # Debug Detective

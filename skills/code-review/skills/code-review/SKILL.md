@@ -6,7 +6,7 @@ description: >
   plan conformance (Files/Accept from PLAN.md). Outputs a verdict with
   prioritized findings. Use at the end of a phase, before merging a branch,
   or when the user says "review" / "بازبینی".
-tools: Read, Grep, Glob, Bash
+allowed-tools: Read, Grep, Glob, Bash
 ---
 
 # Code Review (local, no GitHub required)

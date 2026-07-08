@@ -5,7 +5,7 @@ description: >
   runs each as implement -> test -> verify -> record in STATE.md -> commit.
   No step starts before the previous one passes its gate. Use when executing
   tasks from PLAN.md or when the user says "continue" / "ادامه بده".
-tools: Read, Write, Edit, Bash, Glob, Grep
+allowed-tools: Read, Write, Edit, Bash, Glob, Grep
 ---
 
 # Step Pilot — gated step-by-step execution
