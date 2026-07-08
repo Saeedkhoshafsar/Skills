@@ -1,7 +1,14 @@
 {
   "name": "project-planner",
   "description": "Professional project planning: user interview, S/M/L sizing, 13-layer checklist, atomic PLAN.md with acceptance criteria and verify commands.",
-  "version": "1.0.0",
-  "author": { "name": "Saeedkhoshafsar" },
-  "keywords": ["planning", "roadmap", "interview"]
+  "version": "1.0.1",
+  "author": {
+    "name": "Saeedkhoshafsar"
+  },
+  "keywords": [
+    "planning",
+    "roadmap",
+    "interview"
+  ],
+  "license": "MIT"
 }

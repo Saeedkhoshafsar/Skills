@@ -6,7 +6,7 @@ description: >
   exactly where the last one stopped after any disconnect. Use at the start of
   every session, after every completed task, after every error, and before
   every disconnect-prone long operation.
-tools: Read, Write, Edit, Bash
+allowed-tools: Read, Write, Edit, Bash
 ---
 
 # Project Memory (agent continuity)

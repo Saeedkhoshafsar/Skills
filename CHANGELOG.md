@@ -1,0 +1,49 @@
+# Changelog
+
+All notable changes to this marketplace are documented here.
+Versioning: bump plugin versions in `.claude-plugin/marketplace.json` and each
+plugin's `plugin.json` — `claude plugin update` only detects updates through a
+version bump in `marketplace.json`.
+
+## [1.3.0] - 2026-07-08
+
+### Added
+- **Source #6 — `nextlevelbuilder/ui-ux-pro-max-skill`** (7 skills): `ui-ux-pro-max`
+  (67+ UI styles, 161 palettes, 57 font pairings, design-system generator),
+  `ui-styling`, `design-system`, `brand`, `banner-design`, `slides`, `design`.
+  New Category 12 in the catalog + capability triggers in SMART.
+- **Supply-chain gate** in SMART: mandatory 30-second review of every externally
+  fetched skill's SKILL.md and scripts before use.
+- `LICENSE` (MIT), `CHANGELOG.md`, GitHub Actions CI (`ci/github-workflow-validate.yml` — copy to `.github/workflows/validate.yml` to activate:
+  JSON validity, bash syntax, plugin structure, frontmatter, marketplace consistency).
+- `fetch-skill.sh` hardening: dependency check (git/curl), heredoc usage text,
+  branch fallback to default branch, `--update` re-fetches from the ORIGINAL
+  recorded source (`.installed.log`), auto-adds `.claude/skills/` to `.gitignore`.
+
+### Changed
+- **BREAKING (layout): all 7 plugins restructured to the standard Claude Code
+  plugin layout** — `skills/<plugin>/skills/<skill>/SKILL.md` (previously
+  SKILL.md sat at the plugin root and would not load when installed via
+  `claude plugin install`).
+- SMART's SKILL.md now uses `${CLAUDE_PLUGIN_ROOT}` for script paths (relative
+  paths broke when installed as a plugin).
+- Frontmatter `tools:` → `allowed-tools:` in all 7 skills (spec-compliant).
+- Catalog: `using-superpowers` documented as BLACK-tier (was blocked in the
+  script but missing from the catalog); categories renumbered 1–13 with the
+  BLACK-tier ruflo internals last; counts updated to 86 installable / 6 sources.
+- Version bumps: marketplace 1.3.0, smart 1.2.0, all other plugins 1.0.1.
+
+## [1.2.0] - 2026-07-08
+
+- SMART goes multi-source: 79 installable skills from 5 sources, free-hand
+  capability selection, nested-path alias map, BLACK-tier blacklist.
+
+## [1.1.0] - 2026-07-08
+
+- Agent-optimized English rewrite of all skills, new `code-review` skill, `CLAUDE.md`.
+- Claude Code plugin marketplace + `debug-detective` & `security-check` skills.
+
+## [1.0.0] - 2026-07-08
+
+- Initial SMART skill-manager system: smart, project-planner, project-memory,
+  step-pilot + verified catalog.

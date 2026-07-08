@@ -6,7 +6,7 @@ description: >
   defaults — with a prioritized fix list. Use before every deploy/release,
   after adding auth or payments, when handling user data, or when the user
   says "security" / "audit" / "امنیت".
-tools: Read, Grep, Glob, Bash
+allowed-tools: Read, Grep, Glob, Bash
 ---
 
 # Security Check

@@ -1,7 +1,14 @@
 {
   "name": "security-check",
   "description": "Pre-release security audit: leaked secrets, dependency vulnerabilities, input validation, authz, safe defaults — prioritized fix list.",
-  "version": "1.0.0",
-  "author": { "name": "Saeedkhoshafsar" },
-  "keywords": ["security", "audit", "secrets"]
+  "version": "1.0.1",
+  "author": {
+    "name": "Saeedkhoshafsar"
+  },
+  "keywords": [
+    "security",
+    "audit",
+    "secrets"
+  ],
+  "license": "MIT"
 }

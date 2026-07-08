@@ -5,15 +5,15 @@
     "url": "https://github.com/Saeedkhoshafsar"
   },
   "metadata": {
-    "description": "SMART skill-manager ecosystem: phase-aware skill orchestration across 5 skill sources (79 installable skills incl. Anthropic official + obra/superpowers), atomic planning, persistent project memory, step-by-step execution, local code review, systematic debugging, and security auditing.",
-    "version": "1.2.0"
+    "description": "SMART skill-manager ecosystem: phase-aware skill orchestration across 6 skill sources (86 installable skills incl. Anthropic official + obra/superpowers + ui-ux-pro-max design intelligence), atomic planning, persistent project memory, step-by-step execution, local code review, systematic debugging, and security auditing.",
+    "version": "1.3.0"
   },
   "plugins": [
     {
       "name": "smart",
       "source": "./skills/smart",
-      "description": "Mother skill / skill manager: senses project state, detects the current phase AND the task's capability needs, then installs only the skills the moment needs — on-demand from 5 GitHub sources (this repo, anthropics/skills, obra/superpowers, ruflo, claude-plugins-official). Activate this one — it decides the rest.",
-      "version": "1.1.0",
+      "description": "Mother skill / skill manager: senses project state, detects the current phase AND the task's capability needs, then installs only the skills the moment needs — on-demand from 6 GitHub sources (this repo, anthropics/skills, obra/superpowers, ruflo, claude-plugins-official, nextlevelbuilder/ui-ux-pro-max-skill). Activate this one — it decides the rest.",
+      "version": "1.2.0",
       "author": { "name": "Saeedkhoshafsar" },
       "keywords": ["skill-manager", "orchestration", "phase-detection"],
       "category": "workflow"
@@ -22,7 +22,7 @@
       "name": "project-planner",
       "source": "./skills/project-planner",
       "description": "Professional project planning from zero: targeted user interview, project-size assessment (S/M/L), 13-layer checklist, and an atomic PLAN.md with acceptance criteria + verify commands per task.",
-      "version": "1.0.0",
+      "version": "1.0.1",
       "author": { "name": "Saeedkhoshafsar" },
       "keywords": ["planning", "roadmap", "interview"],
       "category": "planning"
@@ -31,7 +31,7 @@
       "name": "project-memory",
       "source": "./skills/project-memory",
       "description": "Zero-dependency persistent project memory: docs/STATE.md holds the current task, errors, bugs, decisions, and unfinished work so any agent resumes exactly where the last one stopped.",
-      "version": "1.0.0",
+      "version": "1.0.1",
       "author": { "name": "Saeedkhoshafsar" },
       "keywords": ["memory", "state", "resume", "context"],
       "category": "workflow"
@@ -40,7 +40,7 @@
       "name": "step-pilot",
       "source": "./skills/step-pilot",
       "description": "Step-by-step plan executor: implement -> test -> verify -> record in STATE.md -> commit. No step starts before the previous one passes its gate.",
-      "version": "1.0.0",
+      "version": "1.0.1",
       "author": { "name": "Saeedkhoshafsar" },
       "keywords": ["execution", "tdd", "verify", "gate"],
       "category": "workflow"
@@ -49,7 +49,7 @@
       "name": "code-review",
       "source": "./skills/code-review",
       "description": "Local diff review before merge/release — no GitHub required. Five axes: correctness, readability, security smells, tests, plan conformance. Verdict with severity-sorted findings.",
-      "version": "1.0.0",
+      "version": "1.0.1",
       "author": { "name": "Saeedkhoshafsar" },
       "keywords": ["code-review", "quality", "diff"],
       "category": "quality"
@@ -58,7 +58,7 @@
       "name": "debug-detective",
       "source": "./skills/debug-detective",
       "description": "Systematic debugging: reproduce -> isolate -> hypothesize -> minimal fix -> regression test -> record the root cause in STATE.md. Stops agents from thrashing in error loops.",
-      "version": "1.0.0",
+      "version": "1.0.1",
       "author": { "name": "Saeedkhoshafsar" },
       "keywords": ["debugging", "root-cause", "errors"],
       "category": "quality"
@@ -67,7 +67,7 @@
       "name": "security-check",
       "source": "./skills/security-check",
       "description": "Pre-release security audit: leaked secrets, dependency vulnerabilities, input validation, authz/RLS, and safe defaults — with a prioritized fix list. Run before every deploy.",
-      "version": "1.0.0",
+      "version": "1.0.1",
       "author": { "name": "Saeedkhoshafsar" },
       "keywords": ["security", "audit", "secrets", "owasp"],
       "category": "quality"

@@ -1,0 +1,61 @@
+name: validate
+
+on:
+  push:
+    branches: [main, genspark_ai_developer]
+  pull_request:
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Validate all JSON files
+        run: |
+          for f in $(find . -name '*.json' -not -path './.git/*'); do
+            jq -e . "$f" > /dev/null || { echo "INVALID JSON: $f"; exit 1; }
+            echo "OK: $f"
+          done
+
+      - name: Bash syntax check
+        run: |
+          for f in $(find skills -name '*.sh'); do
+            bash -n "$f" || { echo "SYNTAX ERROR: $f"; exit 1; }
+            echo "OK: $f"
+          done
+
+      - name: ShellCheck
+        run: |
+          sudo apt-get install -y shellcheck > /dev/null
+          find skills -name '*.sh' -exec shellcheck -S warning {} +
+
+      - name: Plugin structure (standard layout)
+        run: |
+          for plugin in skills/*/; do
+            name=$(basename "$plugin")
+            [ -f "$plugin/.claude-plugin/plugin.json" ] || { echo "MISSING plugin.json: $name"; exit 1; }
+            [ -f "$plugin/skills/$name/SKILL.md" ] || { echo "MISSING skills/$name/SKILL.md in plugin: $name"; exit 1; }
+            echo "OK: $name"
+          done
+
+      - name: SKILL.md frontmatter (name + description)
+        run: |
+          for f in skills/*/skills/*/SKILL.md; do
+            fm=$(awk '/^---$/{n++; next} n==1{print}' "$f")
+            echo "$fm" | grep -q '^name:' || { echo "MISSING name: $f"; exit 1; }
+            echo "$fm" | grep -q '^description:' || { echo "MISSING description: $f"; exit 1; }
+            echo "OK: $f"
+          done
+
+      - name: Marketplace consistency (every entry has a directory)
+        run: |
+          for name in $(jq -r '.plugins[].name' .claude-plugin/marketplace.json); do
+            [ -d "skills/$name" ] || { echo "MARKETPLACE ENTRY WITHOUT DIRECTORY: $name"; exit 1; }
+            echo "OK: $name"
+          done
+
+# NOTE: GitHub blocks bot tokens without the `workflows` permission from
+# pushing files under .github/workflows/. To enable CI, copy this file
+# manually in the GitHub web UI (or with a personal token):
+#   .github/workflows/validate.yml
