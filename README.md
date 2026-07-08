@@ -1,6 +1,8 @@
 # Skills — SMART Skill-Manager Ecosystem
 
-> The user activates only **SMART**; SMART selects the other skills by project phase and installs them **on-demand from GitHub** — no skill wastes project space.
+> The user activates only **SMART**; SMART selects the other skills by project phase **and by capability need** and installs them **on-demand from GitHub** — no skill wastes project space.
+>
+> **79 installable skills** across **5 sources**: 7 local + Anthropic's official skills (pdf/docx/xlsx/pptx, frontend-design, webapp-testing, skill-creator, mcp-builder…) + obra/superpowers engineering-process skills (TDD, brainstorming…) + ruflo + claude-plugins-official plugin-dev skills.
 
 ## Repo Map
 
@@ -72,18 +74,41 @@ cp -r /tmp/sk/skills/smart .claude/skills/ && rm -rf /tmp/sk
 
 | Project state | SMART activates | Notes |
 |---|---|---|
-| Empty project | `project-planner` | interview + PLAN.md |
+| Empty project | `project-planner` | interview + PLAN.md; `brainstorming` first if the idea is vague |
 | Plan ready | `project-memory` + `step-pilot` | memory + gated steps |
-| Mid-development | `sparc-methodology` + `verification-quality` (from GitHub) | recurring bug/error? → `debug-detective` |
+| Mid-development | `sparc-methodology` + `verification-quality` (from GitHub) | TDD? → `test-driven-development`; UI? → `frontend-design`; recurring bug? → `debug-detective` |
 | Ready to release | `security-check` (GATE) + `github-release-management` + `hooks-automation` | security gate is mandatory |
 | Maintenance | `github-project-management` | issues, boards |
 
+**Capability triggers (any phase):** the task itself can demand a skill regardless of phase — PDF/Word/Excel/PowerPoint output → `pdf`/`docx`/`xlsx`/`pptx`, web-app testing → `webapp-testing`, building a skill → `skill-creator`, building an MCP server → `mcp-builder`, Claude Code hooks/commands/plugins → the `plugin-dev` suite. Full index in [`SKILLS_CATALOG.md`](SKILLS_CATALOG.md).
+
 ## Skill Sources (what fetch-skill.sh pulls from)
 
-| Source | Count | Content |
-|---|---|---|
-| this repo, `skills/` | 7 | smart, planner, memory, step-pilot, code-review, debug-detective, security-check |
-| `Saeedkhoshafsar/ruflo` → `.claude/skills` | 39 | memory, GitHub, swarm, quality, ... (see the catalog) |
-| `Saeedkhoshafsar/claude-plugins-official` | 1 | claude-automation-recommender |
+| # | Source | Count | Content |
+|---|---|---|---|
+| 1 | this repo, `skills/` | 7 | smart, planner, memory, step-pilot, code-review, debug-detective, security-check |
+| 2 | `anthropics/skills` → `skills/` | 17 | pdf, docx, xlsx, pptx, doc-coauthoring, frontend-design, webapp-testing, skill-creator, mcp-builder, claude-api, canvas-design, theme-factory, … |
+| 3 | `obra/superpowers` → `skills/` | 13 | test-driven-development, brainstorming, writing-plans, git-worktrees, parallel agents, … |
+| 4 | `Saeedkhoshafsar/ruflo` → `.claude/skills` | 39 | memory, GitHub, swarm, quality, … (14 BLACK-tier internals are blocked) |
+| 5 | `Saeedkhoshafsar/claude-plugins-official` → `plugins/*/skills` | 17 | claude-automation-recommender, playground, claude-md-improver, plugin-dev suite, mcp-server-dev suite, … |
 
-Details and tiers for all 40 external skills → [`SKILLS_CATALOG.md`](SKILLS_CATALOG.md)
+Priority: first source that has the skill wins — duplicates (skill-creator vs skill-builder, TDD variants, …) are resolved in the catalog's duplicate-resolution table.
+
+Details and tiers for all skills → [`SKILLS_CATALOG.md`](SKILLS_CATALOG.md)
+
+## Updating (marketplace installs)
+
+Plugins installed from a marketplace are **pinned copies** — they do NOT auto-update.
+When this repo changes, update your local install in two steps:
+
+```bash
+claude plugin marketplace update saeed-skills   # 1. refresh the marketplace catalog
+claude plugin update smart@saeed-skills         # 2. pull the new plugin version
+# (or /plugin → manage → update inside a session)
+```
+
+Skills fetched on-demand into `.claude/skills/` are also pinned snapshots — refresh any of them with:
+
+```bash
+bash skills/smart/scripts/fetch-skill.sh --update <skill-name>
+```

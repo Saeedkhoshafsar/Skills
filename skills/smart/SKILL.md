@@ -17,6 +17,12 @@ No skill lives in the project up front — skills are downloaded the moment they
 
 **Golden rule:** Install the MINIMUM number of skills that moves the work forward. Never hoard.
 
+**Free hand:** SMART selects across ALL FIVE sources in `SKILLS_CATALOG.md`
+(this repo, anthropics/skills, obra/superpowers, ruflo, claude-plugins-official)
+by CAPABILITY NEED, not by source. When two sources cover the same capability,
+follow the duplicate-resolution table in the catalog (e.g. skill-creator beats
+skill-builder/writing-skills; local debug-detective beats systematic-debugging).
+
 ## Execution Cycle (run these 5 steps in order, every invocation)
 
 ### Step 1 — Sense (gather facts)
@@ -39,6 +45,9 @@ Match the facts against the Phase Table below. Pick exactly one phase.
 ### Step 3 — Select (choose skills)
 
 - Take the phase's skill list from the Phase Table and `SKILLS_CATALOG.md`.
+- ALSO scan the task itself for capability needs beyond the phase (see the
+  Capability Triggers table below and the "Capability-need quick index" in the
+  catalog) — e.g. "produce a PDF report" in any phase → `pdf`.
 - Apply tier rules: GREEN = allowed by default | YELLOW = only with a stated reason | RED = large projects only | BLACK = never (ruflo-internal).
 - Install at most **3 new skills** per invocation.
 
@@ -59,11 +68,11 @@ Emit the status report using the template at the bottom, including:
 
 | # | Phase | Detection signal | Skills for this phase (priority order) |
 |---|---|---|---|
-| 0 | Discovery — empty project | No files beyond git/README | `project-planner` (local) — interview the user, produce PLAN.md |
+| 0 | Discovery — empty project | No files beyond git/README | `project-planner` (local) — interview the user, produce PLAN.md; `brainstorming` first if the idea is still vague |
 | 1 | Setup — plan exists, no code | PLAN.md exists, no src | `project-memory` (local) + `step-pilot` (local); `agentdb-memory-patterns` only if needed |
-| 2 | Development — coding | src exists, open task in STATE.md | `sparc-methodology` + `verification-quality`; `pair-programming` if TDD |
-| 3 | Stabilization — code done, testing/quality | Phase tasks done, not released | `code-review` (local) + `github-code-review` (if PRs); `performance-analysis` if slow; `browser` if UI |
-| 4 | Release — ready to deploy | Everything green | `security-check` (local — MANDATORY gate) + `github-release-management` + `github-workflow-automation` + `hooks-automation` |
+| 2 | Development — coding | src exists, open task in STATE.md | `sparc-methodology` + `verification-quality`; `test-driven-development` if TDD; `frontend-design` if building UI |
+| 3 | Stabilization — code done, testing/quality | Phase tasks done, not released | `code-review` (local) + `github-code-review` (if PRs); `webapp-testing` if web UI; `performance-analysis` if slow |
+| 4 | Release — ready to deploy | Everything green | `security-check` (local — MANDATORY gate) + `github-release-management` + `github-workflow-automation` + `hooks-automation`; `finishing-a-development-branch` for branch cleanup |
 | 5 | Maintenance — post-release | Release exists, open issues | `github-project-management`; `github-multi-repo` if multi-repo |
 
 **Always active from Phase 1 onward:**
@@ -77,18 +86,38 @@ Emit the status report using the template at the bottom, including:
 | `debug-detective` (local) | A bug is reported, a test keeps failing, or step-pilot hits 3 consecutive red verifies |
 | `security-check` (local) | Before any deploy/release; after adding auth, payments, or user data |
 
-**RED-tier only if:** project becomes multi-agent/very large → `swarm-orchestration`; RAG needed → `agentdb-vector-search`.
-**BLACK-tier (`v3-*`, `flow-nexus-*`, `worker-benchmarks`): never — they are ruflo internals.**
+**Capability Triggers (any phase — the task itself demands them):**
+
+| The task involves… | Fetch | Source |
+|---|---|---|
+| PDF / Word / Excel / PowerPoint files | `pdf` / `docx` / `xlsx` / `pptx` | anthropics |
+| Writing specs, proposals, decision docs | `doc-coauthoring` | anthropics |
+| Distinctive UI / visual design | `frontend-design` (+ `theme-factory`) | anthropics |
+| Testing a local web app (Playwright) | `webapp-testing` | anthropics |
+| Strict TDD flow requested | `test-driven-development` | obra |
+| Vague idea, no clear requirements yet | `brainstorming` (before project-planner) | obra |
+| Creating/optimizing a skill | `skill-creator` | anthropics |
+| Building an MCP server | `mcp-builder` | anthropics |
+| Claude Code hooks/commands/subagents/plugins | `hook-development` / `command-development` / `agent-development` / `plugin-structure` | claude-plugins-official |
+| CLAUDE.md quality issues | `claude-md-improver` | claude-plugins-official |
+| Interactive visual explorer / playground | `playground` | claude-plugins-official |
+| Anthropic API integration in the product | `claude-api` | anthropics |
+
+**RED-tier only if:** project becomes multi-agent/very large → `swarm-orchestration` or `dispatching-parallel-agents`; RAG needed → `agentdb-vector-search`.
+**BLACK-tier (`v3-*`, `flow-nexus-*`, `dual-mode`, `worker-benchmarks`): never — they are ruflo internals. fetch-skill.sh refuses them.**
 
 ## Installing Skills On-Demand
 
 Skills are NOT stored in the project — they are downloaded when needed:
 
 ```bash
-bash <path-to-smart>/scripts/fetch-skill.sh --list          # list skills available in sources
-bash <path-to-smart>/scripts/fetch-skill.sh <skill-name>    # install one skill (sparse-checkout, not the whole repo)
-bash <path-to-smart>/scripts/fetch-skill.sh --installed     # list currently installed skills
+bash <path-to-smart>/scripts/fetch-skill.sh --list            # list skills available in all 5 sources
+bash <path-to-smart>/scripts/fetch-skill.sh <skill-name>      # install one skill (sparse-checkout, not the whole repo)
+bash <path-to-smart>/scripts/fetch-skill.sh --installed       # list currently installed skills
+bash <path-to-smart>/scripts/fetch-skill.sh --update <skill>  # refresh an installed skill to the latest version
 ```
+
+Source priority when the same name exists twice: this repo → anthropics/skills → obra/superpowers → ruflo → claude-plugins-official. Nested claude-plugins-official skills (playground, claude-md-improver, plugin-dev suite, mcp-server-dev suite, …) are resolved through the alias map inside the script — just use the skill name.
 
 Local skills (project-planner, project-memory, step-pilot, code-review, debug-detective, security-check) live next to SMART in this repo:
 

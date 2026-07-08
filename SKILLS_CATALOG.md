@@ -1,14 +1,28 @@
 # SKILLS_CATALOG — Verified Skill Catalog (SMART's decision source)
 
 > Input for the **SMART** mother skill. Each skill: name + one-line purpose + tier.
-> Verified complete on 2026-07-08: both source repos re-cloned and diffed folder-by-folder — **40/40 skills, nothing missing, nothing extra.**
+> Verified on 2026-07-08: all five sources cloned/listed and checked skill-by-skill — **79 installable skills** (7 local + 72 external; the 14 BLACK-tier ruflo internals are listed but never installed), duplicates resolved by source priority.
 
-**Sources:**
-| Source | Count | Path |
-|---|---|---|
-| `Saeedkhoshafsar/Skills` (this repo) | 7 local | `skills/` |
-| `Saeedkhoshafsar/ruflo` | 39 | `.claude/skills/` |
-| `Saeedkhoshafsar/claude-plugins-official` | 1 | `plugins/claude-code-setup/skills/` |
+**Sources (priority order — first source that has a skill wins):**
+| # | Source | Count | Path | Content |
+|---|---|---|---|---|
+| 1 | `Saeedkhoshafsar/Skills` (this repo) | 7 local | `skills/` | SMART ecosystem |
+| 2 | `anthropics/skills` (official Anthropic) | 17 | `skills/` | documents, design, testing, MCP |
+| 3 | `obra/superpowers` | 13 | `skills/` | engineering-process craft skills |
+| 4 | `Saeedkhoshafsar/ruflo` | 39 | `.claude/skills/` | memory, GitHub, swarm, quality |
+| 5 | `Saeedkhoshafsar/claude-plugins-official` | 17 | `plugins/*/skills/` | Claude Code plugin dev + tools |
+
+**Duplicate resolution (same capability in several sources):**
+| Capability | Winner | Losers (do NOT fetch) | Why |
+|---|---|---|---|
+| Skill authoring | `skill-creator` (anthropics) | `skill-builder` (ruflo), `writing-skills` (obra), `skill-development` (cpo) | official, evals + scripts included |
+| Debugging method | `debug-detective` (local) | `systematic-debugging` (obra) | local, integrated with STATE.md |
+| TDD | `test-driven-development` (obra) | `pair-programming` TDD-mode (ruflo) | focused, includes anti-patterns file |
+| Frontend design | `frontend-design` (anthropics ≡ cpo, identical) | — | fetch-skill resolves to anthropics |
+| Planning | `project-planner` (local) | `writing-plans` (obra) | local interview+13-layer flow; obra's is a good supplement for plan FORMAT only |
+| Plan execution | `step-pilot` (local) | `executing-plans` (obra) | local, gated + STATE.md |
+| Verify-before-done | `step-pilot` GATE (local) | `verification-before-completion` (obra) | already enforced locally |
+| Code review (local diff) | `code-review` (local) | `receiving-code-review` / `requesting-code-review` (obra) | obra pair is for human-loop etiquette; optional |
 
 **Tier legend (selection rules for SMART):**
 
@@ -79,6 +93,80 @@
 | browser | Browser automation: UI testing, screenshots, forms, web browsing | GREEN |
 | worker-integration | Smart task distribution across workers + performance tracking | YELLOW |
 
+## Category 8 — Documents & Files (anthropics/skills) (5)
+
+| Skill | Purpose (one line) | Tier |
+|---|---|---|
+| pdf | Read/create/merge/split/watermark/fill/OCR PDF files | GREEN |
+| docx | Create and edit Word documents (tracked changes, comments, formatting) | GREEN |
+| xlsx | Create/edit Excel spreadsheets with formulas and charts | GREEN |
+| pptx | Create and edit PowerPoint presentations | GREEN |
+| doc-coauthoring | Structured co-authoring workflow for specs, proposals, decision docs | GREEN |
+
+## Category 9 — Frontend, Design & Web (anthropics/skills) (7)
+
+| Skill | Purpose (one line) | Tier |
+|---|---|---|
+| frontend-design | Distinctive, non-templated UI design direction (palette, type, layout) | GREEN |
+| webapp-testing | Test local web apps with Playwright: verify UI, screenshots, browser logs | GREEN |
+| web-artifacts-builder | Multi-component claude.ai artifacts (React, Tailwind, shadcn/ui) | YELLOW |
+| canvas-design | Visual art/posters/designs as PNG-PDF on a canvas | YELLOW |
+| theme-factory | 10 preset visual themes + on-the-fly theme generation for any artifact | YELLOW |
+| algorithmic-art | Generative/algorithmic art with p5.js (flow fields, particles) | YELLOW |
+| slack-gif-creator | Animated GIFs optimized for Slack | YELLOW |
+
+## Category 10 — Anthropic Platform & Meta (anthropics/skills) (5)
+
+| Skill | Purpose (one line) | Tier |
+|---|---|---|
+| skill-creator | Create/edit/eval/benchmark skills — the official skill-authoring tool | GREEN |
+| mcp-builder | Build MCP servers in Python or Node/TypeScript | YELLOW |
+| claude-api | Integrate the Claude/Anthropic API into apps (agents, tool use, files) | YELLOW |
+| brand-guidelines | Apply Anthropic's official brand style to artifacts | YELLOW |
+| internal-comms | Write status reports, newsletters, FAQs in internal-comms style | YELLOW |
+
+## Category 11 — Engineering Process (obra/superpowers) (13)
+
+| Skill | Purpose (one line) | Tier |
+|---|---|---|
+| test-driven-development | Strict RED-GREEN-REFACTOR TDD + testing anti-patterns reference | GREEN |
+| brainstorming | Socratic idea refinement into validated designs before any plan | GREEN |
+| systematic-debugging | 4-phase root-cause debugging (overlaps local debug-detective — prefer local) | YELLOW |
+| writing-plans | Detailed step plan format for engineers with zero codebase context | YELLOW |
+| executing-plans | Batch plan execution with checkpoints (overlaps local step-pilot — prefer local) | YELLOW |
+| requesting-code-review | Pre-merge review request etiquette + subagent reviewer flow | YELLOW |
+| receiving-code-review | Respond to review feedback with technical rigor, no performative agreement | YELLOW |
+| verification-before-completion | Never claim DONE without fresh verification evidence | YELLOW |
+| finishing-a-development-branch | Merge/PR/cleanup checklist when a branch's work is complete | YELLOW |
+| using-git-worktrees | Parallel work with git worktrees (safe directory selection) | YELLOW |
+| dispatching-parallel-agents | Dispatch parallel subagents for independent problems | RED |
+| subagent-driven-development | Execute a plan via fresh subagents per task + two-stage review | RED |
+| writing-skills | (overlaps skill-creator — prefer skill-creator) | YELLOW |
+
+## Category 12 — Claude Code Plugin/Tooling Dev (claude-plugins-official) (16)
+
+| Skill | Purpose (one line) | Tier |
+|---|---|---|
+| playground | Self-contained interactive HTML explorers (controls + live preview + prompt out) | GREEN |
+| claude-md-improver | Audit and improve CLAUDE.md files against quality templates | GREEN |
+| session-report | Explorable HTML report of Claude Code usage (tokens, cost, subagents) | YELLOW |
+| project-artifact | Tabbed shareable project-status page (claude.ai Artifact tool needed) | YELLOW |
+| math-olympiad | Competition math with adversarial verification (IMO/Putnam) | YELLOW |
+| writing-hookify-rules | Author hookify rules (pattern-watching hooks) | YELLOW |
+| skill-development | Claude Code skill authoring reference (overlaps skill-creator) | YELLOW |
+| plugin-structure | Plugin layout, marketplace.json, manifest reference | YELLOW |
+| plugin-settings | Plugin settings/config patterns | YELLOW |
+| mcp-integration | Bundle MCP servers inside plugins | YELLOW |
+| hook-development | Develop Claude Code hooks (all events, matchers, exit codes) | YELLOW |
+| command-development | Develop slash commands | YELLOW |
+| agent-development | Develop subagents for plugins | YELLOW |
+| build-mcp-server | Design and build production MCP servers | YELLOW |
+| build-mcp-app | Build MCP Apps (UI over MCP) | RED |
+| build-mcpb | Package MCP servers as one-click .mcpb bundles | RED |
+
+> `claude-automation-recommender` from this repo is already listed in Category 2.
+> The repo also ships plugins with no skills (commands/agents/hooks only): code-review, security-guidance, feature-dev, pr-review-toolkit, code-simplifier, ralph-loop, commit-commands, hookify engine, LSP servers, external_plugins (telegram, discord, github MCP...). Those are Claude Code **plugins**, installable via `/plugin`, not fetchable as skills.
+
 ## Category 7 — ruflo-internal — NEVER install (14, all BLACK)
 
 | Skill(s) | What it is |
@@ -108,19 +196,21 @@
 
 | Project layer | Covering skills | Coverage |
 |---|---|---|
-| Frontend | browser (UI testing) | PARTIAL |
-| APIs & Backend Logic | sparc-methodology + pair-programming | GENERIC |
+| Frontend | **frontend-design** + **webapp-testing** + browser + theme-factory | GOOD |
+| APIs & Backend Logic | sparc-methodology + test-driven-development + pair-programming | GOOD |
 | Database & Storage | agentdb-* is AGENT memory only, NOT the product DB! | NONE |
 | Auth & Permissions | security-check (audit only) | PARTIAL |
-| Hosting & Deployment | github-release-management | PARTIAL |
+| Hosting & Deployment | github-release-management + finishing-a-development-branch | PARTIAL |
 | Cloud & Compute | flow-nexus-* (their own service only) | NONE |
-| CI/CD & Version Control | github-workflow-automation + hooks-automation | GOOD |
+| CI/CD & Version Control | github-workflow-automation + hooks-automation + using-git-worktrees | GOOD |
 | Security & RLS | **security-check (local)** | GOOD |
 | Rate Limiting | security-check flags it (audit only) | PARTIAL |
 | Caching & CDN | — | NONE |
 | Load Balancing & Scaling | swarm-* scales AGENTS, not the app! | NONE |
 | Error Tracking & Logs | **debug-detective (local)** + hooks-automation | GOOD |
 | Availability & Recovery | verification-quality (code rollback only) | PARTIAL |
+| Documents & Reports | pdf + docx + xlsx + pptx + doc-coauthoring | GOOD |
+| Skill/Plugin/MCP tooling | skill-creator + plugin-dev suite + mcp-builder | GOOD |
 
 > KEY INSIGHT: most ruflo skills manage the AGENTS themselves, not real product layers.
 > SMART must know this so it never suggests the wrong skill — e.g. never `agentdb-*` for "the project's database".
@@ -150,8 +240,28 @@ Every SMART invocation:
 2. SELECT skills matching phase and tier from this catalog
    - rule: minimum skill count that moves the work forward (anti-greed)
    - GREEN default-allowed | YELLOW with reason | RED big projects only | BLACK never
+   - SMART has FREE HAND across all 5 sources: pick by capability need,
+     not by source. Check the duplicate-resolution table first.
 3. REPORT the skill roadmap: "these 3 now; those 2 after Phase 2"
 ```
+
+### Capability-need quick index (SMART's free-hand lookup)
+
+| The task needs… | Fetch |
+|---|---|
+| PDF / Word / Excel / PowerPoint output | pdf / docx / xlsx / pptx |
+| Writing a spec, proposal, decision doc | doc-coauthoring |
+| Beautiful, non-generic UI | frontend-design (+ theme-factory) |
+| Testing a local web app | webapp-testing (or browser) |
+| Strict TDD discipline | test-driven-development |
+| Vague idea → validated design | brainstorming |
+| Creating/optimizing a skill | skill-creator |
+| Building an MCP server | mcp-builder (or build-mcp-server) |
+| Claude Code hook / command / subagent / plugin | hook-development / command-development / agent-development / plugin-structure |
+| Improving CLAUDE.md quality | claude-md-improver |
+| Interactive visual explorer for a topic | playground |
+| Parallel independent workstreams (big project) | dispatching-parallel-agents / using-git-worktrees |
+| Usage/cost report of Claude Code sessions | session-report |
 
 ## Install Commands
 

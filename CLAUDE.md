@@ -4,14 +4,16 @@ You are working with the **SMART skill-manager ecosystem**. Read this file first
 
 ## What this repo is
 
-A set of 7 local skills plus a verified catalog of 40 external skills. The design:
-the user activates only `smart`; `smart` senses the project phase and installs the
-minimum set of other skills on-demand from GitHub.
+A set of 7 local skills plus a verified catalog of 72 external skills from 4 GitHub
+sources (anthropics/skills, obra/superpowers, ruflo, claude-plugins-official). The design:
+the user activates only `smart`; `smart` senses the project phase AND the task's
+capability needs, then installs the minimum set of other skills on-demand from GitHub.
+SMART has a free hand across all sources — it selects by capability, not by source.
 
 ## Reading order for an agent
 
 1. `skills/smart/SKILL.md` — the orchestrator. Its 5-step cycle (Sense → Diagnose → Select → Act → Report) drives everything.
-2. `SKILLS_CATALOG.md` — the decision source: 40 external skills with tiers (GREEN/YELLOW/RED/BLACK).
+2. `SKILLS_CATALOG.md` — the decision source: 72 external skills with tiers (GREEN/YELLOW/RED/BLACK), a duplicate-resolution table, and a capability-need quick index.
 3. The individual local skills, only when activated.
 
 ## The 7 local skills (one line each)
@@ -32,9 +34,11 @@ minimum set of other skills on-demand from GitHub.
 2. **No plan → no code.** Empty project means `project-planner` first.
 3. **Green Verify or no DONE.** Every task's Verify command must pass before a DONE commit.
 4. **Max 3 new skills per SMART invocation.** Minimum set that moves work forward.
-5. **BLACK-tier skills (`v3-*`, `flow-nexus-*`, `dual-mode`, `worker-benchmarks`) are never installed** — ruflo internals.
+5. **BLACK-tier skills (`v3-*`, `flow-nexus-*`, `dual-mode`, `worker-benchmarks`) are never installed** — ruflo internals. `fetch-skill.sh` refuses them.
 6. **`agentdb-*` is agent memory, never the product database.**
 7. **security-check is a mandatory gate before every release.** A CRITICAL finding blocks the release.
+8. **Duplicates are resolved by the catalog table, not ad hoc.** e.g. skill authoring → `skill-creator` (anthropics), debugging → local `debug-detective`, TDD → `test-driven-development` (obra).
+9. **Capability triggers override phase defaults.** "Produce an Excel report" in any phase → fetch `xlsx` now.
 
 ## Conventions
 
