@@ -5,6 +5,13 @@ Versioning: bump plugin versions in `.claude-plugin/marketplace.json` and each
 plugin's `plugin.json` — `claude plugin update` only detects updates through a
 version bump in `marketplace.json`.
 
+## [Unreleased]
+
+### Added
+- A manually activatable GitHub Actions template for live SMART behavioral evaluation, with secret preflight checks, per-scenario dispatch, configurable generation/judge models, fail threshold, failure logs, and 30-day evidence artifacts.
+- Durable `docs/STATE.md` continuity with exact live-evaluation blockers, owner actions, command packet, and a three-step runway for the next session.
+- A deterministic contract test for the staged workflow's secret usage and evidence retention behavior.
+
 ## [2.3.0] - 2026-07-11
 
 ### Added

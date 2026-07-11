@@ -203,3 +203,13 @@ python3 "$EVALS/run_behavioral_evals.py" \
 ```
 
 The live suite is intentionally not a required pull-request check: external model behavior, credentials, latency, and cost are nondeterministic. CI validates the scenario schema, scoring logic, critical-failure behavior, and all existing unit tests; scheduled or release evaluation runs can preserve the JSON report as evidence.
+
+### Activate the manual GitHub evaluation
+
+A manually dispatchable workflow is staged at `ci/github-workflow-behavioral-eval.yml`. It is not active merely because the template exists. A repository owner or token with GitHub's `workflows` permission must:
+
+1. Add Actions secrets named `SMART_EVAL_API_KEY` and `SMART_EVAL_BASE_URL` under **Settings → Secrets and variables → Actions**.
+2. Copy the template verbatim to `.github/workflows/behavioral-eval.yml` using a workflow-authorized commit or the GitHub web editor.
+3. Open **Actions → behavioral-eval → Run workflow**, start with `scenario=all`, and download the retained `smart-behavioral-eval-<run-id>` artifact.
+
+The workflow never prints secret values. It uploads the evaluator log even on failure and uploads `behavioral-eval.json` when evaluation reaches report generation. Do not schedule it until manual runs establish acceptable model cost, latency, and judge stability. Current progress, blockers, exact owner actions, and the next-session command packet are preserved in [`docs/STATE.md`](docs/STATE.md).
