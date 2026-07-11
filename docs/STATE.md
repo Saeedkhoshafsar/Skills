@@ -8,15 +8,15 @@
 ## Resume packet
 | Field | Current value |
 |---|---|
-| SMART mode / lifecycle phase | STABILIZATION / 3 |
+| SMART mode / lifecycle phase | MAINTENANCE / 5 |
 | Current objective | Make SMART the "super brain": one activation gives a novice expert-team output quality, while orchestration stays lean enough never to slow the real project. |
-| Active task | P3-T9 — cold-start field test of the merged 2.5.0 stack and focused gate hardening from its findings. |
+| Active task | none — v2.5.1 released; awaiting real-world usage feedback or a proven bottleneck. |
 | Exact progress | P3-T8 merged as PR #16: Project Mind network is on `main` at `2.5.0`. P3-T9 executed the planned cold-start field test on a disposable empty repo (idea → node-by-node mind growth → coverage sweep → Vision Lock → plan with `Realizes:` → verified execution → interrupt/resume → sealed release) plus 13 adversarial probes. Confirmed working: pre-lock blocking, brief-edit invalidation, post-verify tree binding, RED rejection, release evidence binding, BLACK-tier refusal, resume packet answering all six memory questions. Three real gaps found and closed: (1) gate JSON was fail-open to hand edits — all three artifacts now carry a domain-separated SHA-256 content seal and `check` rejects any edited field; (2) `vision confirm` accepted an impatient lock while the Brief said NOT READY / STATE recorded Mind-coverage GAPS — confirm now fails closed on those explicit signals; (3) missing evidence paths raised a raw traceback — now a clean `GATE BLOCKED`. Catalog descriptions of planner/memory synced with the Project Mind. 8 new gate regression tests (72 total). Versions: SMART/marketplace `2.5.1`. |
 | Last evidence | `python3 -m pytest tests/ -q` → 72 passed, 127 subtests GREEN after hardening; field-test retest: RED→GREEN flip, task-id swap, command swap, approver swap, premature confirm (NOT READY / GAPS), and missing-file paths all BLOCKED; legitimate confirm→verify→release path GREEN end to end. |
 | Blocker / waiting on | None for implementation. Required PR checks must confirm ShellCheck and repository validation. |
 | Vision Lock | CONFIRMED by repository owner on 2026-07-11 (reaffirmed and extended twice): SMART must be the complete project control brain for professional development teams first, capture the user's intended product inch by inch in an atomic Project Mind network before any planning/code, never accept "start and figure it out later", deliver expert-grade quality by default, and remain lean enough that orchestration never stalls or slows project progress. |
 | Machine gates | Vision: owner-confirmed product direction; Verify: full local deterministic test suite plus required PR checks; Release: N/A for internal orchestration improvement. |
-| Branch / head | `genspark_ai_developer`; based on merged PR #16 (P3-T8, `fab31a9`) with P3-T9 gate hardening in progress. |
+| Branch / head | `main` at `6048cdb` (merged PR #17), tagged `v2.5.1` and published as the latest GitHub Release. |
 | Mind coverage | Applied to this repo implicitly via STATE/BRIEF equivalents; the formal PROJECT-MIND protocol targets user projects. |
 
 ## Epistemic delta
@@ -72,6 +72,7 @@
 ## Meaningful change ledger (newest first)
 | Date / commit | What changed | Why | Evidence | Records affected |
 |---|---|---|---|---|
+| 2026-07-11 / PR #17 + tag `v2.5.1` | Executed the cold-start field test (full lifecycle + 13 adversarial probes), sealed all gate artifacts against hand edits, blocked `vision confirm` on explicit NOT READY / Mind-coverage GAPS signals, made missing-evidence paths fail closed cleanly, synced the catalog, and published `v2.5.1` as the first field-validated GitHub Release. | The Runway required proving real behavior before release; the test found three fail-open gaps that had to close first. | 72 tests + 127 subtests GREEN; both required PR checks GREEN; live retest of every probe BLOCKED/GREEN as required; release published. | smart-gates.py, SMART contract, catalog, tests, manifests, changelog, this STATE. |
 | 2026-07-11 / current branch | Added the atomic Project Mind network protocol, coverage-gated Vision Lock, planner node integration, the "figure it out later" ban, and the professional-teams-first audience contract; released `2.5.0`. | Guarantee SMART's picture equals the user's picture inch by inch, durably recorded, so resume never hits an unanswered question and drift is impossible. | Full test suite GREEN; 10 scenarios valid; JSON and Bash checks GREEN. | SMART, planner, memory, agent contract, tests, scenarios, README, manifests, changelog, this STATE. |
 | 2026-07-11 / current branch | Added the excellence-by-default quality contract (invariant, section, anti-patterns, agent rule), cold-start deferral test, quality-bar contract tests, and offline scenario `novice-gets-expert-quality`; released `2.4.0`. | Guarantee that one SMART activation gives a novice expert-team output quality without adding orchestration weight. | Full test suite GREEN including new contracts; 9 scenarios valid; JSON and Bash checks GREEN. | SMART, agent contract, tests, scenarios, README, manifests, changelog, prior STATE. |
 | 2026-07-11 / PR #14 | Added a progress-first healthy-project path, one-pass Step Pilot execution, compact reporting, and restricted-workflow staging policy. | Keep SMART authoritative without letting its own process delay real project progress. | 54 tests GREEN; fast-path/staging/safety contracts GREEN; 8 scenarios and 9 JSON files valid; Bash syntax and whitespace GREEN. | SMART, Step Pilot, agent contract, tests, README, manifests, changelog, prior STATE. |
@@ -83,9 +84,9 @@
 | 2026-07-11 / PR #8 | Added eight adversarial SMART scenario contracts and a live harness. | Improve behavioral confidence; scenarios remain, live harness is being removed. | Required checks GREEN. | Scenario data, tests, evaluator, versions. |
 
 ## Runway
-1. **NEXT — merge the P3-T9 PR:** All checks GREEN required. Completion evidence: sealed gate artifacts, readiness-blocked `vision confirm`, clean fail-closed missing-file handling, catalog sync, 72 tests GREEN, version `2.5.1`, clean tree.
-2. **THEN — enter RELEASE:** the cold-start field test (the previously recorded NEXT) is done and its findings are fixed; the stack is behaviorally validated end to end. Tag `v2.5.1` with release notes summarizing the field-test evidence. Completion evidence: annotated tag plus notes on `main`.
-3. **THEN — continue only on a proven bottleneck:** Prefer deletion, simplification, or a focused contract correction over new infrastructure. Completion evidence: measurable reduction in friction without weakening Vision Lock, verification, supply-chain, release, or quality gates.
+1. **NEXT — observe real usage:** exercise SMART on genuine user projects and collect friction/failure evidence before any change. Completion evidence: a recorded real-world trace or user report identifying a concrete bottleneck.
+2. **THEN — fix only the proven bottleneck:** prefer deletion, simplification, or a focused contract correction over new infrastructure. Completion evidence: measurable reduction in friction without weakening Vision Lock, verification, supply-chain, release, or quality gates.
+3. **LATER — periodic catalog refresh:** re-verify external skill sources, tiers, and duplicate-resolution rows against upstream changes when evidence of drift appears. Completion evidence: updated `SKILLS_CATALOG.md` rows with review dates.
 
 ## Next-session command packet
 
