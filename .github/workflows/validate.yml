@@ -58,7 +58,7 @@ jobs:
             echo "OK: $name"
           done
 
-# NOTE: GitHub blocks bot tokens without the `workflows` permission from
+
 # pushing files under .github/workflows/. To enable CI, copy this file
 # manually in the GitHub web UI (or with a personal token):
 #   .github/workflows/validate.yml
