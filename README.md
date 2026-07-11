@@ -116,28 +116,20 @@ claude plugin update smart@saeed-skills         # 2. pull the new plugin version
 
 Bundled SMART companions are native plugins from the same trusted marketplace. When SMART selects one, its unified installer adds the marketplace if needed and activates only that plugin; the user does not run setup commands or choose a source. Third-party standalone capabilities use a fail-closed trusted-install workflow: a first install resolves the configured ref to a full commit, downloads into quarantine, runs a static pre-screen, and remains unavailable until an accountable review explicitly activates it. Activation writes `.smart-lock.json`; later installs use exactly that commit. Only `update` resolves a newer commit, and the active version remains unchanged until the new candidate is reviewed.
 
-```bash
-# Curated source: discover, quarantine, and scan (does not activate)
-bash skills/smart/skills/smart/scripts/fetch-skill.sh install pdf
+SMART owns this lifecycle end to end. It discovers or receives a narrowly scoped candidate,
+resolves immutable provenance, quarantines and scans it, and reviews the candidate before any
+activation. When human consent is required, SMART summarizes the source, material findings,
+requested access, and residual risk in plain language and asks one approve-or-reject question.
+The user never receives an installer command, reviewer flag, source menu, or package choice.
+After explicit approval SMART records the accountable identity and performs activation itself;
+rejection leaves the candidate unavailable.
 
-# Inspect .smart-scan-report.txt, SKILL.md, every script, provenance, and license; then:
-bash skills/smart/skills/smart/scripts/fetch-skill.sh approve pdf .claude/skills --reviewed-by <identity>
-
-# Verify active content against the lockfile
-bash skills/smart/skills/smart/scripts/fetch-skill.sh verify pdf
-
-# Explicitly resolve a newer commit into quarantine
-bash skills/smart/skills/smart/scripts/fetch-skill.sh update pdf
-```
-
-A repository found during capability research can enter the same pipeline without becoming a trusted catalog source:
-
-```bash
-bash skills/smart/skills/smart/scripts/fetch-skill.sh candidate \
-  <skill-name> <owner/repository> <ref> <path-to-skill>
-```
-
-`candidate` is intentionally not an approval. Static scanning cannot prove safety. Symlinks, hardlinks, path escape, oversized payloads, and unsafe destinations fail closed; suspicious executables, binaries, secret access, network/bootstrap patterns, and missing licenses require review. Silent fallback to a default branch is forbidden. Native marketplace plugins retain their native install/update mechanism and must be reviewed under their marketplace provenance controls.
+Candidate discovery is intentionally not approval. Static scanning cannot prove safety.
+Symlinks, hardlinks, path escape, oversized payloads, and unsafe destinations fail closed;
+suspicious executables, binaries, secret access, network/bootstrap patterns, and missing
+licenses require review. Silent fallback to a default branch is forbidden. Native marketplace
+plugins retain their native install/update mechanism and must be reviewed under their
+marketplace provenance controls.
 
 ## Machine-verifiable execution gates
 

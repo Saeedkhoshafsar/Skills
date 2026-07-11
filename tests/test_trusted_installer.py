@@ -92,9 +92,22 @@ class TrustedInstallerTests(unittest.TestCase):
             "candidate", "safe-skill", "owner/safe", "main", "skills/safe-skill"
         )
         self.assertIn("QUARANTINED:", result.stdout)
+        self.assertNotIn("--reviewed-by", result.stdout)
+        self.assertNotIn("then run:", result.stdout)
         self.assertFalse((self.project / ".claude/skills/safe-skill").exists())
         state = json.loads((self.project / ".claude/skills/.smart-install-state.json").read_text())
         self.assertIn(state["skills"]["safe-skill"]["status"], {"STATIC_SCAN_PASSED", "REVIEW_REQUIRED"})
+        handoff = next(
+            json.loads(line)
+            for line in result.stdout.splitlines()
+            if line.startswith("{")
+        )
+        self.assertEqual(handoff["smart_event"], "third_party_approval_required")
+        self.assertEqual(handoff["capability"], "safe-skill")
+        self.assertEqual(handoff["provenance"]["repository"], "owner/safe")
+        self.assertEqual(handoff["provenance"]["resolved_commit"], self.first_commit)
+        self.assertIn("approve-or-reject", handoff["next_action"])
+        self.assertIn("Static scanning does not prove safety", handoff["risk_notice"])
 
         self.approve()
         self.assertTrue((self.project / ".claude/skills/safe-skill/SKILL.md").is_file())

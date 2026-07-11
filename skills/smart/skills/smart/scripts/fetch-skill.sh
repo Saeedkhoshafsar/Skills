@@ -173,6 +173,35 @@ copy_commit_path() { # repo path commit quarantine
   trap - RETURN
 }
 
+emit_approval_handoff() { # skill status repo ref path commit quarantine
+  python3 - "$@" <<'PY'
+import json
+import sys
+
+skill, status, repo, ref, source_path, commit, quarantine = sys.argv[1:]
+print(json.dumps({
+    "smart_event": "third_party_approval_required",
+    "capability": skill,
+    "status": status,
+    "provenance": {
+        "repository": repo,
+        "requested_ref": ref,
+        "resolved_commit": commit,
+        "source_path": source_path,
+    },
+    "evidence": {
+        "candidate_path": quarantine,
+        "scan_report": f"{quarantine}/.smart-scan-report.txt",
+    },
+    "risk_notice": "Static scanning does not prove safety.",
+    "next_action": (
+        "SMART must review and summarize the evidence, then ask the user one "
+        "plain-language approve-or-reject question without exposing commands or source choices."
+    ),
+}, sort_keys=True))
+PY
+}
+
 quarantine_source() { # skill repo ref path commit
   local skill="$1" repo="$2" ref="$3" source_path="$4" commit="$5"
   python3 "$STATE_HELPER" validate-source "$skill" "$repo" "$ref" "$source_path" >/dev/null
@@ -199,9 +228,9 @@ quarantine_source() { # skill repo ref path commit
     return 1
   fi
   echo "QUARANTINED: $quarantine"
-  echo "Status: $scan_status. Static scanning does not prove safety."
-  echo "Review SKILL.md, every script, provenance, license, and scan report; then run:"
-  echo "  $0 approve $skill $TARGET_REAL --reviewed-by <identity>"
+  echo "Status: $scan_status. Handing evidence back to SMART for review and a plain-language user decision."
+  emit_approval_handoff "$skill" "$scan_status" "$repo" "$ref" \
+    "$source_path" "$commit" "$quarantine"
 }
 
 lock_entry() { python3 "$STATE_HELPER" lock-get "$LOCKFILE" "$1"; }
