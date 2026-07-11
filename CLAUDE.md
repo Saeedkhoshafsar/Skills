@@ -45,7 +45,8 @@ set needed for the next decision/action. SMART selects by capability, not source
 8. **Duplicates are resolved by the catalog table, not ad hoc.** e.g. skill authoring → `skill-creator` (anthropics), debugging → local `debug-detective`, TDD → `test-driven-development` (obra).
 9. **Current decision/action overrides phase defaults.** "Produce an Excel report" in any phase → fetch `xlsx` now; "design a full UI" → fetch `ui-ux-pro-max`.
 10. **Context Engineering Kit stays plugin-only but is auto-installed.** SMART passes a capability name to `fetch-skill.sh`; the script adds the CEK marketplace once and installs only the selected native plugin. Never flatten CEK into `.claude/skills/`, ask the user to choose a plugin/source, or merely print manual setup steps when `claude` is available.
-11. **Supply-chain gate.** After fetching any EXTERNAL skill, skim its SKILL.md and scripts once (30 seconds) before using it — delete and report anything suspicious.
+11. **Supply-chain gate.** External standalone skills are downloaded only into quarantine. Static scan success is not proof of safety: review `SKILL.md`, every script, provenance, license, network/secret access, and the generated manifest before explicit activation. Never approve your own unreviewed candidate, bypass a BLOCKED result, or use quarantined content.
+12. **Prefer safe reuse before creation.** Before creating a skill, search the curated catalog and reputable repositories for a narrow candidate. A discovered repository must enter through `fetch-skill.sh candidate`, remain quarantined, and pass the same review and lock workflow; discovery never grants trust.
 
 ## Conventions
 
