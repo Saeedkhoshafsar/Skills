@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
 # ============================================================
-# fetch-skill.sh — on-demand download of a single skill from GitHub
-# Downloads ONLY the requested skill folder (sparse-checkout), never the whole repo.
+# fetch-skill.sh — unified on-demand capability installer
+# Downloads standalone skills with sparse-checkout or installs structured plugins
+# through their native Claude Code marketplace.
 # ============================================================
 set -euo pipefail
 
@@ -54,25 +55,52 @@ ALIASES=(
 BLACKLIST_PREFIXES=("v3-" "flow-nexus-")
 BLACKLIST_EXACT=("dual-mode" "worker-benchmarks" "using-superpowers")
 
+# ---------- structured plugin capabilities ----------
+# CEK must stay a native plugin so its agents, commands, hooks, and skills survive.
+# SMART selects a capability name; users never need to choose the source or plugin.
+CEK_MARKETPLACE_SOURCE="NeoLabHQ/context-engineering-kit"
+CEK_MARKETPLACE_NAME="context-engineering-kit"
+CEK_MARKETPLACE_ID="NeoLabHQ/context-engineering-kit"
+CEK_PLUGINS=("reflexion" "review" "git" "tdd" "sadd" "ddd" "sdd" "kaizen" "customaize-agent" "docs" "tech-stack" "mcp" "fpf")
+CEK_CAPABILITIES=(
+  "reflection|reflexion"
+  "context-reflection|reflexion"
+  "context-review|review"
+  "context-git|git"
+  "context-tdd|tdd"
+  "subagent-development|sadd"
+  "domain-driven-development|ddd"
+  "spec-driven-development|sdd"
+  "continuous-improvement|kaizen"
+  "agent-customization|customaize-agent"
+  "documentation-workflow|docs"
+  "tech-stack-guidance|tech-stack"
+  "mcp-integration-setup|mcp"
+  "first-principles-reasoning|fpf"
+)
+PLUGIN_SCOPE="${SMART_PLUGIN_SCOPE:-user}"
+
 TARGET_DIR_DEFAULT=".claude/skills"
 
 usage() {
   cat <<'EOF'
-fetch-skill.sh — on-demand download of a single skill from GitHub
-Downloads ONLY the requested skill folder (sparse-checkout), never the whole repo.
+fetch-skill.sh — unified on-demand capability installer
+Installs a standalone skill or the native plugin that provides the capability.
 
 Usage:
-  ./fetch-skill.sh <skill-name> [target-dir]
-  ./fetch-skill.sh --list                 # list skills available in sources
-  ./fetch-skill.sh --installed [dir]      # list installed skills
-  ./fetch-skill.sh --update <skill-name>  # re-download an installed skill (same source)
+  ./fetch-skill.sh <capability-or-skill> [target-dir]
+  ./fetch-skill.sh --list                 # list standalone and plugin capabilities
+  ./fetch-skill.sh --installed [dir]      # list installed skills and plugins
+  ./fetch-skill.sh --update <name>        # update from the original source
 
 Examples:
   ./fetch-skill.sh sparc-methodology
-  ./fetch-skill.sh test-driven-development
   ./fetch-skill.sh ui-ux-pro-max
+  ./fetch-skill.sh spec-driven-development  # selects and installs CEK's sdd plugin
+  ./fetch-skill.sh cek:reflexion             # direct plugin capability, when needed
   ./fetch-skill.sh pdf .claude/skills
-  ./fetch-skill.sh --update frontend-design
+
+Plugin scope defaults to user. Set SMART_PLUGIN_SCOPE=project or local to override.
 EOF
   exit 1
 }
@@ -85,6 +113,73 @@ require_deps() {
     echo "ERROR: missing required tools: ${missing[*]} — install them first." >&2
     exit 1
   fi
+}
+
+is_cek_plugin() {
+  local candidate="$1" plugin
+  for plugin in "${CEK_PLUGINS[@]}"; do
+    [ "$candidate" = "$plugin" ] && return 0
+  done
+  return 1
+}
+
+resolve_cek_plugin() { # resolve_cek_plugin <capability> -> plugin name, or fail
+  local requested="$1" mapping capability plugin
+  if [[ "$requested" == cek:* ]]; then
+    plugin="${requested#cek:}"
+    is_cek_plugin "$plugin" && printf '%s\n' "$plugin" && return 0
+    return 1
+  fi
+  for mapping in "${CEK_CAPABILITIES[@]}"; do
+    IFS='|' read -r capability plugin <<< "$mapping"
+    [ "$requested" = "$capability" ] && printf '%s\n' "$plugin" && return 0
+  done
+  return 1
+}
+
+require_claude_cli() {
+  if ! command -v claude >/dev/null 2>&1; then
+    echo "ERROR: this capability is a structured Claude Code plugin and requires the 'claude' CLI." >&2
+    echo "Install Claude Code, then run the same SMART command again; no source selection is needed." >&2
+    return 1
+  fi
+}
+
+ensure_cek_marketplace() {
+  local marketplaces
+  marketplaces="$(claude plugin marketplace list --json 2>/dev/null || printf '[]')"
+  if printf '%s' "$marketplaces" | grep -Fq "$CEK_MARKETPLACE_NAME" || \
+     printf '%s' "$marketplaces" | grep -Fq "$CEK_MARKETPLACE_SOURCE"; then
+    return 0
+  fi
+  echo "Adding the Context Engineering Kit marketplace ..."
+  claude plugin marketplace add --scope "$PLUGIN_SCOPE" "$CEK_MARKETPLACE_SOURCE"
+}
+
+install_cek_plugin() { # install_cek_plugin <plugin> [update]
+  local plugin="$1" mode="${2:-}" qualified short_qualified installed
+  case "$PLUGIN_SCOPE" in
+    user|project|local) ;;
+    *) echo "ERROR: SMART_PLUGIN_SCOPE must be user, project, or local." >&2; return 1 ;;
+  esac
+  qualified="$plugin@$CEK_MARKETPLACE_ID"
+  short_qualified="$plugin@$CEK_MARKETPLACE_NAME"
+  require_claude_cli || return 1
+  ensure_cek_marketplace || return 1
+  installed="$(claude plugin list --json 2>/dev/null || printf '[]')"
+  if printf '%s' "$installed" | grep -Fq "$qualified" || \
+     printf '%s' "$installed" | grep -Fq "$short_qualified"; then
+    if [ "$mode" = "update" ]; then
+      echo "Updating native plugin '$qualified' ..."
+      claude plugin update "$qualified"
+    else
+      echo "OK: native plugin '$qualified' is already installed."
+    fi
+    return 0
+  fi
+  echo "Installing native plugin '$qualified' for capability '$plugin' ..."
+  claude plugin install --scope "$PLUGIN_SCOPE" "$qualified"
+  echo "OK: installed native plugin '$qualified' (restart Claude Code to load it)."
 }
 
 is_blacklisted() {
@@ -100,6 +195,7 @@ api_ls() { # api_ls <repo> <branch> <path>  -> item names inside the path
 }
 
 list_available() {
+  require_deps
   for src in "${SOURCES[@]}"; do
     IFS='|' read -r repo branch path <<< "$src"
     echo "SOURCE $repo/$path :"
@@ -110,6 +206,12 @@ list_available() {
     IFS='|' read -r name _ _ _ <<< "$a"
     echo "   - $name"
   done
+  echo "SOURCE $CEK_MARKETPLACE_SOURCE (native plugins, selected by capability) :"
+  local mapping capability plugin
+  for mapping in "${CEK_CAPABILITIES[@]}"; do
+    IFS='|' read -r capability plugin <<< "$mapping"
+    echo "   - $capability -> cek:$plugin"
+  done
 }
 
 list_installed() {
@@ -119,6 +221,12 @@ list_installed() {
     ls -1 "$dir" 2>/dev/null | sed 's/^/   - /' || echo "   (empty)"
   else
     echo "No skills installed ($dir does not exist)"
+  fi
+  if command -v claude >/dev/null 2>&1; then
+    echo "Installed Claude Code plugins:"
+    claude plugin list --json 2>/dev/null || echo "   (unable to query plugins)"
+  else
+    echo "Installed Claude Code plugins: (claude CLI unavailable)"
   fi
 }
 
@@ -190,6 +298,21 @@ fetch_one() {
     return 1
   fi
 
+  local cek_plugin
+  if cek_plugin="$(resolve_cek_plugin "$skill")"; then
+    if [ "$force" = "force" ]; then
+      install_cek_plugin "$cek_plugin" update
+    else
+      install_cek_plugin "$cek_plugin"
+    fi
+    return $?
+  fi
+  if [[ "$skill" == cek:* ]]; then
+    echo "ERROR: unknown Context Engineering Kit plugin capability '$skill'. Run --list." >&2
+    return 1
+  fi
+
+  require_deps
   if [ -d "$target/$skill" ] && [ "$force" != "force" ]; then
     echo "OK: '$skill' already installed: $target/$skill (use --update to refresh)"
     return 0
@@ -266,7 +389,6 @@ fetch_one() {
   return 1
 }
 
-require_deps
 case "${1:-}" in
   ""|-h|--help) usage ;;
   --list)       list_available ;;

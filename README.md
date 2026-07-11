@@ -1,6 +1,6 @@
 # Skills — SMART Skill-Manager Ecosystem
 
-> The user activates only **SMART**; SMART selects the other skills by project phase **and by capability need** and installs them **on-demand from GitHub** — no skill wastes project space.
+> The user activates only **SMART**; SMART selects capabilities by project phase **and task need**, then installs the right standalone skill or native plugin **on demand** — the user never chooses a source, marketplace, package type, or command.
 >
 > A curated set of installable skills across multiple standalone sources: 7 local + Anthropic's official skills (pdf/docx/xlsx/pptx, frontend-design, webapp-testing, skill-creator, mcp-builder…) + obra/superpowers engineering-process skills (TDD, brainstorming…) + ruflo + claude-plugins-official plugin-dev skills + nextlevelbuilder/ui-ux-pro-max UI/UX design intelligence (67+ styles, 161 palettes, 57 font pairings…).
 
@@ -21,7 +21,7 @@ Skills/
     │   └── skills/smart/
     │       ├── SKILL.md      #   cycle: Sense -> Diagnose -> Select -> Act -> Report
     │       └── scripts/
-    │           └── fetch-skill.sh  # single-skill download via sparse-checkout (tested)
+    │           └── fetch-skill.sh  # unified skill + native-plugin capability installer
     ├── project-planner/      # planner (interview + 13 layers + atomic PLAN.md)
     ├── project-memory/       # project memory (STATE.md — disconnect/amnesia-proof)
     ├── step-pilot/           # gated step-by-step execution (test + verify per step)
@@ -82,7 +82,7 @@ cp -r /tmp/sk/skills/smart/skills/smart .claude/skills/ && rm -rf /tmp/sk
 |---|---|---|
 | Empty project | `project-planner` | interview + PLAN.md; `brainstorming` first if the idea is vague |
 | Plan ready | `project-memory` + `step-pilot` | memory + gated steps |
-| Mid-development | `sparc-methodology` + `verification-quality` (from GitHub) | TDD? → `test-driven-development`; UI? → `ui-ux-pro-max` / `frontend-design`; recurring bug? → `debug-detective` |
+| Mid-development | `sparc-methodology` + `verification-quality` | TDD? → `test-driven-development`; complex spec? → CEK `sdd`; judged subagents? → CEK `sadd`; UI? → `ui-ux-pro-max` / `frontend-design`; recurring bug? → `debug-detective` |
 | Ready to release | `security-check` (GATE) + `github-release-management` + `hooks-automation` | security gate is mandatory |
 | Maintenance | `github-project-management` | issues, boards |
 
@@ -102,7 +102,7 @@ cp -r /tmp/sk/skills/smart/skills/smart .claude/skills/ && rm -rf /tmp/sk
 
 Priority: first source that has the skill wins — duplicates (skill-creator vs skill-builder, TDD variants, …) are resolved in the catalog's duplicate-resolution table.
 
-Two root-folder skills are also available: `stop-slop` for prose quality and `remotion-video` for programmatic React videos. `NeoLabHQ/context-engineering-kit` is a separate plugin marketplace; install its selected plugins directly so its agents, commands, and hooks are preserved.
+Two root-folder skills are also available: `stop-slop` for prose quality and `remotion-video` for programmatic React videos. `NeoLabHQ/context-engineering-kit` stays a native plugin marketplace so its agents, commands, hooks, and skills are preserved, but SMART handles marketplace setup and selective plugin installation automatically through `fetch-skill.sh`. For example, `fetch-skill.sh spec-driven-development` resolves to CEK's `sdd` plugin.
 
 Details and tiers for all skills → [`SKILLS_CATALOG.md`](SKILLS_CATALOG.md)
 
@@ -117,9 +117,9 @@ claude plugin update smart@saeed-skills         # 2. pull the new plugin version
 # (or /plugin → manage → update inside a session)
 ```
 
-Skills fetched on-demand into `.claude/skills/` are also pinned snapshots — refresh any of them with:
+Capabilities installed on demand are pinned snapshots/packages — refresh a standalone skill or native plugin with:
 
 ```bash
 bash skills/smart/skills/smart/scripts/fetch-skill.sh --update <skill-name>
 ```
-(`--update` re-downloads from the skill's ORIGINAL source, recorded in `.claude/skills/.installed.log`.)
+(`--update` re-downloads standalone skills from their recorded original source and delegates native plugin updates to Claude Code.)
