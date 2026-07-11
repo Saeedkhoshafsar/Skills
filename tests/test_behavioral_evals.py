@@ -14,6 +14,7 @@ ROOT = Path(__file__).resolve().parents[1]
 EVAL_DIR = ROOT / "skills/smart/skills/smart/evals"
 RUNNER = EVAL_DIR / "run_behavioral_evals.py"
 SUITE = EVAL_DIR / "scenarios.json"
+WORKFLOW_TEMPLATE = ROOT / "ci/github-workflow-behavioral-eval.yml"
 
 spec = importlib.util.spec_from_file_location("smart_behavioral_evals", RUNNER)
 assert spec and spec.loader
@@ -51,6 +52,16 @@ class BehavioralSuiteTests(unittest.TestCase):
     def test_unknown_scenario_filter_fails_closed(self) -> None:
         with self.assertRaisesRegex(runner.EvalError, "Unknown scenario"):
             runner.select_scenarios(self.suite, ["not-real"])
+
+    def test_manual_workflow_template_preserves_live_evidence(self) -> None:
+        workflow = WORKFLOW_TEMPLATE.read_text(encoding="utf-8")
+        self.assertIn("workflow_dispatch:", workflow)
+        self.assertIn("secrets.SMART_EVAL_API_KEY", workflow)
+        self.assertIn("secrets.SMART_EVAL_BASE_URL", workflow)
+        self.assertIn("--output .smart/evidence/behavioral-eval.json", workflow)
+        self.assertIn("if: always()", workflow)
+        self.assertIn("actions/upload-artifact@v4", workflow)
+        self.assertIn("retention-days: 30", workflow)
 
 
 class BehavioralScoringTests(unittest.TestCase):
