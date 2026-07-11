@@ -52,6 +52,13 @@ ALIASES=(
 BLACKLIST_PREFIXES=("v3-" "flow-nexus-")
 BLACKLIST_EXACT=("dual-mode" "worker-benchmarks" "using-superpowers")
 
+FIRST_PARTY_MARKETPLACE_SOURCE="Saeedkhoshafsar/Skills"
+FIRST_PARTY_MARKETPLACE_NAME="saeed-skills"
+FIRST_PARTY_CAPABILITIES=(
+  "project-planner" "project-memory" "step-pilot"
+  "code-review" "debug-detective" "security-check"
+)
+
 CEK_MARKETPLACE_SOURCE="NeoLabHQ/context-engineering-kit"
 CEK_MARKETPLACE_NAME="context-engineering-kit"
 CEK_MARKETPLACE_ID="NeoLabHQ/context-engineering-kit"
@@ -327,6 +334,34 @@ ensure_gitignore() {
   fi
 }
 
+is_first_party_capability() {
+  local candidate="$1" capability
+  for capability in "${FIRST_PARTY_CAPABILITIES[@]}"; do
+    [ "$candidate" = "$capability" ] && return 0
+  done
+  return 1
+}
+
+install_first_party_plugin() {
+  local capability="$1" mode="${2:-}" qualified installed marketplaces
+  qualified="$capability@$FIRST_PARTY_MARKETPLACE_NAME"
+  case "$PLUGIN_SCOPE" in user|project|local) ;; *) echo "ERROR: invalid SMART_PLUGIN_SCOPE." >&2; return 1 ;; esac
+  command -v claude >/dev/null 2>&1 || {
+    echo "ERROR: bundled capability '$capability' requires Claude Code CLI." >&2
+    return 1
+  }
+  marketplaces="$(claude plugin marketplace list --json 2>/dev/null || printf '[]')"
+  if ! printf '%s' "$marketplaces" | grep -Fq "$FIRST_PARTY_MARKETPLACE_NAME"; then
+    claude plugin marketplace add --scope "$PLUGIN_SCOPE" "$FIRST_PARTY_MARKETPLACE_SOURCE"
+  fi
+  installed="$(claude plugin list --json 2>/dev/null || printf '[]')"
+  if printf '%s' "$installed" | grep -Fq "$qualified"; then
+    [ "$mode" = update ] && claude plugin update "$qualified" || echo "OK: bundled capability already installed."
+  else
+    claude plugin install --scope "$PLUGIN_SCOPE" "$qualified"
+  fi
+}
+
 is_cek_plugin() { local candidate="$1" plugin; for plugin in "${CEK_PLUGINS[@]}"; do [ "$candidate" = "$plugin" ] && return 0; done; return 1; }
 resolve_cek_plugin() {
   local requested="$1" mapping capability plugin
@@ -348,6 +383,8 @@ install_cek_plugin() {
 list_available() {
   local source repo ref source_path mapping capability plugin
   require_deps
+  echo "BUNDLED SMART CAPABILITIES:"
+  for capability in "${FIRST_PARTY_CAPABILITIES[@]}"; do echo "  - $capability -> $capability@$FIRST_PARTY_MARKETPLACE_NAME"; done
   for source in "${SOURCES[@]}"; do IFS='|' read -r repo ref source_path <<< "$source"; echo "SOURCE $repo@$ref/$source_path:"; api_ls "$repo" "$ref" "$source_path" | sed 's/^/  - /'; done
   echo "NATIVE PLUGINS:"
   for mapping in "${CEK_CAPABILITIES[@]}"; do IFS='|' read -r capability plugin <<< "$mapping"; echo "  - $capability -> cek:$plugin"; done
@@ -357,6 +394,7 @@ list_installed() {
   local target="${1:-$TARGET_DIR_DEFAULT}"
   [ -d "$target" ] && find "$target" -mindepth 1 -maxdepth 1 -type d ! -name '.smart-*' -printf '%f\n' | sort || true
   [ -f "$target/.smart-install-state.json" ] && cat "$target/.smart-install-state.json" || true
+  command -v claude >/dev/null 2>&1 && claude plugin list --json 2>/dev/null || true
 }
 
 # Backward-compatible old flags are accepted, but lifecycle verbs are preferred.
@@ -365,9 +403,27 @@ case "$command" in
   ""|-h|--help) usage ;;
   --list) list_available ;;
   --installed) list_installed "${2:-$TARGET_DIR_DEFAULT}" ;;
-  --update) [ -n "${2:-}" ] || usage; if plugin="$(resolve_cek_plugin "$2")"; then install_cek_plugin "$plugin" update; else update_skill "$2" "${3:-$TARGET_DIR_DEFAULT}"; fi ;;
-  install) [ -n "${2:-}" ] || usage; if plugin="$(resolve_cek_plugin "$2")"; then install_cek_plugin "$plugin"; else install_skill "$2" "${3:-$TARGET_DIR_DEFAULT}"; fi ;;
-  update) [ -n "${2:-}" ] || usage; if plugin="$(resolve_cek_plugin "$2")"; then install_cek_plugin "$plugin" update; else update_skill "$2" "${3:-$TARGET_DIR_DEFAULT}"; fi ;;
+  --update)
+    [ -n "${2:-}" ] || usage
+    if is_first_party_capability "$2"; then install_first_party_plugin "$2" update
+    elif plugin="$(resolve_cek_plugin "$2")"; then install_cek_plugin "$plugin" update
+    else update_skill "$2" "${3:-$TARGET_DIR_DEFAULT}"
+    fi
+    ;;
+  install)
+    [ -n "${2:-}" ] || usage
+    if is_first_party_capability "$2"; then install_first_party_plugin "$2"
+    elif plugin="$(resolve_cek_plugin "$2")"; then install_cek_plugin "$plugin"
+    else install_skill "$2" "${3:-$TARGET_DIR_DEFAULT}"
+    fi
+    ;;
+  update)
+    [ -n "${2:-}" ] || usage
+    if is_first_party_capability "$2"; then install_first_party_plugin "$2" update
+    elif plugin="$(resolve_cek_plugin "$2")"; then install_cek_plugin "$plugin" update
+    else update_skill "$2" "${3:-$TARGET_DIR_DEFAULT}"
+    fi
+    ;;
   candidate) shift; candidate_skill "$@" ;;
   approve)
     [ -n "${2:-}" ] || usage
@@ -382,5 +438,10 @@ case "$command" in
     ;;
   verify) [ -n "${2:-}" ] || usage; verify_skill "$2" "${3:-$TARGET_DIR_DEFAULT}" ;;
   status) [ -n "${2:-}" ] || usage; status_skill "$2" "${3:-$TARGET_DIR_DEFAULT}" ;;
-  *) if plugin="$(resolve_cek_plugin "$command")"; then install_cek_plugin "$plugin"; else install_skill "$command" "${2:-$TARGET_DIR_DEFAULT}"; fi ;;
+  *)
+    if is_first_party_capability "$command"; then install_first_party_plugin "$command"
+    elif plugin="$(resolve_cek_plugin "$command")"; then install_cek_plugin "$plugin"
+    else install_skill "$command" "${2:-$TARGET_DIR_DEFAULT}"
+    fi
+    ;;
 esac

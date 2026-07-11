@@ -43,13 +43,8 @@ claude plugin marketplace add Saeedkhoshafsar/Skills
 # 2. Install the mother skill (enough — it manages the rest):
 claude plugin install smart@saeed-skills
 
-# (optional) install the others directly:
-claude plugin install project-planner@saeed-skills
-claude plugin install project-memory@saeed-skills
-claude plugin install step-pilot@saeed-skills
-claude plugin install code-review@saeed-skills
-claude plugin install debug-detective@saeed-skills
-claude plugin install security-check@saeed-skills
+# No companion setup is required. SMART installs project-planner, project-memory,
+# step-pilot, code-review, debug-detective, or security-check itself when needed.
 
 # update later:
 claude plugin marketplace update saeed-skills && claude plugin update smart@saeed-skills
@@ -119,7 +114,7 @@ claude plugin update smart@saeed-skills         # 2. pull the new plugin version
 # (or /plugin → manage → update inside a session)
 ```
 
-Standalone capabilities use a fail-closed trusted-install workflow. A first install resolves the configured ref to a full commit, downloads into quarantine, runs a static pre-screen, and remains unavailable until an accountable review explicitly activates it. Activation writes `.smart-lock.json`; later installs use exactly that commit. Only `update` resolves a newer commit, and the active version remains unchanged until the new candidate is reviewed.
+Bundled SMART companions are native plugins from the same trusted marketplace. When SMART selects one, its unified installer adds the marketplace if needed and activates only that plugin; the user does not run setup commands or choose a source. Third-party standalone capabilities use a fail-closed trusted-install workflow: a first install resolves the configured ref to a full commit, downloads into quarantine, runs a static pre-screen, and remains unavailable until an accountable review explicitly activates it. Activation writes `.smart-lock.json`; later installs use exactly that commit. Only `update` resolves a newer commit, and the active version remains unchanged until the new candidate is reviewed.
 
 ```bash
 # Curated source: discover, quarantine, and scan (does not activate)
