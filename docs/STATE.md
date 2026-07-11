@@ -1,97 +1,83 @@
 # STATE — SMART Skill-Manager Ecosystem
 
-> Resume index for cross-session continuity. Product and behavioral contracts live in
-> `README.md` and `skills/smart/skills/smart/SKILL.md`; executable evaluation scenarios
-> live in `skills/smart/skills/smart/evals/scenarios.json`.
+> Resume index for cross-session continuity. The product contract lives in
+> `skills/smart/skills/smart/SKILL.md`; capability decisions live in
+> `SKILLS_CATALOG.md`; offline adversarial contracts live in
+> `skills/smart/skills/smart/evals/scenarios.json`.
 
 ## Resume packet
 | Field | Current value |
 |---|---|
 | SMART mode / lifecycle phase | STABILIZATION / 3 |
-| Current objective | Make the first live-model baseline cost-controllable, then preserve its report as evidence. |
-| Active task | P3-T2 — make semantic Judge calls explicitly optional before workflow activation. |
-| Exact progress | PR #9 is merged. The evaluator and staged workflow now default to generation-only mode: one API call per scenario, deterministic forbidden-pattern checks, and explicit manual-review status without a false semantic pass rate. Semantic judging is opt-in and may reuse the same model/API; a separate Judge API is never required. |
-| Last evidence | Optional-Judge branch: 52 unit tests GREEN; 8 scenarios schema-valid; Python compile, workflow YAML parsing, and whitespace checks GREEN. PR #9 required checks -> SUCCESS. The prior local live smoke reached the configured endpoint but returned `401 Invalid or expired token`. |
-| Blocker / waiting on | Repository owner must configure valid Actions secrets and activate the staged workflow through GitHub UI; the available GitHub App cannot read secrets (`403`) or modify `.github/workflows/*` (`workflows` permission denied). |
-| Vision Lock | CONFIRMED by completed SMART 2.3.0 milestone scope; no product-scope change in P3-T1. |
-| Machine gates | Vision: existing SMART contract; Verify: PR checks required; Release: N/A until a live behavioral baseline passes. |
-| Branch / head | `genspark_ai_developer`; optional-Judge follow-up to merged PR #9 |
+| Current objective | Keep SMART the zero-configuration project brain that understands the project and autonomously manages the minimum useful skill set. |
+| Active task | P3-T3 — remove the live observer/API detour and restore product focus. |
+| Exact progress | Owner explicitly rejected paid or separately configured model observation. The staged live workflow is removed; the network/model runner is replaced by a deterministic offline scenario validator; API, secret, endpoint, and model-selection instructions are removed. PR #10 had already merged before cleanup began, so this branch cleanly reverses both PR #9 and PR #10 live-evaluation direction from current `main`. |
+| Last evidence | Cleanup branch: 47 deterministic tests GREEN; 8 offline scenarios valid; Python compile, all JSON parsing, shell syntax, and whitespace checks GREEN. |
+| Blocker / waiting on | None for offline development. No API key, paid evaluator, Actions secret, or workflow permission is required. |
+| Vision Lock | CONFIRMED by repository owner on 2026-07-11: SMART is the central project brain; users activate SMART only and must not manage observer models or evaluation APIs. |
+| Machine gates | Vision: owner-confirmed product direction; Verify: complete local tests plus required PR checks; Release: N/A for internal cleanup. |
+| Branch / head | `genspark_ai_developer`; cleanup follow-up from merged PR #10 |
 
 ## Epistemic delta
 ### Newly confirmed
-- PR #8 is merged into `main` at merge commit `18c5b83` — source: GitHub API and local `origin/main`, 2026-07-11.
-- The deterministic repository suite contains 49 passing tests, including 11 behavioral-evaluation tests — source: local unittest on PR #9 content, 2026-07-11.
-- The configured local API token is not usable for a live baseline (`401 Invalid or expired token`) — source: live smoke call, 2026-07-11.
-- The current GitHub App cannot list Actions secrets or push active workflow changes — source: GitHub API/push errors (`403` and missing `workflows` permission), 2026-07-11.
+- The repository owner does not want any paid live observer, second model, evaluator API, or related beginner-facing setup — source: explicit owner decision, 2026-07-11.
+- Live evaluation was internal QA infrastructure, not part of SMART's product value, and it displaced the core roadmap — source: owner feedback and repository-state review, 2026-07-11.
+- PR #10 merged at `74362b5` before it could be closed — source: GitHub API, 2026-07-11.
 
 ### Inferred — confirmation needed
-- `SMART_EVAL_API_KEY` and `SMART_EVAL_BASE_URL` have not yet been configured as repository Actions secrets. Secret presence cannot be inspected with the current integration; confirm in repository Settings.
+- None. The cleanup scope and core product direction are explicitly confirmed.
 
 ### Active assumptions
 | Assumption | Why temporary | Validation test | Owner | Expiry/reversal trigger |
 |---|---|---|---|---|
-| `gpt-5-mini` is an acceptable first baseline generation model. | No model matrix has been approved yet. | Run all 8 scenarios in generation-only mode and inspect outputs; enable semantic judging only if its additional cost is approved. | Repository owner | First full live report or model-policy decision. |
-| An on-demand workflow is safer than scheduled execution initially. | Cost, latency, and rate limits are not measured. | Record duration and API usage for the first three runs. | Repository owner | Three stable runs with an approved budget. |
+| Offline scenario contracts remain useful as free maintainer safeguards. | They describe expected SMART behavior but do not execute a model. | Keep only if their schema validation and review value remain clear and maintenance-light. | Maintainers | They become stale, confusing, or duplicate contract tests. |
+| The next highest-value product work is a zero-configuration orchestration audit. | The observer detour interrupted core product sequencing. | Trace a novice request from SMART activation through capability selection, installation, action, and durable consolidation; turn gaps into tested tasks. | Maintainers | A more severe core-product defect is discovered. |
 
 ### Unknowns / conflicts
 | Item | Impact if wrong | Resolution action | Status |
 |---|---|---|---|
-| Whether Actions secrets are configured and valid | Live workflow cannot generate a baseline. | Check Settings -> Secrets and variables -> Actions; create/rotate both required secrets. | BLOCKING |
-| Whether semantic API judging is worth its additional per-scenario call | A Judge may increase cost and introduce self-judging bias. | Start generation-only with human review; optionally rerun selected responses with the same or an independent model. | OPEN |
-| Acceptable live-evaluation cadence and API budget | Determines whether scheduling is appropriate. | Measure first three manual runs and record cost/latency policy. | OPEN |
+| Which remaining friction most harms a first-time SMART user | Determines the next implementation task. | Run a repository-level zero-configuration path audit after this cleanup, then prioritize by user impact and safety. | OPEN, NON-BLOCKING |
 
 ## Capability inventory
 | Capability | Type/source | Status | Invoked when | Last result / review |
 |---|---|---|---|---|
-| SMART behavioral evaluator | Python stdlib / repository | VERIFIED deterministic layer; live baseline pending | Model-level regression evaluation | 11 behavioral-evaluation tests GREEN; 8 scenarios schema-valid |
-| Manual live-eval workflow | GitHub Actions template at `ci/github-workflow-behavioral-eval.yml` | STAGED, NOT ACTIVE; Judge opt-in | Owner configures secrets and copies template to `.github/workflows/behavioral-eval.yml` | Defaults to generation-only; active GitHub validation pending |
+| SMART orchestrator | Local skill | ACTIVE CORE | Every user project | Product contract requires evidence-aware orientation, Vision Lock, autonomous capability selection, action, and consolidation. |
+| Unified capability installer | Local shell/Python tooling | VERIFIED | SMART needs a standalone skill or native plugin | Trusted quarantine, review, lock, and update tests are present. |
+| Machine gates | Local Python tooling | VERIFIED | Vision confirmation, task verification, release readiness | Deterministic gate tests are present. |
+| Offline behavioral contracts | JSON + Python stdlib validator | ACTIVE, FREE | Maintainers edit adversarial scenario definitions | No network, model, secret, endpoint, or paid workflow. |
 
 ## Open errors and risks
 | ID | Description | Evidence / location | Impact | Next diagnostic/mitigation | Status |
 |---|---|---|---|---|---|
-| EVAL-001 | Injected local API token is invalid or expired. | Live evaluator returned HTTP 401. | No local live baseline. | Rotate/inject a valid key; do not commit it. | BLOCKED |
-| EVAL-002 | Automation identity lacks GitHub `workflows` permission. | Push rejected for `.github/workflows/behavioral-eval.yml`. | Workflow cannot be activated by this agent. | Owner copies staged template using GitHub web editor or a workflow-authorized token. | BLOCKED |
-| EVAL-003 | Integration cannot inspect Actions secrets. | `gh secret list` returned HTTP 403. | Secret readiness cannot be confirmed automatically. | Owner verifies secret names in repository Settings. | BLOCKED |
+| CORE-001 | The product roadmap was temporarily dominated by live evaluation infrastructure. | Merged PRs #9 and #10 plus prior STATE runway. | Core SMART improvements were delayed and project intent became unclear. | Remove the detour, document the owner-confirmed product boundary, then audit the novice orchestration path. | IN PROGRESS |
+| CORE-002 | Zero-configuration orchestration is promised across several documents but has not yet been traced as one end-to-end contract. | SMART, catalog, installer, and local skill contracts are tested mostly in layers. | Integration friction may remain hidden from first-time users. | Perform an end-to-end contract audit and add the smallest deterministic integration coverage needed. | OPEN |
 
 ## Meaningful change ledger (newest first)
 | Date / commit | What changed | Why | Evidence | Records affected |
 |---|---|---|---|---|
-| 2026-07-11 / current branch | Made semantic Judge calls opt-in and generation-only reports epistemically honest. | Allow a useful baseline without doubling per-scenario API calls or requiring a separate Judge API. | 52 tests GREEN; suite schema, Python compile, workflow YAML, and whitespace checks GREEN. | Evaluator, workflow template, tests, README, this STATE |
-| 2026-07-11 / PR #9 | Staged a manually dispatchable live-evaluation workflow with artifact retention. | Make model-level evaluation reproducible without making nondeterministic API calls a PR-required check. | 49 tests GREEN; workflow parses as YAML; 8 scenarios and all JSON valid; shell syntax GREEN. | Workflow template, test, README, this STATE |
-| 2026-07-11 / PR #8 | Added SMART 2.3.0 behavioral harness, 8 adversarial scenarios, and 10 tests. | Move from instruction-presence tests to model-behavior evidence. | 48 unit tests and required GitHub checks GREEN. | Evaluator, scenarios, tests, README, versions |
+| 2026-07-11 / current branch | Removed live model observation and replaced its runner with an offline-only schema validator. | Restore SMART's zero-configuration product boundary and eliminate paid/API setup. | 47 tests GREEN; 8 scenarios valid; Python compile, JSON, shell syntax, and whitespace checks GREEN. | Evaluator, workflow template, tests, README, changelog, this STATE. |
+| 2026-07-11 / PR #10 | Made semantic observation optional. | Attempted to reduce cost, but retained unnecessary product complexity. | 52 tests and PR checks GREEN; later superseded by owner decision. | Evaluator, workflow template, tests, README, prior STATE. |
+| 2026-07-11 / PR #9 | Staged a manual live-evaluation workflow. | Internal QA experiment; later rejected as out of product direction. | PR checks GREEN; superseded by owner decision. | Workflow template, tests, README, prior STATE. |
+| 2026-07-11 / PR #8 | Added eight adversarial SMART scenario contracts and a live harness. | Improve behavioral confidence; scenarios remain, live harness is being removed. | Required checks GREEN. | Scenario data, tests, evaluator, versions. |
 
 ## Runway
-1. **NEXT — merge optional-Judge follow-up:** Review and merge the current branch so the staged template defaults to one generation call per scenario. Completion evidence: required checks GREEN and follow-up PR merged.
-2. **THEN — owner configuration and workflow activation:** In GitHub, create/rotate Actions secrets `SMART_EVAL_API_KEY` and `SMART_EVAL_BASE_URL`; copy `ci/github-workflow-behavioral-eval.yml` to `.github/workflows/behavioral-eval.yml` using the web editor. Completion evidence: the workflow appears under Actions and no secret value is committed or logged.
-3. **THEN — first cost-minimal baseline:** Dispatch `behavioral-eval` with `scenario=all`, `model=gpt-5-mini`, `use_judge=false`, blank `judge_model`, and `fail_under=0.8` (ignored without Judge); download `smart-behavioral-eval-<run-id>`. Completion evidence: retained log plus a generation-only JSON report containing all 8 responses and no infrastructure error.
-4. **LATER — human review and selective judging:** Manually review all deterministic failures and each `review_required` response. If useful and budget-approved, rerun selected saved responses with `--judge`, reusing the generation model/API or choosing an independent model. Change SMART/scenarios only where evidence supports it.
+1. **NEXT — complete and merge P3-T3 cleanup:** Run all deterministic tests, verify that no live evaluator/API/secret/workflow path remains, and merge one clean PR. Completion evidence: required checks GREEN, no paid-evaluation configuration in product docs or code, and clean working tree.
+2. **THEN — P3-T4 zero-configuration path audit:** Trace activation -> project understanding -> Vision Lock -> capability decision -> safe acquisition -> action -> memory consolidation for a novice user. Completion evidence: a gap list ranked by user impact, with each claim linked to code or contract evidence.
+3. **THEN — implement the highest-value core gap:** Add the smallest tested change that reduces novice friction without weakening Vision Lock, supply-chain review, or release safety. Completion evidence: deterministic regression coverage, updated product contract/state, and required PR checks GREEN.
 
 ## Next-session command packet
-After the owner completes Runway item 1, the next model should run:
 
 ```bash
 cd /home/user/webapp
-git fetch origin main && git checkout genspark_ai_developer
-# If PR #9 is merged, sync to main before continuing.
-gh workflow list
-
-gh workflow run behavioral-eval.yml \
-  -f scenario=all \
-  -f model=gpt-5-mini \
-  -f use_judge=false \
-  -f judge_model='' \
-  -f fail_under=0.8
-
-# Capture the newest run id, watch it, then download evidence.
-RUN_ID=$(gh run list --workflow behavioral-eval.yml --limit 1 --json databaseId --jq '.[0].databaseId')
-gh run watch "$RUN_ID" --exit-status
-gh run download "$RUN_ID" --dir .smart/evidence/downloaded-"$RUN_ID"
+git fetch origin main
+git checkout genspark_ai_developer
+python3 -m unittest discover -s tests -v
+python3 skills/smart/skills/smart/evals/validate_behavioral_scenarios.py
 ```
 
-If the workflow is absent, do not retry a workflow push with the same GitHub App. Report that Runway item 1 is still pending. If the run fails, inspect the uploaded `behavioral-eval.log` before changing code; distinguish infrastructure/authentication failure from a genuine scenario/rubric failure.
+The offline-contract tests also guard against reintroducing network clients, model arguments, evaluator secrets, or a staged live workflow.
 
 ## Deferred / debt with activation triggers
-- Scheduled behavioral evaluation — activate only after three manual runs establish acceptable reliability, cost, and duration.
-- Semantic Judge — opt in only for selected/full runs whose extra API cost is approved; it may reuse the generation API.
-- Multi-model matrix — activate when a judged baseline reveals instability or before claiming provider-independent behavior.
-- Human calibration set — create before treating semantic-judge scores as a production release gate.
+- Paid model observation and external evaluation workflows — deliberately removed; reconsider only after an explicit future owner decision, never as a user requirement.
+- Multi-model evaluation and semantic scoring — deliberately out of scope.
+- End-to-end zero-configuration contract coverage — activate immediately after P3-T3 cleanup.

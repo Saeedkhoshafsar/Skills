@@ -174,50 +174,20 @@ python3 "$GATES" release check
 
 For projects where migration, backup, or restore is genuinely not applicable, provide a reviewed evidence file that states `NOT_APPLICABLE`, the reason, owner, and date; omitting the evidence is intentionally not allowed.
 
-## Behavioral evaluation of SMART
+## Offline behavioral contracts for SMART
 
-Contract tests prove that required instructions exist; the model-behavior suite checks whether SMART follows them under adversarial pressure. The initial suite covers premature implementation, unconfirmed Vision Lock, durable-state resume, conflicting evidence, speculative capability installation, unsafe skill candidates, incomplete release evidence, and stale task verification.
+SMART ships eight adversarial scenario contracts covering premature implementation, unconfirmed Vision Lock, durable-state resume, conflicting evidence, speculative capability installation, unsafe skill candidates, incomplete release evidence, and stale task verification. They preserve expected behavior as reviewable repository data without introducing a runtime observer.
 
-Suite validation is dependency-free and runs in normal CI:
+Validation is deterministic, dependency-free, and part of normal CI:
 
 ```bash
 EVALS=skills/smart/skills/smart/evals
-python3 "$EVALS/run_behavioral_evals.py" --validate-only
-```
+python3 "$EVALS/validate_behavioral_scenarios.py"
 
-A live run needs an OpenAI-compatible endpoint. Configure `SMART_EVAL_API_KEY` and, when needed, `SMART_EVAL_BASE_URL`; `OPENAI_API_KEY` and `OPENAI_BASE_URL` are accepted as fallbacks. By default, the harness makes only the response-generation call and records deterministic forbidden-output checks; semantic criteria remain explicitly `review_required`, so generation-only reports never claim a semantic pass rate. Optional judging adds one model call per scenario. It may reuse the generation model and API account or use a different model; a separate Judge API is never required. When judging is enabled, critical rubric failures and deterministic forbidden-output matches fail closed.
-
-```bash
-export SMART_EVAL_API_KEY='<secret>'
-export SMART_EVAL_BASE_URL='https://api.openai.com/v1'
-export SMART_EVAL_MODEL='gpt-5-mini'
-
-# Cost-minimal default: one generation call per scenario, no Judge call.
-python3 "$EVALS/run_behavioral_evals.py" \
-  --output .smart/evidence/behavioral-eval.json
-
-# Opt in to semantic judging. Omit --judge-model to reuse the generation model/API.
-python3 "$EVALS/run_behavioral_evals.py" \
-  --judge \
-  --judge-model gpt-5-mini \
-  --output .smart/evidence/behavioral-eval.json
-
-# Run or re-judge selected scenarios; saved responses are {"scenario-id":"response"}.
-python3 "$EVALS/run_behavioral_evals.py" \
+# Validate selected contracts when editing the suite.
+python3 "$EVALS/validate_behavioral_scenarios.py" \
   --scenario vague-idea-no-code \
-  --scenario release-with-missing-evidence \
-  --responses saved-responses.json \
-  --judge
+  --scenario release-with-missing-evidence
 ```
 
-The live suite is intentionally not a required pull-request check: external model behavior, credentials, latency, and cost are nondeterministic. CI validates the scenario schema, scoring logic, critical-failure behavior, and all existing unit tests; scheduled or release evaluation runs can preserve the JSON report as evidence.
-
-### Activate the manual GitHub evaluation
-
-A manually dispatchable workflow is staged at `ci/github-workflow-behavioral-eval.yml`. It is not active merely because the template exists. A repository owner or token with GitHub's `workflows` permission must:
-
-1. Add Actions secrets named `SMART_EVAL_API_KEY` and `SMART_EVAL_BASE_URL` under **Settings → Secrets and variables → Actions**.
-2. Copy the template verbatim to `.github/workflows/behavioral-eval.yml` using a workflow-authorized commit or the GitHub web editor.
-3. Open **Actions → behavioral-eval → Run workflow**, start with `scenario=all` and `use_judge=false`, and download the retained `smart-behavioral-eval-<run-id>` artifact. Enable `use_judge` only when semantic scoring is worth the additional per-scenario call; `judge_model` can remain blank to reuse the generation model.
-
-The workflow never prints secret values. It uploads the evaluator log even on failure and uploads `behavioral-eval.json` when evaluation reaches report generation. In generation-only mode, `fail_under` is intentionally not applied because no semantic pass rate is claimed; deterministic forbidden-pattern matches still fail the run. Do not schedule it until manual runs establish acceptable model cost and latency and, if enabled, judge stability. Current progress, blockers, exact owner actions, and the next-session command packet are preserved in [`docs/STATE.md`](docs/STATE.md).
+The validator checks scenario structure, safety criteria, thresholds, types, unique identifiers, and forbidden-pattern syntax. It performs no network requests, invokes no model, requires no credentials or repository secrets, and creates no paid evaluation path. SMART itself remains the only skill a user activates; these contracts are free maintainer safeguards, not user configuration.
