@@ -11,7 +11,7 @@ GITHUB_API_BASE_URL="${SMART_GITHUB_API_BASE_URL:-https://api.github.com}"
 
 # repo|requested-ref|skills-root; first matching source wins.
 SOURCES=(
-  "Saeedkhoshafsar/Skills|genspark_ai_developer|skills"
+  "Saeedkhoshafsar/Skills|main|skills"
   "anthropics/skills|main|skills"
   "obra/superpowers|main|skills"
   "Saeedkhoshafsar/ruflo|main|.claude/skills"
@@ -22,13 +22,13 @@ SOURCES=(
 
 # skill|repo|requested-ref|full path
 ALIASES=(
-  "smart|Saeedkhoshafsar/Skills|genspark_ai_developer|skills/smart/skills/smart"
-  "project-planner|Saeedkhoshafsar/Skills|genspark_ai_developer|skills/project-planner/skills/project-planner"
-  "project-memory|Saeedkhoshafsar/Skills|genspark_ai_developer|skills/project-memory/skills/project-memory"
-  "step-pilot|Saeedkhoshafsar/Skills|genspark_ai_developer|skills/step-pilot/skills/step-pilot"
-  "code-review|Saeedkhoshafsar/Skills|genspark_ai_developer|skills/code-review/skills/code-review"
-  "debug-detective|Saeedkhoshafsar/Skills|genspark_ai_developer|skills/debug-detective/skills/debug-detective"
-  "security-check|Saeedkhoshafsar/Skills|genspark_ai_developer|skills/security-check/skills/security-check"
+  "smart|Saeedkhoshafsar/Skills|main|skills/smart/skills/smart"
+  "project-planner|Saeedkhoshafsar/Skills|main|skills/project-planner/skills/project-planner"
+  "project-memory|Saeedkhoshafsar/Skills|main|skills/project-memory/skills/project-memory"
+  "step-pilot|Saeedkhoshafsar/Skills|main|skills/step-pilot/skills/step-pilot"
+  "code-review|Saeedkhoshafsar/Skills|main|skills/code-review/skills/code-review"
+  "debug-detective|Saeedkhoshafsar/Skills|main|skills/debug-detective/skills/debug-detective"
+  "security-check|Saeedkhoshafsar/Skills|main|skills/security-check/skills/security-check"
   "playground|Saeedkhoshafsar/claude-plugins-official|main|plugins/playground/skills/playground"
   "session-report|Saeedkhoshafsar/claude-plugins-official|main|plugins/session-report/skills/session-report"
   "project-artifact|Saeedkhoshafsar/claude-plugins-official|main|plugins/project-artifact/skills/project-artifact"
@@ -169,21 +169,24 @@ copy_commit_path() { # repo path commit quarantine
 quarantine_source() { # skill repo ref path commit
   local skill="$1" repo="$2" ref="$3" source_path="$4" commit="$5"
   python3 "$STATE_HELPER" validate-source "$skill" "$repo" "$ref" "$source_path" >/dev/null
-  local quarantine="$QUARANTINE_ROOT/$skill-$commit" tree_hash scan_status
+  local quarantine="$QUARANTINE_ROOT/$skill-$commit" tree_hash scan_report_hash scan_status
   echo "Downloading '$skill' from $repo@$commit into quarantine ..."
   copy_commit_path "$repo" "$source_path" "$commit" "$quarantine" || return 1
   tree_hash=""
+  scan_report_hash=""
   python3 "$STATE_HELPER" state-put "$STATE_FILE" "$skill" QUARANTINED \
-    "$repo" "$ref" "$source_path" "$commit" "$tree_hash" "$quarantine"
+    "$repo" "$ref" "$source_path" "$commit" "$tree_hash" "$scan_report_hash" "$quarantine"
   if "$SCANNER" "$quarantine" "$quarantine/.smart-scan-report.txt"; then
     scan_status="$(sed -n 's/^result=//p' "$quarantine/.smart-scan-report.txt" | tail -n1)"
     [ "$scan_status" = "STATIC_SCAN_PASSED" ] || scan_status="REVIEW_REQUIRED"
     tree_hash="$(python3 "$STATE_HELPER" manifest "$quarantine")"
+    scan_report_hash="$(python3 "$STATE_HELPER" file-sha256 "$quarantine/.smart-scan-report.txt")"
   else
     scan_status="BLOCKED"
+    scan_report_hash="$(python3 "$STATE_HELPER" file-sha256 "$quarantine/.smart-scan-report.txt")"
   fi
   python3 "$STATE_HELPER" state-put "$STATE_FILE" "$skill" "$scan_status" \
-    "$repo" "$ref" "$source_path" "$commit" "$tree_hash" "$quarantine"
+    "$repo" "$ref" "$source_path" "$commit" "$tree_hash" "$scan_report_hash" "$quarantine"
   if [ "$scan_status" = "BLOCKED" ]; then
     echo "BLOCKED: static scan found a hard failure. See $quarantine/.smart-scan-report.txt" >&2
     return 1
@@ -207,7 +210,7 @@ install_skill() {
     return 1
   fi
   if locked="$(lock_entry "$skill")"; then
-    IFS=$'\t' read -r repo ref source_path commit locked_tree status <<< "$locked"
+    IFS=$'\t' read -r repo ref source_path commit locked_tree _ status <<< "$locked"
     [ "$status" = "VERIFIED" ] && [ -n "$locked_tree" ] || { echo "ERROR: lock entry is incomplete or not VERIFIED." >&2; return 1; }
     quarantine_source "$skill" "$repo" "$ref" "$source_path" "$commit"
     return $?
@@ -245,7 +248,7 @@ update_skill() {
   paths_for "$skill" "$target" || return 1
   require_deps || return 1
   locked="$(lock_entry "$skill")" || { echo "ERROR: no lock entry; use install or candidate first." >&2; return 1; }
-  IFS=$'\t' read -r repo ref source_path old_commit _ _ <<< "$locked"
+  IFS=$'\t' read -r repo ref source_path old_commit _ _ _ <<< "$locked"
   new_commit="$(resolve_commit "$repo" "$ref")" || return 1
   if [ "$new_commit" = "$old_commit" ]; then echo "OK: '$skill' is already locked to the latest $ref commit."; return 0; fi
   quarantine_source "$skill" "$repo" "$ref" "$source_path" "$new_commit"
@@ -262,7 +265,7 @@ candidate_skill() {
 }
 
 approve_skill() {
-  local skill="$1" target="$2" reviewer="$3" entry status repo ref source_path commit expected_hash quarantine actual_hash backup
+  local skill="$1" target="$2" reviewer="$3" entry status repo ref source_path commit expected_hash expected_report_hash quarantine actual_hash actual_report_hash backup
   [[ "$reviewer" =~ ^[A-Za-z0-9][A-Za-z0-9@._-]{1,127}$ ]] || {
     echo "ERROR: --reviewed-by requires a 2-128 character accountable identity." >&2
     return 1
@@ -272,21 +275,23 @@ approve_skill() {
   [ ! -L "$TARGET_REAL/.installed.log" ] || { echo "ERROR: install log may not be a symlink." >&2; return 1; }
   [ ! -L "$PROJECT_ROOT/.gitignore" ] || { echo "ERROR: project .gitignore may not be a symlink." >&2; return 1; }
   entry="$(state_entry "$skill")" || { echo "ERROR: no quarantined candidate for '$skill'." >&2; return 1; }
-  IFS=$'\t' read -r status repo ref source_path commit expected_hash quarantine <<< "$entry"
+  IFS=$'\t' read -r status repo ref source_path commit expected_hash expected_report_hash quarantine <<< "$entry"
   case "$status" in STATIC_SCAN_PASSED|REVIEW_REQUIRED) ;; *) echo "ERROR: candidate status '$status' cannot be approved." >&2; return 1 ;; esac
   [ -d "$quarantine" ] && [[ "$quarantine" == "$QUARANTINE_ROOT/"* ]] || { echo "ERROR: invalid quarantine path." >&2; return 1; }
   actual_hash="$(python3 "$STATE_HELPER" manifest "$quarantine")"
   [ "$actual_hash" = "$expected_hash" ] || { echo "ERROR: candidate changed after scanning; re-download and review it." >&2; return 1; }
+  actual_report_hash="$(python3 "$STATE_HELPER" file-sha256 "$quarantine/.smart-scan-report.txt")"
+  [ "$actual_report_hash" = "$expected_report_hash" ] || { echo "ERROR: scan report changed after scanning; re-download and review it." >&2; return 1; }
   backup="$TARGET_REAL/.smart-backup-$skill-$$"
   [ ! -e "$backup" ] || { echo "ERROR: backup path collision." >&2; return 1; }
   if [ -e "$DEST_REAL" ]; then mv "$DEST_REAL" "$backup"; fi
   if ! mv "$quarantine" "$DEST_REAL"; then [ ! -e "$backup" ] || mv "$backup" "$DEST_REAL"; return 1; fi
-  if ! python3 "$STATE_HELPER" lock-put "$LOCKFILE" "$skill" "$repo" "$ref" "$source_path" "$commit" "$actual_hash" "$reviewer"; then
+  if ! python3 "$STATE_HELPER" lock-put "$LOCKFILE" "$skill" "$repo" "$ref" "$source_path" "$commit" "$actual_hash" "$actual_report_hash" "$reviewer"; then
     mv "$DEST_REAL" "$quarantine"
     [ ! -e "$backup" ] || mv "$backup" "$DEST_REAL"
     return 1
   fi
-  python3 "$STATE_HELPER" state-put "$STATE_FILE" "$skill" ACTIVE "$repo" "$ref" "$source_path" "$commit" "$actual_hash" ""
+  python3 "$STATE_HELPER" state-put "$STATE_FILE" "$skill" ACTIVE "$repo" "$ref" "$source_path" "$commit" "$actual_hash" "$actual_report_hash" ""
   rm -rf -- "$backup"
   printf '%s %s <- %s|%s@%s reviewer=%s\n' "$(date -u +%F)" "$skill" "$repo" "$source_path" "$commit" "$reviewer" >> "$TARGET_REAL/.installed.log"
   ensure_gitignore "$TARGET_REAL"
@@ -295,14 +300,16 @@ approve_skill() {
 }
 
 verify_skill() {
-  local skill="$1" target="${2:-$TARGET_DIR_DEFAULT}" locked repo ref source_path commit expected_hash status actual_hash
+  local skill="$1" target="${2:-$TARGET_DIR_DEFAULT}" locked repo ref source_path commit expected_hash expected_report_hash status actual_hash actual_report_hash
   paths_for "$skill" "$target" || return 1
   locked="$(lock_entry "$skill")" || { echo "ERROR: no lock entry for '$skill'." >&2; return 1; }
-  IFS=$'\t' read -r repo ref source_path commit expected_hash status <<< "$locked"
+  IFS=$'\t' read -r repo ref source_path commit expected_hash expected_report_hash status <<< "$locked"
   [ "$status" = "VERIFIED" ] && [ -d "$DEST_REAL" ] || { echo "ERROR: '$skill' is not active and VERIFIED." >&2; return 1; }
   actual_hash="$(python3 "$STATE_HELPER" manifest "$DEST_REAL")"
   [ "$actual_hash" = "$expected_hash" ] || { echo "ERROR: tree checksum mismatch for '$skill'." >&2; return 1; }
-  echo "VERIFIED: $skill repo=$repo ref=$ref path=$source_path commit=$commit tree_sha256=$actual_hash"
+  actual_report_hash="$(python3 "$STATE_HELPER" file-sha256 "$DEST_REAL/.smart-scan-report.txt")"
+  [ "$actual_report_hash" = "$expected_report_hash" ] || { echo "ERROR: scan report checksum mismatch for '$skill'." >&2; return 1; }
+  echo "VERIFIED: $skill repo=$repo ref=$ref path=$source_path commit=$commit tree_sha256=$actual_hash scan_report_sha256=$actual_report_hash"
 }
 
 status_skill() {

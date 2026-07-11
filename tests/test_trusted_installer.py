@@ -71,6 +71,17 @@ class TrustedInstallerTests(unittest.TestCase):
             "approve", "safe-skill", ".claude/skills", "--reviewed-by", "test-reviewer"
         )
 
+    def run_scanner(
+        self, candidate: Path, *, env: dict[str, str] | None = None
+    ) -> subprocess.CompletedProcess[str]:
+        return subprocess.run(
+            ["bash", str(SCANNER), str(candidate)],
+            env=env,
+            text=True,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+        )
+
     def test_candidate_is_quarantined_then_explicitly_activated_and_locked(self) -> None:
         result = self.run_installer(
             "candidate", "safe-skill", "owner/safe", "main", "skills/safe-skill"
@@ -87,6 +98,7 @@ class TrustedInstallerTests(unittest.TestCase):
         self.assertEqual(entry["resolved_commit"], self.first_commit)
         self.assertEqual(entry["review_status"], "VERIFIED")
         self.assertEqual(entry["verified_by"], "test-reviewer")
+        self.assertRegex(entry["scan_report_sha256"], r"^[0-9a-f]{64}$")
         self.run_installer("verify", "safe-skill")
 
     def test_install_uses_lock_until_explicit_update(self) -> None:
@@ -142,6 +154,9 @@ class TrustedInstallerTests(unittest.TestCase):
         self.assertIn("skill name must match", bad_name.stderr)
         outside = self.run_installer("install", "safe-skill", str(self.temp / "outside"), expected=1)
         self.assertIn("target must stay inside project root", outside.stderr)
+        for target in (".git", ".git/hooks", ".github/workflows", "node_modules", ".venv", "vendor"):
+            rejected = self.run_installer("install", "safe-skill", target, expected=1)
+            self.assertIn("sensitive project path", rejected.stderr, target)
         missing_ref = self.run_installer(
             "candidate", "safe-skill", "owner/safe", "missing-branch", "skills/safe-skill", expected=1
         )
@@ -158,15 +173,58 @@ class TrustedInstallerTests(unittest.TestCase):
         candidate.mkdir()
         (candidate / "SKILL.md").write_text("# candidate\n", encoding="utf-8")
         (candidate / "escape").symlink_to("/etc/passwd")
-        result = subprocess.run(
-            ["bash", str(SCANNER), str(candidate)],
-            text=True,
-            stdout=subprocess.PIPE,
-            stderr=subprocess.PIPE,
-        )
+        result = self.run_scanner(candidate)
         self.assertEqual(result.returncode, 1)
         self.assertIn("BLOCKER [SYMLINK]", result.stdout)
         self.assertIn("result=BLOCKED", result.stdout)
+
+    def test_static_scanner_blocks_hardlinks_and_limits(self) -> None:
+        hardlink_candidate = self.temp / "hardlink-candidate"
+        hardlink_candidate.mkdir()
+        source = hardlink_candidate / "SKILL.md"
+        source.write_text("# candidate\n", encoding="utf-8")
+        os.link(source, hardlink_candidate / "duplicate.md")
+        hardlink = self.run_scanner(hardlink_candidate)
+        self.assertEqual(hardlink.returncode, 1)
+        self.assertIn("BLOCKER [HARDLINK]", hardlink.stdout)
+
+        limits_candidate = self.temp / "limits-candidate"
+        limits_candidate.mkdir()
+        (limits_candidate / "SKILL.md").write_text("# candidate\n", encoding="utf-8")
+        (limits_candidate / "LICENSE").write_text("fixture\n", encoding="utf-8")
+        limited_env = self.env.copy()
+        limited_env["SMART_SCAN_MAX_FILES"] = "1"
+        limited_env["SMART_SCAN_MAX_BYTES"] = "1"
+        limits = self.run_scanner(limits_candidate, env=limited_env)
+        self.assertEqual(limits.returncode, 1)
+        self.assertIn("file count", limits.stdout)
+        self.assertIn("size", limits.stdout)
+        self.assertIn("result=BLOCKED", limits.stdout)
+
+    def test_active_content_and_scan_report_tampering_fail_verification(self) -> None:
+        self.run_installer("candidate", "safe-skill", "owner/safe", "main", "skills/safe-skill")
+        state_path = self.project / ".claude/skills/.smart-install-state.json"
+        state = json.loads(state_path.read_text())
+        quarantine = Path(state["skills"]["safe-skill"]["quarantine_path"])
+        report = quarantine / ".smart-scan-report.txt"
+        report.write_text(report.read_text() + "tampered=true\n", encoding="utf-8")
+        rejected = self.run_installer(
+            "approve", "safe-skill", ".claude/skills", "--reviewed-by", "test-reviewer", expected=1
+        )
+        self.assertIn("scan report changed after scanning", rejected.stderr)
+
+        shutil.rmtree(self.project / ".claude", ignore_errors=True)
+        self.run_installer("candidate", "safe-skill", "owner/safe", "main", "skills/safe-skill")
+        self.approve()
+        active = self.project / ".claude/skills/safe-skill"
+        (active / "SKILL.md").write_text("tampered after activation\n", encoding="utf-8")
+        rejected = self.run_installer("verify", "safe-skill", expected=1)
+        self.assertIn("tree checksum mismatch", rejected.stderr)
+
+    def test_internal_sources_use_main(self) -> None:
+        installer = INSTALLER.read_text(encoding="utf-8")
+        self.assertNotIn("Saeedkhoshafsar/Skills|genspark_ai_developer|", installer)
+        self.assertIn("Saeedkhoshafsar/Skills|main|skills", installer)
 
 
 if __name__ == "__main__":
