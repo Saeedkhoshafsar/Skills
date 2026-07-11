@@ -227,8 +227,8 @@
 | Skill | Purpose | Phase / trigger |
 |---|---|---|
 | smart | Project intelligence: truthful model, mode orientation, Vision Lock, next-best-action capability orchestration/creation, consolidation | Every session start / material evidence or phase change |
-| project-planner | Adaptive discovery + Project Brief + epistemic/viability review + Vision Lock + risk-ordered atomic plan | Phase 0 until vision and roadmap approval |
-| project-memory | Canonical truth records + compact STATE resume packet, assumptions, capability inventory, change ledger, runway | From first reliable facts onward |
+| project-planner | Adaptive discovery that grows the atomic Project Mind network (`docs/PROJECT-MIND.md`) node by node + Project Brief + epistemic/viability review + Vision Lock (mind coverage COMPLETE) + risk-ordered atomic plan whose tasks cite mind node IDs | Phase 0 until vision and roadmap approval |
+| project-memory | Owner of the atomic Project Mind network (addressable `M-<domain>-<n>` nodes, typed links, coverage sweep) + canonical truth records + compact STATE resume packet, assumptions, capability inventory, change ledger, runway | From first reliable facts onward |
 | step-pilot | Vision-Lock and evidence-gated execution: one scoped task -> fresh verify -> consolidate -> commit/recovery | Approved plan onward |
 | code-review | Local diff review: correctness, readability, tests, plan conformance | Phase 3 / before merge |
 | debug-detective | Systematic debugging: reproduce -> isolate -> hypothesize -> minimal fix -> regression | Trigger: bug / 3 red verifies |

@@ -370,7 +370,10 @@ Use `scripts/smart-gates.py` from SMART's installed root. The default artifacts 
 
 1. After explicit Vision Playback confirmation, run `vision confirm --brief
    docs/PROJECT-BRIEF.md --confirmed-by <identity>`. Planning and code require a fresh
-   `vision check`; editing the brief invalidates the artifact.
+   `vision check`; editing the brief invalidates the artifact. The confirm command
+   itself fails closed while the Brief's Vision Lock status is `NOT READY` or STATE
+   records open `Mind coverage` gaps — close the coverage sweep first; an impatient
+   confirmation cannot bypass an incomplete mind.
 2. For task completion, run `verify run --task-id <ID> --command '<exact Verify>'`.
    DONE requires `verify check`, which rejects RED commands, changed working-tree content,
    or code changes after the recorded commit.
@@ -380,7 +383,9 @@ Use `scripts/smart-gates.py` from SMART's installed root. The default artifacts 
    Evidence is checksum-bound; missing or modified evidence blocks release.
 
 A text status in PROJECT-BRIEF, PLAN, or STATE is not a substitute for a passing artifact.
-Do not hand-edit gate JSON. Re-run the producing command after legitimate changes.
+Do not hand-edit gate JSON: every artifact carries a content seal, and any edited field
+(status, task ID, command, approver) fails `check` with a seal mismatch. Re-run the
+producing command after legitimate changes.
 
 ### 10. CONSOLIDATE — lay runway for the next invocation
 

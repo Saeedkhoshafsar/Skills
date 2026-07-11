@@ -17,6 +17,8 @@ from typing import Any
 SCHEMA_PREFIX = "smart.gate"
 DEFAULT_DIR = Path(".smart/evidence")
 EVIDENCE_EXCLUDES = (".smart/evidence",)
+SEAL_FIELD = "seal"
+SEAL_DOMAIN = f"{SCHEMA_PREFIX}.seal.v1"
 
 
 class GateError(RuntimeError):
@@ -72,7 +74,10 @@ def relative_file(root: Path, value: str, *, must_exist: bool = True) -> tuple[P
         candidate = root / candidate
     if candidate.is_symlink():
         fail(f"symlink evidence is not allowed: {value}")
-    resolved = candidate.resolve(strict=must_exist)
+    try:
+        resolved = candidate.resolve(strict=must_exist)
+    except OSError:
+        fail(f"required file does not exist: {value}")
     try:
         relative = resolved.relative_to(root)
     except ValueError:
@@ -120,6 +125,29 @@ def current_commit(root: Path) -> str:
     return commit
 
 
+def seal_of(payload: dict[str, Any]) -> str:
+    canonical = json.dumps(
+        {key: value for key, value in payload.items() if key != SEAL_FIELD},
+        sort_keys=True,
+        separators=(",", ":"),
+        ensure_ascii=True,
+    )
+    return hashlib.sha256(f"{SEAL_DOMAIN}\x00{canonical}".encode("utf-8")).hexdigest()
+
+
+def sealed(payload: dict[str, Any]) -> dict[str, Any]:
+    payload[SEAL_FIELD] = seal_of(payload)
+    return payload
+
+
+def check_seal(data: dict[str, Any], path: Path) -> None:
+    if data.get(SEAL_FIELD) != seal_of(data):
+        fail(
+            f"artifact seal mismatch — {path.name} was edited after it was produced; "
+            "re-run the producing gate command instead of editing gate JSON"
+        )
+
+
 def evidence_ref(root: Path, value: str) -> dict[str, str]:
     path, relative = relative_file(root, value)
     return {"path": relative, "sha256": sha256(path)}
@@ -143,11 +171,40 @@ def code_changes_since(root: Path, commit: str) -> list[str]:
     ]
 
 
+def check_vision_readiness(root: Path, brief: Path) -> None:
+    """Fail closed on explicit not-ready signals in the canonical records.
+
+    The contract forbids Vision Lock while the Project Brief is explicitly
+    NOT READY or the Project Mind coverage sweep records open gaps. These are
+    the machine-checkable readiness signals the skills themselves write.
+    """
+    brief_text = brief.read_text(encoding="utf-8", errors="replace")
+    for line in brief_text.splitlines():
+        stripped = line.strip()
+        if stripped.lower().startswith("status:") and "NOT READY" in stripped.upper():
+            fail(
+                "Project Brief Vision Lock status is NOT READY — complete the "
+                "coverage sweep and playback before confirming"
+            )
+    state = root / "docs/STATE.md"
+    if state.is_file():
+        for line in state.read_text(encoding="utf-8", errors="replace").splitlines():
+            if "Mind coverage" not in line:
+                continue
+            upper = line.upper()
+            if "GAPS" in upper or "NOT BUILT" in upper:
+                fail(
+                    "STATE records open Project Mind coverage gaps — close every "
+                    "critical node before Vision Lock: " + line.strip().strip("|").strip()
+                )
+
+
 def vision_confirm(args: argparse.Namespace) -> None:
     root = project_root(args.project)
     brief, brief_relative = relative_file(root, args.brief)
     if not args.confirmed_by.strip():
         fail("--confirmed-by requires an accountable identity")
+    check_vision_readiness(root, brief)
     payload = {
         "schema": f"{SCHEMA_PREFIX}/vision/v1",
         "status": "CONFIRMED",
@@ -158,15 +215,19 @@ def vision_confirm(args: argparse.Namespace) -> None:
         "confirmed_at": now(),
     }
     output = artifact_path(root, args.output, "vision-lock")
-    atomic_json(output, payload)
+    atomic_json(output, sealed(payload))
     print(f"VISION GATE: CONFIRMED ({output.relative_to(root)})")
 
 
 def validate_vision(root: Path, path: Path) -> dict[str, Any]:
     data = load_json(path)
-    required = {"schema", "status", "project_id", "brief_path", "brief_sha256", "confirmed_by", "confirmed_at"}
+    required = {
+        "schema", "status", "project_id", "brief_path", "brief_sha256",
+        "confirmed_by", "confirmed_at", SEAL_FIELD,
+    }
     if set(data) != required or data["schema"] != f"{SCHEMA_PREFIX}/vision/v1":
         fail("Vision Lock artifact schema is invalid")
+    check_seal(data, path)
     if data["status"] != "CONFIRMED" or not str(data["confirmed_by"]).strip():
         fail("Vision Lock is not accountably confirmed")
     brief, relative = relative_file(root, str(data["brief_path"]))
@@ -225,7 +286,7 @@ def verify_run(args: argparse.Namespace) -> None:
         "stderr_sha256": hashlib.sha256(result.stderr.encode()).hexdigest(),
     }
     output = artifact_path(root, args.output, "verify")
-    atomic_json(output, payload)
+    atomic_json(output, sealed(payload))
     if args.log:
         log_path = artifact_path(root, args.log, "verify.log")
         log_path.write_text(
@@ -242,9 +303,11 @@ def validate_verify(root: Path, path: Path) -> dict[str, Any]:
     required = {
         "schema", "status", "task_id", "git_commit", "tree_sha256", "command",
         "exit_code", "started_at", "completed_at", "stdout_sha256", "stderr_sha256",
+        SEAL_FIELD,
     }
     if set(data) != required or data["schema"] != f"{SCHEMA_PREFIX}/verify/v1":
         fail("Verify artifact schema is invalid")
+    check_seal(data, path)
     if data["status"] != "GREEN" or data["exit_code"] != 0:
         fail("fresh verification is not GREEN")
     if len(str(data["git_commit"])) != 40:
@@ -294,7 +357,7 @@ def release_create(args: argparse.Namespace) -> None:
         "rollback_command": args.rollback_command.strip(),
     }
     output = artifact_path(root, args.output, "release")
-    atomic_json(output, payload)
+    atomic_json(output, sealed(payload))
     print(f"RELEASE GATE: READY ({output.relative_to(root)})")
 
 
@@ -304,10 +367,11 @@ def validate_release(root: Path, path: Path) -> dict[str, Any]:
         "schema", "status", "version", "git_commit", "approved_by", "approved_at",
         "vision_artifact", "verify_artifact", "security_report", "migration_plan",
         "backup_evidence", "restore_evidence", "smoke_test_evidence",
-        "health_check_evidence", "rollback_command",
+        "health_check_evidence", "rollback_command", SEAL_FIELD,
     }
     if set(data) != required or data["schema"] != f"{SCHEMA_PREFIX}/release/v1":
         fail("Release artifact schema is invalid")
+    check_seal(data, path)
     if data["status"] != "READY" or not str(data["approved_by"]).strip() or not str(data["rollback_command"]).strip():
         fail("release is not accountably READY with rollback")
     for label in (
