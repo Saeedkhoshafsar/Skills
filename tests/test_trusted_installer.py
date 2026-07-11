@@ -50,11 +50,16 @@ class TrustedInstallerTests(unittest.TestCase):
     def git_output(directory: Path, *args: str) -> str:
         return subprocess.check_output(["git", "-C", str(directory), *args], text=True).strip()
 
-    def run_installer(self, *args: str, expected: int = 0) -> subprocess.CompletedProcess[str]:
+    def run_installer(
+        self,
+        *args: str,
+        expected: int = 0,
+        env: dict[str, str] | None = None,
+    ) -> subprocess.CompletedProcess[str]:
         result = subprocess.run(
             ["bash", str(INSTALLER), *args],
             cwd=self.project,
-            env=self.env,
+            env=env or self.env,
             text=True,
             stdout=subprocess.PIPE,
             stderr=subprocess.PIPE,
@@ -220,6 +225,73 @@ class TrustedInstallerTests(unittest.TestCase):
         (active / "SKILL.md").write_text("tampered after activation\n", encoding="utf-8")
         rejected = self.run_installer("verify", "safe-skill", expected=1)
         self.assertIn("tree checksum mismatch", rejected.stderr)
+
+    def test_bundled_capability_installs_as_native_plugin_without_quarantine(self) -> None:
+        fake_bin = self.temp / "bin"
+        fake_bin.mkdir()
+        command_log = self.temp / "claude-commands.log"
+        fake_claude = fake_bin / "claude"
+        fake_claude.write_text(
+            """#!/usr/bin/env bash
+set -eu
+printf '%s\\n' "$*" >> "$SMART_TEST_CLAUDE_LOG"
+case "$*" in
+  "plugin marketplace list --json"|"plugin list --json") printf '[]\\n' ;;
+esac
+""",
+            encoding="utf-8",
+        )
+        fake_claude.chmod(0o755)
+        env = self.env.copy()
+        env["PATH"] = f"{fake_bin}:{env['PATH']}"
+        env["SMART_TEST_CLAUDE_LOG"] = str(command_log)
+
+        self.run_installer("install", "project-planner", env=env)
+
+        commands = command_log.read_text(encoding="utf-8").splitlines()
+        self.assertEqual(
+            [
+                "plugin marketplace list --json",
+                "plugin marketplace add --scope user Saeedkhoshafsar/Skills",
+                "plugin list --json",
+                "plugin install --scope user project-planner@saeed-skills",
+            ],
+            commands,
+        )
+        self.assertFalse((self.project / ".claude/skills/.smart-quarantine").exists())
+
+    def test_bundled_capability_install_is_idempotent(self) -> None:
+        fake_bin = self.temp / "bin"
+        fake_bin.mkdir()
+        command_log = self.temp / "claude-commands.log"
+        fake_claude = fake_bin / "claude"
+        fake_claude.write_text(
+            """#!/usr/bin/env bash
+set -eu
+printf '%s\\n' "$*" >> "$SMART_TEST_CLAUDE_LOG"
+case "$*" in
+  "plugin marketplace list --json")
+    printf '[{"name":"saeed-skills"}]\\n'
+    ;;
+  "plugin list --json")
+    printf '[{"id":"project-memory@saeed-skills"}]\\n'
+    ;;
+esac
+""",
+            encoding="utf-8",
+        )
+        fake_claude.chmod(0o755)
+        env = self.env.copy()
+        env["PATH"] = f"{fake_bin}:{env['PATH']}"
+        env["SMART_TEST_CLAUDE_LOG"] = str(command_log)
+
+        result = self.run_installer("install", "project-memory", env=env)
+
+        self.assertIn("already installed", result.stdout)
+        self.assertEqual(
+            ["plugin marketplace list --json", "plugin list --json"],
+            command_log.read_text(encoding="utf-8").splitlines(),
+        )
 
     def test_internal_sources_use_main(self) -> None:
         installer = INSTALLER.read_text(encoding="utf-8")

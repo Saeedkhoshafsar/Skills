@@ -60,9 +60,13 @@ Never duplicate large content across files.
 
 On a new project, create the runway in this order:
 
-1. Establish `project-planner` for adaptive discovery.
-2. Establish `project-memory` as soon as the first reliable project facts exist.
+1. Install and activate `project-planner` for adaptive discovery through the unified installer.
+2. Install and activate `project-memory` as soon as the first reliable project facts exist.
 3. Defer `step-pilot` until the Vision Lock and plan are approved.
+
+These bundled first-party capabilities come from SMART's already trusted marketplace. SMART
+runs their marketplace installation itself; never ask the user to install a companion plugin,
+copy a command, choose a source, or configure another integration.
 
 If the idea is too vague to answer even basic outcome questions, `brainstorming` may
 precede the planner. Because of the 3-capability limit, do not add implementation
@@ -207,6 +211,9 @@ Select by capability need from `SKILLS_CATALOG.md`, never by source.
 - Follow duplicate resolution from the catalog.
 - Count standalone skills and native plugins together; maximum 3 new capabilities.
 - Reuse installed capabilities before fetching another.
+- Bundled SMART companions (`project-planner`, `project-memory`, `step-pilot`,
+  `code-review`, `debug-detective`, `security-check`) are native plugins from the same
+  trusted marketplace and are installed automatically when selected.
 - Install for the current decision/action, not every imagined future phase.
 
 Core lifecycle defaults:
@@ -261,14 +268,20 @@ Install selected capabilities through the unified installer:
 bash "${CLAUDE_PLUGIN_ROOT}/skills/smart/scripts/fetch-skill.sh" install <capability-name>
 ```
 
-Standalone external capabilities are not active after download. The installer resolves
+SMART runs this command itself. For bundled first-party companions, the installer adds
+SMART's trusted marketplace when absent and installs the selected native plugin directly;
+there is no second download-review ceremony and no user setup step.
+
+Third-party standalone capabilities are not active after download. The installer resolves
 and records a full commit, places content in `.smart-quarantine`, rejects unsafe paths
 and hard blockers, creates a file/checksum manifest, and reports findings. Review its
 `SKILL.md`, every script, provenance, license, executable/binary files, network calls,
 out-of-project writes, secret access, and contract fit. Static scan success is not proof
 of safety. Only after accountable review may the reviewer run `approve`; activation
-writes `.smart-lock.json`. Ordinary `install` must reproduce the locked commit, while
-only explicit `update` may resolve a newer candidate. Never use quarantined content.
+writes `.smart-lock.json`. If human approval is required, explain the evidence and ask
+for the approval decision in plain language—never hand the user installation commands or
+source choices. Ordinary `install` must reproduce the locked commit, while only explicit
+`update` may resolve a newer candidate. Never use quarantined content.
 
 Then perform only the current mode's next action. Discovery produces understanding,
 not code. Execution changes only the approved task scope. Release never bypasses the
@@ -382,7 +395,8 @@ SMART never:
 - begins coding after one vague prompt;
 - confuses a plausible interpretation with the user's intent;
 - asks a fixed questionnaire regardless of prior answers;
-- overwhelms a novice with jargon or implementation choices;
+- overwhelms a novice with jargon, installation commands, source choices, or integration setup;
+- asks the user to install bundled companion skills that SMART can activate itself;
 - installs capabilities for hypothetical future work;
 - creates a new skill before a documented catalog/repository reuse search, gap proof, and evaluations;
 - uses agent memory as the product database;

@@ -101,6 +101,19 @@ class SmartCognitionContractTests(unittest.TestCase):
         self.assertIn("project-memory", self.smart)
         self.assertIn("next 1–3 actions", self.smart)
 
+    def test_bundled_companions_are_zero_configuration_for_user(self) -> None:
+        normalized = " ".join(self.smart.split())
+        self.assertIn("bundled first-party capabilities", normalized)
+        self.assertIn(
+            "SMART runs their marketplace installation itself",
+            normalized,
+        )
+        self.assertIn(
+            "never ask the user to install a companion plugin",
+            normalized,
+        )
+        self.assertIn("no user setup step", normalized)
+
     def test_machine_gate_protocol_is_required(self) -> None:
         self.assertTrue(GATES.is_file())
         for gate in ("vision check", "verify check", "release check"):
