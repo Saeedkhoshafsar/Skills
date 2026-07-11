@@ -1,0 +1,173 @@
+#!/usr/bin/env python3
+"""Behavioral tests for SMART's trusted standalone-skill installer."""
+
+from __future__ import annotations
+
+import json
+import os
+import shutil
+import subprocess
+import tempfile
+import unittest
+from pathlib import Path
+
+ROOT = Path(__file__).resolve().parents[1]
+INSTALLER = ROOT / "skills/smart/skills/smart/scripts/fetch-skill.sh"
+SCANNER = ROOT / "skills/smart/skills/smart/scripts/skill-security-scan.sh"
+
+
+class TrustedInstallerTests(unittest.TestCase):
+    def setUp(self) -> None:
+        self.temp = Path(tempfile.mkdtemp(prefix="smart-installer-", dir=ROOT))
+        self.project = self.temp / "project"
+        self.remotes = self.temp / "remotes"
+        self.work = self.temp / "source"
+        self.project.mkdir()
+        self.remotes.mkdir()
+        self.work.mkdir()
+        subprocess.run(["git", "init", "-q", str(self.project)], check=True)
+        subprocess.run(["git", "init", "-q", "--initial-branch=main", str(self.work)], check=True)
+        subprocess.run(["git", "-C", str(self.work), "config", "user.name", "SMART Tests"], check=True)
+        subprocess.run(["git", "-C", str(self.work), "config", "user.email", "tests@example.invalid"], check=True)
+        skill = self.work / "skills" / "safe-skill"
+        skill.mkdir(parents=True)
+        (skill / "SKILL.md").write_text("---\nname: safe-skill\ndescription: fixture\n---\n# Safe\n", encoding="utf-8")
+        (skill / "LICENSE").write_text("Test fixture license\n", encoding="utf-8")
+        subprocess.run(["git", "-C", str(self.work), "add", "."], check=True)
+        subprocess.run(["git", "-C", str(self.work), "commit", "-qm", "initial"], check=True)
+        self.first_commit = self.git_output(self.work, "rev-parse", "HEAD")
+        bare = self.remotes / "owner" / "safe.git"
+        bare.parent.mkdir()
+        subprocess.run(["git", "clone", "-q", "--bare", str(self.work), str(bare)], check=True)
+        self.env = os.environ.copy()
+        self.env["SMART_GIT_BASE_URL"] = f"file://{self.remotes}"
+        self.env["SMART_GITHUB_API_BASE_URL"] = "http://127.0.0.1:9"
+
+    def tearDown(self) -> None:
+        shutil.rmtree(self.temp, ignore_errors=True)
+
+    @staticmethod
+    def git_output(directory: Path, *args: str) -> str:
+        return subprocess.check_output(["git", "-C", str(directory), *args], text=True).strip()
+
+    def run_installer(self, *args: str, expected: int = 0) -> subprocess.CompletedProcess[str]:
+        result = subprocess.run(
+            ["bash", str(INSTALLER), *args],
+            cwd=self.project,
+            env=self.env,
+            text=True,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+        )
+        if result.returncode != expected:
+            self.fail(
+                f"installer returned {result.returncode}, expected {expected}\n"
+                f"stdout:\n{result.stdout}\nstderr:\n{result.stderr}"
+            )
+        return result
+
+    def approve(self) -> None:
+        self.run_installer(
+            "approve", "safe-skill", ".claude/skills", "--reviewed-by", "test-reviewer"
+        )
+
+    def test_candidate_is_quarantined_then_explicitly_activated_and_locked(self) -> None:
+        result = self.run_installer(
+            "candidate", "safe-skill", "owner/safe", "main", "skills/safe-skill"
+        )
+        self.assertIn("QUARANTINED:", result.stdout)
+        self.assertFalse((self.project / ".claude/skills/safe-skill").exists())
+        state = json.loads((self.project / ".claude/skills/.smart-install-state.json").read_text())
+        self.assertIn(state["skills"]["safe-skill"]["status"], {"STATIC_SCAN_PASSED", "REVIEW_REQUIRED"})
+
+        self.approve()
+        self.assertTrue((self.project / ".claude/skills/safe-skill/SKILL.md").is_file())
+        lock = json.loads((self.project / ".smart-lock.json").read_text())
+        entry = lock["skills"]["safe-skill"]
+        self.assertEqual(entry["resolved_commit"], self.first_commit)
+        self.assertEqual(entry["review_status"], "VERIFIED")
+        self.assertEqual(entry["verified_by"], "test-reviewer")
+        self.run_installer("verify", "safe-skill")
+
+    def test_install_uses_lock_until_explicit_update(self) -> None:
+        self.run_installer("candidate", "safe-skill", "owner/safe", "main", "skills/safe-skill")
+        self.approve()
+
+        (self.work / "skills/safe-skill/SKILL.md").write_text(
+            "---\nname: safe-skill\ndescription: changed\n---\n# Changed\n", encoding="utf-8"
+        )
+        subprocess.run(["git", "-C", str(self.work), "add", "."], check=True)
+        subprocess.run(["git", "-C", str(self.work), "commit", "-qm", "change"], check=True)
+        second_commit = self.git_output(self.work, "rev-parse", "HEAD")
+        subprocess.run(
+            ["git", "-C", str(self.work), "push", "-q", f"file://{self.remotes}/owner/safe.git", "main"],
+            check=True,
+        )
+
+        shutil.rmtree(self.project / ".claude/skills/safe-skill")
+        self.run_installer("install", "safe-skill")
+        state = json.loads((self.project / ".claude/skills/.smart-install-state.json").read_text())
+        self.assertEqual(state["skills"]["safe-skill"]["resolved_commit"], self.first_commit)
+        self.approve()
+
+        self.run_installer("update", "safe-skill")
+        state = json.loads((self.project / ".claude/skills/.smart-install-state.json").read_text())
+        self.assertEqual(state["skills"]["safe-skill"]["resolved_commit"], second_commit)
+        lock = json.loads((self.project / ".smart-lock.json").read_text())
+        self.assertEqual(lock["skills"]["safe-skill"]["resolved_commit"], self.first_commit)
+
+    def test_candidate_mutation_and_lock_tampering_fail_closed(self) -> None:
+        self.run_installer("candidate", "safe-skill", "owner/safe", "main", "skills/safe-skill")
+        state_path = self.project / ".claude/skills/.smart-install-state.json"
+        state = json.loads(state_path.read_text())
+        quarantine = Path(state["skills"]["safe-skill"]["quarantine_path"])
+        (quarantine / "SKILL.md").write_text("changed after scan\n", encoding="utf-8")
+        rejected = self.run_installer(
+            "approve", "safe-skill", ".claude/skills", "--reviewed-by", "test-reviewer", expected=1
+        )
+        self.assertIn("changed after scanning", rejected.stderr)
+
+        shutil.rmtree(self.project / ".claude", ignore_errors=True)
+        self.run_installer("candidate", "safe-skill", "owner/safe", "main", "skills/safe-skill")
+        self.approve()
+        lock_path = self.project / ".smart-lock.json"
+        lock = json.loads(lock_path.read_text())
+        lock["skills"]["safe-skill"]["resolved_commit"] = "../not-a-commit"
+        lock_path.write_text(json.dumps(lock), encoding="utf-8")
+        rejected = self.run_installer("verify", "safe-skill", expected=1)
+        self.assertIn("no lock entry", rejected.stderr)
+
+    def test_rejects_unsafe_names_and_targets(self) -> None:
+        bad_name = self.run_installer("install", "../escape", expected=1)
+        self.assertIn("skill name must match", bad_name.stderr)
+        outside = self.run_installer("install", "safe-skill", str(self.temp / "outside"), expected=1)
+        self.assertIn("target must stay inside project root", outside.stderr)
+        missing_ref = self.run_installer(
+            "candidate", "safe-skill", "owner/safe", "missing-branch", "skills/safe-skill", expected=1
+        )
+        self.assertIn("no default-branch fallback is allowed", missing_ref.stderr)
+
+        self.run_installer("candidate", "safe-skill", "owner/safe", "main", "skills/safe-skill")
+        invalid_reviewer = self.run_installer(
+            "approve", "safe-skill", ".claude/skills", "--reviewed-by", "x", expected=1
+        )
+        self.assertIn("accountable identity", invalid_reviewer.stderr)
+
+    def test_static_scanner_blocks_symlinks(self) -> None:
+        candidate = self.temp / "symlink-candidate"
+        candidate.mkdir()
+        (candidate / "SKILL.md").write_text("# candidate\n", encoding="utf-8")
+        (candidate / "escape").symlink_to("/etc/passwd")
+        result = subprocess.run(
+            ["bash", str(SCANNER), str(candidate)],
+            text=True,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+        )
+        self.assertEqual(result.returncode, 1)
+        self.assertIn("BLOCKER [SYMLINK]", result.stdout)
+        self.assertIn("result=BLOCKED", result.stdout)
+
+
+if __name__ == "__main__":
+    unittest.main()

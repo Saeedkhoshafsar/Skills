@@ -230,15 +230,24 @@ lazy. Follow all gates:
 
 1. **Gap proof:** state the recurring need, why existing capabilities do not cover it,
    and why a reusable skill is better than a one-time instruction.
-2. **Creation capability:** install and apply `skill-creator` (the duplicate-resolution
-   winner). This counts toward the 3-capability limit.
-3. **Contract first:** define triggers, non-triggers, inputs, outputs, tools, safety
+2. **Reuse search:** search the curated catalog first, then reputable repositories using
+   capability-specific terms. Record candidate provenance, maintenance signals, license,
+   scope fit, and why rejected candidates were unsuitable. Popularity is not trust.
+3. **Candidate gate:** a discovered repository enters only through `fetch-skill.sh
+   candidate <name> <owner/repo> <ref> <path>`. It stays quarantined and unavailable
+   until static scanning, complete script/contract review, checksum manifest review,
+   and explicit accountable approval produce a locked commit. Never execute candidate
+   code to evaluate it, and never promote a candidate silently into the curated catalog.
+4. **Creation capability:** only when the documented search still proves a gap, install
+   and apply `skill-creator` (the duplicate-resolution winner). This counts toward the
+   3-capability limit.
+5. **Contract first:** define triggers, non-triggers, inputs, outputs, tools, safety
    boundaries, failure behavior, examples, and acceptance/evaluation cases.
-4. **Least privilege:** grant only required tools and paths; no hidden network or secret
+6. **Least privilege:** grant only required tools and paths; no hidden network or secret
    access. Project-specific skills stay project-specific unless deliberately promoted.
-5. **Adversarial evaluation:** test normal, ambiguous, missing-input, conflict, and
+7. **Adversarial evaluation:** test normal, ambiguous, missing-input, conflict, and
    unsafe cases. A skill is not “available” until evaluations pass.
-6. **Register and remember:** add it to the project's capability inventory and record
+8. **Register and remember:** add it to the project's capability inventory and record
    why/when it should be invoked in STATE/DECISIONS.
 
 Do not recursively create a “skill that creates skills”; `skill-creator` is the single
@@ -249,12 +258,17 @@ audited factory. SMART owns gap detection and acceptance.
 Install selected capabilities through the unified installer:
 
 ```bash
-bash "${CLAUDE_PLUGIN_ROOT}/skills/smart/scripts/fetch-skill.sh" <capability-name>
+bash "${CLAUDE_PLUGIN_ROOT}/skills/smart/scripts/fetch-skill.sh" install <capability-name>
 ```
 
-For each external capability, perform the mandatory supply-chain review before use:
-read its `SKILL.md` and scripts; reject unexpected data exfiltration, network calls,
-out-of-project writes, secret access, or behavior unrelated to its contract.
+Standalone external capabilities are not active after download. The installer resolves
+and records a full commit, places content in `.smart-quarantine`, rejects unsafe paths
+and hard blockers, creates a file/checksum manifest, and reports findings. Review its
+`SKILL.md`, every script, provenance, license, executable/binary files, network calls,
+out-of-project writes, secret access, and contract fit. Static scan success is not proof
+of safety. Only after accountable review may the reviewer run `approve`; activation
+writes `.smart-lock.json`. Ordinary `install` must reproduce the locked commit, while
+only explicit `update` may resolve a newer candidate. Never use quarantined content.
 
 Then perform only the current mode's next action. Discovery produces understanding,
 not code. Execution changes only the approved task scope. Release never bypasses the
@@ -349,7 +363,7 @@ SMART never:
 - asks a fixed questionnaire regardless of prior answers;
 - overwhelms a novice with jargon or implementation choices;
 - installs capabilities for hypothetical future work;
-- creates a new skill without gap proof and evaluations;
+- creates a new skill before a documented catalog/repository reuse search, gap proof, and evaluations;
 - uses agent memory as the product database;
 - treats a specialist persona as verified professional advice;
 - hides uncertainty behind a score or polished roadmap;

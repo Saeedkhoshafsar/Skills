@@ -30,7 +30,7 @@ Skills/
     └── security-check/       # pre-release security audit (secrets, deps, auth, ...)
 ```
 
-> **Prerequisites for on-demand fetching:** `git` and `curl` (the script checks and tells you if they are missing). On Windows use Git Bash. Some fetched skills (e.g. `ui-ux-pro-max`) additionally need Python 3 for their own scripts.
+> **Prerequisites for on-demand fetching:** `git`, `curl`, Python 3, and `file` (the script checks and reports missing tools). On Windows use Git Bash with Python available. Some fetched skills (e.g. `ui-ux-pro-max`) additionally use Python for their own scripts.
 
 ## Install on Claude Code (primary path — plugin marketplace)
 
@@ -118,9 +118,27 @@ claude plugin update smart@saeed-skills         # 2. pull the new plugin version
 # (or /plugin → manage → update inside a session)
 ```
 
-Capabilities installed on demand are pinned snapshots/packages — refresh a standalone skill or native plugin with:
+Standalone capabilities use a fail-closed trusted-install workflow. A first install resolves the configured ref to a full commit, downloads into quarantine, runs a static pre-screen, and remains unavailable until an accountable review explicitly activates it. Activation writes `.smart-lock.json`; later installs use exactly that commit. Only `update` resolves a newer commit, and the active version remains unchanged until the new candidate is reviewed.
 
 ```bash
-bash skills/smart/skills/smart/scripts/fetch-skill.sh --update <skill-name>
+# Curated source: discover, quarantine, and scan (does not activate)
+bash skills/smart/skills/smart/scripts/fetch-skill.sh install pdf
+
+# Inspect .smart-scan-report.txt, SKILL.md, every script, provenance, and license; then:
+bash skills/smart/skills/smart/scripts/fetch-skill.sh approve pdf .claude/skills --reviewed-by <identity>
+
+# Verify active content against the lockfile
+bash skills/smart/skills/smart/scripts/fetch-skill.sh verify pdf
+
+# Explicitly resolve a newer commit into quarantine
+bash skills/smart/skills/smart/scripts/fetch-skill.sh update pdf
 ```
-(`--update` re-downloads standalone skills from their recorded original source and delegates native plugin updates to Claude Code.)
+
+A repository found during capability research can enter the same pipeline without becoming a trusted catalog source:
+
+```bash
+bash skills/smart/skills/smart/scripts/fetch-skill.sh candidate \
+  <skill-name> <owner/repository> <ref> <path-to-skill>
+```
+
+`candidate` is intentionally not an approval. Static scanning cannot prove safety. Symlinks, hardlinks, path escape, oversized payloads, and unsafe destinations fail closed; suspicious executables, binaries, secret access, network/bootstrap patterns, and missing licenses require review. Silent fallback to a default branch is forbidden. Native marketplace plugins retain their native install/update mechanism and must be reviewed under their marketplace provenance controls.
