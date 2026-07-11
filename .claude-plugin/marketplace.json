@@ -6,14 +6,14 @@
   },
   "metadata": {
     "description": "SMART skill-manager ecosystem: phase-aware skill orchestration across standalone skill sources (including Anthropic, obra/superpowers, UI/UX, and marketing skills), atomic planning, persistent project memory, step-by-step execution, local code review, systematic debugging, and security auditing.",
-    "version": "2.4.0"
+    "version": "2.5.0"
   },
   "plugins": [
     {
       "name": "smart",
       "source": "./skills/smart",
       "description": "Project intelligence orchestrator: builds a truthful shared model, enforces Vision Lock before planning/code, preserves durable memory and runway, and installs or creates only the capabilities required for the next best action.",
-      "version": "2.4.0",
+      "version": "2.5.0",
       "author": { "name": "Saeedkhoshafsar" },
       "keywords": ["capability-manager", "skill-manager", "plugin-orchestration", "phase-detection"],
       "category": "workflow"
@@ -22,7 +22,7 @@
       "name": "project-planner",
       "source": "./skills/project-planner",
       "description": "Adaptive idea discovery and planning: Project Brief, epistemic map, viability/risk review, mandatory Vision Lock, and a risk-ordered atomic execution plan.",
-      "version": "1.2.0",
+      "version": "1.3.0",
       "author": { "name": "Saeedkhoshafsar" },
       "keywords": ["planning", "roadmap", "interview"],
       "category": "planning"
@@ -31,7 +31,7 @@
       "name": "project-memory",
       "source": "./skills/project-memory",
       "description": "Durable project intelligence: compact resume state plus canonical brief, plan, decisions, research, assumptions, capability inventory, change ledger, and future runway.",
-      "version": "1.2.0",
+      "version": "1.3.0",
       "author": { "name": "Saeedkhoshafsar" },
       "keywords": ["memory", "state", "resume", "context"],
       "category": "workflow"

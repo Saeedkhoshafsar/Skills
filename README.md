@@ -1,6 +1,6 @@
 # Skills — SMART Skill-Manager Ecosystem
 
-> The user activates only **SMART**. SMART first builds a truthful shared picture of the idea, labels uncertainty, and refuses to plan or code until the user confirms **Vision Lock**. It then preserves durable project memory and runway, selects capabilities by the next decision/action, and installs or creates only what is needed — the user never chooses a source, marketplace, package type, or command.
+> The user activates only **SMART**. SMART builds a verified, inch-by-inch model of the intended product as an atomic **Project Mind network** (`docs/PROJECT-MIND.md`), labels uncertainty, and refuses to plan or code until the mind coverage is complete and the user confirms **Vision Lock** — “start building and figure it out later” is forbidden under any pressure. It then preserves durable project memory and runway, selects capabilities by the next decision/action, and installs or creates only what is needed — the user never chooses a source, marketplace, package type, or command. Built for professional development teams first (maximum automation, only key questions); engineered precisely enough to carry a complete novice.
 >
 > A curated set of installable skills across multiple standalone sources: 7 local + Anthropic's official skills (pdf/docx/xlsx/pptx, frontend-design, webapp-testing, skill-creator, mcp-builder…) + obra/superpowers engineering-process skills (TDD, brainstorming…) + ruflo + claude-plugins-official plugin-dev skills + nextlevelbuilder/ui-ux-pro-max UI/UX design intelligence (67+ styles, 161 palettes, 57 font pairings…).
 
@@ -23,8 +23,8 @@ Skills/
     │       └── scripts/
     │           ├── fetch-skill.sh  # unified skill + native-plugin capability installer
     │           └── smart-gates.py  # machine-verifiable Vision, Verify, and Release gates
-    ├── project-planner/      # adaptive discovery + Project Brief + Vision Lock + atomic PLAN.md
-    ├── project-memory/       # canonical truth + resume packet + decisions/assumptions/runway
+    ├── project-planner/      # adaptive discovery + Project Mind growth + Vision Lock + atomic PLAN.md
+    ├── project-memory/       # atomic Project Mind network + canonical truth + resume packet + runway
     ├── step-pilot/           # Vision-Lock + evidence-gated step execution and recovery
     ├── code-review/          # local diff review (correctness, tests, plan conformance)
     ├── debug-detective/      # systematic debugging (reproduce -> root cause -> fix -> regression)
@@ -82,6 +82,18 @@ cp -r /tmp/sk/skills/smart/skills/smart .claude/skills/ && rm -rf /tmp/sk
 | Mid-development | task-specific capabilities | select only for the current decision/action; recurring bug → `debug-detective`; material new evidence → SMART re-orientation |
 | Ready to release | `security-check` (GATE) + `github-release-management` + `hooks-automation` | security gate is mandatory |
 | Maintenance | `github-project-management` | issues, boards |
+
+### The Project Mind — an atomic replica of the user's intent
+
+Before any plan or code exists, SMART grows `docs/PROJECT-MIND.md`: a network of
+addressable, testable nodes (`M-EXP-04`, `M-BEH-07`, …) with epistemic labels, sources,
+and typed links, covering the product inch by inch across 11 domains — intent, people,
+final experience, scope, behavior rules, data, interfaces, quality, risk, success
+evidence, and evolution. Vision Lock passes only when the coverage sweep is COMPLETE:
+no critical unknown or conflict remains, every assumption is owned and time-boxed, and
+every milestone maps to the node IDs it realizes. The result: an interrupted session
+resumes without a single unanswered product question, and the project can never drift
+into “we'll figure it out as we go.”
 
 ### Excellence by default
 

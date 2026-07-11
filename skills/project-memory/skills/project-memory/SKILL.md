@@ -1,11 +1,13 @@
 ---
 name: project-memory
 description: >
-  Durable, low-noise project intelligence for continuity across sessions. Maintains
-  a compact resume index in docs/STATE.md and coordinates the canonical Project
-  Brief, Plan, Decisions, and Research records so facts, assumptions, changes,
-  errors, capability inventory, and future runway remain reconstructable without
-  rescanning the whole project. Use at session start and every meaningful work event.
+  Durable, low-noise project intelligence for continuity across sessions. Owns the
+  atomic Project Mind network (docs/PROJECT-MIND.md) that captures the user's
+  intended product inch by inch, maintains a compact resume index in docs/STATE.md,
+  and coordinates the canonical Project Brief, Plan, Decisions, and Research records
+  so facts, assumptions, changes, errors, capability inventory, and future runway
+  remain reconstructable without rescanning the whole project. Use at session start
+  and every meaningful work event.
 allowed-tools: Read, Write, Edit, Bash
 ---
 
@@ -38,6 +40,7 @@ The memory system must let a newly connected agent answer, within minutes:
 
 | Record | Contains | Does not contain |
 |---|---|---|
+| `PROJECT-MIND.md` | the atomic mind network: addressable nodes for every material product fact, linked into one navigable model of the user's intended final result | narrative prose, implementation history, duplicated plan content |
 | `PROJECT-BRIEF.md` | intent, people, final experience, scope, constraints, success, epistemic map, Vision Lock | implementation task history |
 | `PLAN.md` | milestones, dependencies, atomic tasks, acceptance, verify, rollback | daily progress narrative |
 | `STATE.md` | resume packet, current objective/task, exact progress, blockers, latest deltas, capability inventory, runway | full requirements or chat transcript |
@@ -46,6 +49,68 @@ The memory system must let a newly connected agent answer, within minutes:
 
 Use existing equivalent files instead of creating parallel records. Create a file only
 when it has real content.
+
+## Project Mind — the atomic mental network
+
+`docs/PROJECT-MIND.md` is the engineered replica of the user's mind about the product:
+what it is, for whom, how it behaves in every material situation, and what the final
+result looks like — inch by inch. It exists so that a resuming agent never faces an
+unanswered product question mid-development and the project can never drift toward
+“start now, figure it out later.”
+
+### Node rules (atomic like a real mind)
+
+1. **One node = one atomic, testable statement.** If a node contains “and”, consider
+   splitting it. A node that cannot be confirmed or falsified is not a node.
+2. **Every node is addressable:** `M-<domain>-<number>` (e.g. `M-EXP-04`).
+3. **Every node carries:** epistemic label (`KNOWN/INFERRED/ASSUMED/UNKNOWN/CONFLICT`),
+   source (user statement date / evidence / decision ID), and links to related nodes.
+4. **Links are typed:** `requires`, `refines`, `conflicts`, `serves`, `constrains`.
+   A plan task references the node IDs it implements; a decision references the nodes
+   it settles.
+5. **The network stays current:** when the user corrects the picture, the node is
+   updated (or superseded with a link), never silently rewritten.
+6. **Size follows the project.** A small tool may need 20 nodes; a platform may need
+   hundreds. Empty domains are omitted — the mind network is never bureaucracy.
+
+### Domain skeleton
+
+```markdown
+# PROJECT MIND — <project name>
+> Atomic network of the intended product. Every material question about
+> “what are we building and why” must be answerable from a node here.
+
+## INT — Intent & Why            (M-INT-*)
+## PPL — People & Stakeholders   (M-PPL-*)
+## EXP — Final Experience        (M-EXP-*)  # journeys, states, failure/recovery moments
+## SCP — Scope & Non-goals       (M-SCP-*)
+## BEH — Behavior & Rules        (M-BEH-*)  # domain rules, edge cases, permissions
+## DAT — Data & Content          (M-DAT-*)  # entities, lifecycle, sensitivity
+## IFC — Interfaces & Integrations (M-IFC-*)
+## QLT — Quality & Constraints   (M-QLT-*)  # performance, reliability, compliance
+## RSK — Risks & Misuse          (M-RSK-*)
+## SUC — Success & Evidence      (M-SUC-*)
+## EVO — Evolution               (M-EVO-*)  # plausible futures, deliberate deferrals
+
+Node format:
+- `M-EXP-04` [KNOWN — user 2026-07-11] When payment fails, the user sees the exact
+  reason and a retry path; the order is never silently lost.
+  links: serves M-INT-01, requires M-IFC-02, constrains M-BEH-07
+```
+
+### Completeness gate (feeds Vision Lock)
+
+Before Vision Lock, the mind network must pass a coverage sweep:
+
+- every domain relevant to this project has nodes or an explicit `not applicable`;
+- no `UNKNOWN` or `CONFLICT` node remains on a critical path (intent, primary user,
+  final experience, scope boundary, sensitive data, safety/legal, success evidence);
+- every `ASSUMED` node has an owner, validation test, and expiry trigger;
+- every planned milestone can point to the node IDs it realizes — a milestone with no
+  nodes is fantasy; nodes with no milestone are conscious deferrals in `EVO`.
+
+The sweep result is recorded in STATE (`Mind coverage: COMPLETE <date> / GAPS: <ids>`).
+Planning or code with open critical gaps is forbidden.
 
 ## Session-start read protocol
 
@@ -78,6 +143,7 @@ Do not modify memory merely because a session started.
 | Last evidence | `<command>` -> GREEN/RED at <time>, or user confirmation/source |
 | Blocker / waiting on | <one precise item or none> |
 | Vision Lock | NOT READY / READY FOR CONFIRMATION / CONFIRMED <date> |
+| Mind coverage | NOT BUILT / GAPS: <node IDs> / COMPLETE <date> |
 | Machine gates | Vision `<artifact/check>`; Verify `<artifact/check>`; Release `<artifact/check or N/A>` |
 | Branch / head | <branch / short hash> |
 
@@ -118,7 +184,8 @@ Do not modify memory merely because a session started.
 
 | Event | Required memory delta |
 |---|---|
-| reliable discovery answer | update brief; add only changed truth to Epistemic delta |
+| reliable discovery answer | add/update the atomic mind node(s); update brief; add only changed truth to Epistemic delta |
+| user corrects the picture | update or supersede the affected mind nodes and their links; never leave a stale node |
 | Vision Playback confirmation | brief Vision Lock + STATE status + `.smart/evidence/vision-lock.json` produced by `smart-gates.py` |
 | temporary assumption | assumption, owner, validation test, expiry/reversal trigger |
 | material decision | append decision record; link concise consequence from STATE |

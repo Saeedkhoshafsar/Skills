@@ -127,6 +127,57 @@ class SmartCognitionContractTests(unittest.TestCase):
             with self.subTest(requirement=requirement):
                 self.assertIn(requirement, normalized)
 
+    def test_project_mind_network_is_the_written_understanding(self) -> None:
+        normalized = " ".join(self.smart.split())
+        for requirement in (
+            "The mind is written, not remembered",
+            "docs/PROJECT-MIND.md",
+            "an insight that is not a node does not exist for the next session",
+        ):
+            with self.subTest(requirement=requirement):
+                self.assertIn(requirement, normalized)
+
+    def test_vision_lock_requires_complete_mind_coverage(self) -> None:
+        normalized = " ".join(self.smart.split())
+        self.assertIn(
+            "SMART's picture of the product and the user's picture are the same picture",
+            normalized,
+        )
+        self.assertIn(
+            "the Project Mind coverage sweep is COMPLETE",
+            normalized,
+        )
+
+    def test_figure_it_out_later_is_forbidden_under_pressure(self) -> None:
+        normalized = " ".join(self.smart.split())
+        self.assertIn(
+            "\"Start now and figure it out as we go\" is forbidden as a project strategy",
+            normalized,
+        )
+        self.assertIn(
+            "never waive the gate",
+            normalized,
+        )
+        self.assertIn(
+            "adopts “start building and figure the product out later” under any pressure",
+            normalized,
+        )
+
+    def test_pro_teams_are_primary_audience_with_novice_safe_rigor(self) -> None:
+        normalized = " ".join(self.smart.split())
+        self.assertIn(
+            "SMART serves professional development teams first",
+            normalized,
+        )
+        self.assertIn(
+            "maximum automation, minimum interruption, only key questions",
+            normalized,
+        )
+        self.assertIn(
+            "novice support is a property of the rigor, not a separate simplified mode",
+            normalized,
+        )
+
     def test_quality_bar_never_slows_or_inflates_the_project(self) -> None:
         normalized = " ".join(self.smart.split())
         self.assertIn(
@@ -239,6 +290,7 @@ class DiscoveryPlanningContractTests(unittest.TestCase):
     def test_atomic_tasks_include_evidence_and_reversal(self) -> None:
         for field in (
             "**Why now:**",
+            "**Realizes:**",
             "**Depends on:**",
             "**Files:**",
             "**Accept:**",
@@ -248,6 +300,18 @@ class DiscoveryPlanningContractTests(unittest.TestCase):
         ):
             with self.subTest(field=field):
                 self.assertIn(field, self.planner)
+
+    def test_planner_grows_the_mind_network_and_gates_on_coverage(self) -> None:
+        normalized = " ".join(self.planner.split())
+        for requirement in (
+            "docs/PROJECT-MIND.md",
+            "Write every reliable answer into the mind network",
+            "the Project Mind coverage sweep is COMPLETE",
+            "is not an acceptable path past this gate under any schedule pressure",
+            "Every task cites the mind node IDs it realizes",
+        ):
+            with self.subTest(requirement=requirement):
+                self.assertIn(requirement, normalized)
 
 
 class ContinuityAndExecutionContractTests(unittest.TestCase):
@@ -270,6 +334,29 @@ class ContinuityAndExecutionContractTests(unittest.TestCase):
     def test_memory_is_not_transcript_or_secret_store(self) -> None:
         self.assertIn("transcript into STATE", self.memory)
         self.assertIn("Keep sensitive values and secrets out", self.memory)
+
+    def test_memory_owns_an_atomic_addressable_mind_network(self) -> None:
+        normalized = " ".join(self.memory.split())
+        for requirement in (
+            "Project Mind — the atomic mental network",
+            "One node = one atomic, testable statement",
+            "Every node is addressable",
+            "Links are typed",
+            "Completeness gate (feeds Vision Lock)",
+            "no `UNKNOWN` or `CONFLICT` node remains on a critical path",
+            "Planning or code with open critical gaps is forbidden",
+            "the mind network is never bureaucracy",
+        ):
+            with self.subTest(requirement=requirement):
+                self.assertIn(requirement, normalized)
+
+    def test_mind_domains_cover_the_product_inch_by_inch(self) -> None:
+        for domain in (
+            "INT", "PPL", "EXP", "SCP", "BEH", "DAT",
+            "IFC", "QLT", "RSK", "SUC", "EVO",
+        ):
+            with self.subTest(domain=domain):
+                self.assertIn(f"M-{domain}-", self.memory)
 
     def test_execution_refuses_unconfirmed_or_unverifiable_work(self) -> None:
         self.assertIn("Vision Lock is not explicitly `CONFIRMED`", self.pilot)
