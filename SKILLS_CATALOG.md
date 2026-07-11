@@ -1,7 +1,7 @@
 # SKILLS_CATALOG — Verified Skill Catalog (SMART's decision source)
 
 > Input for the **SMART** mother skill. Each skill: name + one-line purpose + tier.
-> Verified on 2026-07-11: standalone skill sources are listed below; duplicate resolution and the supply-chain gate apply to every external download. Context Engineering Kit is documented separately because it is a plugin marketplace rather than a flat skill source.
+> Verified on 2026-07-11: standalone skill sources and native plugin capabilities are listed below; duplicate resolution and the supply-chain gate apply to external installs. Context Engineering Kit remains a plugin marketplace rather than a flat skill source, and the unified installer handles it automatically.
 
 **Sources (priority order — first source that has a skill wins):**
 | # | Source | Count | Path | Content |
@@ -192,7 +192,7 @@
 | `coreyhaines31/marketingskills` | `fetch-skill.sh <skill-name>` from `skills/` | marketing strategy, copywriting, SEO, CRO, analytics, growth, and RevOps; start with `product-marketing` to create shared context | MIT; skills intentionally reference `.agents/product-marketing.md` |
 | `hardikpandya/stop-slop` | `fetch-skill.sh stop-slop` | editing prose to remove predictable AI phrasing and structures | MIT; intentionally strict style rules, so use only when the requested voice fits |
 | `wshuyi/remotion-video-skill` | `fetch-skill.sh remotion-video` | creating React/Remotion videos, animations, subtitles, or TTS-driven scenes | MIT; requires Node.js 18+, Python for TTS, and `ffprobe` for audio-duration detection |
-| `NeoLabHQ/context-engineering-kit` | install its marketplace/plugin directly | reflection, spec-driven development, TDD, review, git, docs, or context-engineering workflows | GPL-3.0; do not flatten into `fetch-skill.sh` because its plugins also contain commands, agents, and hooks |
+| `NeoLabHQ/context-engineering-kit` | `fetch-skill.sh <capability>` auto-adds its marketplace and installs the selected native plugin | reflection, spec-driven development, judged subagents, TDD, review, git, docs, or context-engineering workflows | GPL-3.0; unified installation preserves commands, agents, hooks, and skills instead of flattening them |
 
 ### Capability additions
 
@@ -202,7 +202,14 @@
 | Copy, SEO, CRO, launch, pricing, analytics, or RevOps | the focused `marketingskills` entry after checking `product-marketing` |
 | Direct, human-sounding prose review | `stop-slop` |
 | Programmatic video with React and Remotion | `remotion-video` |
-| Context-engineering workflows | `/plugin marketplace add NeoLabHQ/context-engineering-kit`, then install the required plugin |
+| Reflection / self-critique / durable lessons | `reflection` → CEK `reflexion` |
+| Spec-driven implementation for complex work | `spec-driven-development` → CEK `sdd` |
+| Subagent execution with judges | `subagent-development` → CEK `sadd` |
+| Multi-agent code or PR review | `context-review` → CEK `review` |
+| DDD / SOLID / Clean Architecture guidance | `domain-driven-development` → CEK `ddd` |
+| Root-cause and continuous-improvement analysis | `continuous-improvement` → CEK `kaizen` |
+| Evidence-audited first-principles decisions | `first-principles-reasoning` → CEK `fpf` (RED: very high token use) |
+| CEK Git / TDD / docs / tech-stack / MCP / agent customization | matching capability from `fetch-skill.sh --list` |
 
 ## Category 13 — ruflo-internal — NEVER install (14, all BLACK)
 
@@ -219,7 +226,7 @@
 
 | Skill | Purpose | Phase / trigger |
 |---|---|---|
-| smart | Skill manager: detects the project phase, installs the right skills on-demand | Every session start / phase change |
+| smart | Capability manager: detects project/task needs, then installs the right standalone skills or native plugins on demand | Every session start / phase change |
 | project-planner | User interview + S/M/L sizing + atomic PLAN.md (13 layers, CTB style) | Phase 0 (empty project) |
 | project-memory | File-based memory STATE.md: current task, errors, decisions (disconnect-proof) | Phase 1+ (always active) |
 | step-pilot | Step-by-step execution: implement -> test -> verify -> record -> commit | Phase 1+ (always active) |
@@ -274,12 +281,13 @@ Every SMART invocation:
    - plan but no code?   -> Phase 1: setup (memory + steps)
    - mid-development?    -> Phase 2: code + test + git
    - ready to release?   -> Phase 4: security gate + CI/CD + release
-2. SELECT skills matching phase and tier from this catalog
-   - rule: minimum skill count that moves the work forward (anti-greed)
+2. SELECT capabilities matching phase and tier from this catalog
+   - rule: minimum capability count that moves the work forward (max 3; anti-greed)
    - GREEN default-allowed | YELLOW with reason | RED big projects only | BLACK never
-   - SMART has FREE HAND across all standalone sources: pick by capability need,
-     not by source. Check the duplicate-resolution table first.
-3. REPORT the skill roadmap: "these 3 now; those 2 after Phase 2"
+   - SMART has FREE HAND across standalone sources and native marketplaces: pick by
+     capability need, never source/package type. Check duplicate resolution first.
+3. ACT through fetch-skill.sh; it resolves sparse skill vs native plugin automatically
+4. REPORT the capability roadmap: "these 3 now; those 2 after Phase 2"
 ```
 
 ### Capability-need quick index (SMART's free-hand lookup)
@@ -308,7 +316,13 @@ Every SMART invocation:
 | Marketing strategy, copy, SEO, CRO, growth, or RevOps | focused `marketingskills` entry (start with `product-marketing`) |
 | Remove predictable AI prose patterns | stop-slop |
 | Programmatic Remotion video | remotion-video |
-| Context engineering / reflection / SDD plugins | Context Engineering Kit marketplace |
+| Reflection / self-critique | reflection (auto-installs CEK reflexion) |
+| Complex spec-driven development | spec-driven-development (auto-installs CEK sdd) |
+| Judged subagent development | subagent-development (auto-installs CEK sadd) |
+| Multi-agent code / PR review | context-review (auto-installs CEK review) |
+| DDD / SOLID / Clean Architecture rules | domain-driven-development (auto-installs CEK ddd) |
+| Root-cause / continuous improvement | continuous-improvement (auto-installs CEK kaizen) |
+| Auditable first-principles reasoning (large only) | first-principles-reasoning (auto-installs CEK fpf) |
 
 ## Install Commands
 
@@ -318,10 +332,11 @@ claude plugin marketplace add Saeedkhoshafsar/Skills
 claude plugin install smart@saeed-skills
 ```
 
-On-demand download (skills never bloat the project):
+Unified on-demand installation (SMART resolves source and package type):
 ```bash
 bash skills/smart/skills/smart/scripts/fetch-skill.sh --list             # what is available
 bash skills/smart/skills/smart/scripts/fetch-skill.sh sparc-methodology  # install just this one
-bash skills/smart/skills/smart/scripts/fetch-skill.sh ui-ux-pro-max      # UI/UX design intelligence
-bash skills/smart/skills/smart/scripts/fetch-skill.sh --installed        # what is installed
+bash skills/smart/skills/smart/scripts/fetch-skill.sh ui-ux-pro-max      # standalone UI/UX skill
+bash skills/smart/skills/smart/scripts/fetch-skill.sh spec-driven-development # native CEK sdd plugin
+bash skills/smart/skills/smart/scripts/fetch-skill.sh --installed        # skills + plugins installed
 ```

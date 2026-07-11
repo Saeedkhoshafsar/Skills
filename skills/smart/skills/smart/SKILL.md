@@ -3,7 +3,7 @@ name: smart
 description: >
   Mother skill / skill manager. On every invocation: (1) senses project state and
   detects the current phase, (2) selects only the skills that phase needs from the
-  catalog and installs them on-demand from GitHub, (3) reports a skill roadmap
+  catalog and installs them on-demand from GitHub or their native marketplace, (3) reports a skill roadmap
   (what is active now, what comes next). Use when starting any project, resuming
   work, entering a new phase, or when the user says "smart" / "اسمارت" or asks
   which skills to activate.
@@ -12,14 +12,16 @@ allowed-tools: Read, Glob, Grep, Bash
 
 # SMART — Skill Manager
 
-**Philosophy:** The user activates only SMART. SMART decides the rest.
-No skill lives in the project up front — skills are downloaded the moment they are needed.
+**Philosophy:** The user activates only SMART. SMART decides the rest — capability, source,
+package type, and installation command. No skill or plugin lives in the project up front;
+capabilities are installed the moment they are needed without asking the user to choose where or how.
 
 **Golden rule:** Install the MINIMUM number of skills that moves the work forward. Never hoard.
 
-**Free hand:** SMART selects across all applicable sources in `SKILLS_CATALOG.md`, including the
-marketing, prose-quality, and programmatic-video additions. Context Engineering Kit
-remains a separate plugin marketplace because its features are packaged as plugins, not standalone skills. by CAPABILITY NEED, not by source. When two sources cover the same capability,
+**Free hand:** SMART selects across all applicable sources in `SKILLS_CATALOG.md`, including
+marketing, prose-quality, programmatic-video, and Context Engineering Kit capabilities,
+by CAPABILITY NEED — never by source. The unified installer preserves CEK as native plugins
+because they include agents, commands, and hooks. When two sources cover the same capability,
 follow the duplicate-resolution table in the catalog (e.g. skill-creator beats
 skill-builder/writing-skills; local debug-detective beats systematic-debugging).
 
@@ -49,13 +51,20 @@ Match the facts against the Phase Table below. Pick exactly one phase.
   Capability Triggers table below and the "Capability-need quick index" in the
   catalog) — e.g. "produce a PDF report" in any phase → `pdf`.
 - Apply tier rules: GREEN = allowed by default | YELLOW = only with a stated reason | RED = large projects only | BLACK = never (ruflo-internal).
-- Install at most **3 new skills** per invocation.
+- Install at most **3 new capabilities** (standalone skills and/or native plugins) per invocation.
+- Select capability names only. Never ask the user to choose a repository, marketplace, skill,
+  plugin, or install command; the unified installer resolves those implementation details.
 
 ### Step 4 — Act (install + review)
 
 ```bash
-bash "${CLAUDE_PLUGIN_ROOT}/skills/smart/scripts/fetch-skill.sh" <skill-name>   # only the selected skills
+bash "${CLAUDE_PLUGIN_ROOT}/skills/smart/scripts/fetch-skill.sh" <capability-name>  # only selected capabilities
 ```
+
+The same command installs either a sparse standalone skill or a native marketplace plugin.
+For CEK capabilities it automatically adds `NeoLabHQ/context-engineering-kit` once, installs
+the selected plugin, and preserves its agents, commands, hooks, and skills. Do not stop at
+printing installation guidance when the Claude CLI is available; execute the installer.
 
 > If `${CLAUDE_PLUGIN_ROOT}` is not set (manual install, non-Claude-Code agent),
 > use the path where the smart skill lives, e.g. `.claude/skills/smart/scripts/fetch-skill.sh`.
@@ -122,7 +131,14 @@ Emit the status report using the template at the bottom, including:
 | Marketing strategy, copy, SEO, CRO, growth, or RevOps | focused marketing skill (start with `product-marketing`) | coreyhaines31/marketingskills |
 | Editing prose to remove predictable AI writing patterns | `stop-slop` | hardikpandya/stop-slop |
 | Programmatic React/Remotion video creation | `remotion-video` | wshuyi/remotion-video-skill |
-| Context-engineering workflows, reflection, or spec-driven development | install the appropriate CEK plugin | NeoLabHQ/context-engineering-kit |
+| Reflection / self-critique / durable lessons | `reflection` (auto-resolves to CEK `reflexion`) | unified installer |
+| Large or complex spec-driven implementation | `spec-driven-development` (CEK `sdd`) | unified installer |
+| Subagent execution with independent judges | `subagent-development` (CEK `sadd`) | unified installer |
+| Multi-agent code or PR review | `context-review` (CEK `review`) | unified installer |
+| DDD / SOLID / Clean Architecture rules | `domain-driven-development` (CEK `ddd`) | unified installer |
+| Root-cause / continuous-improvement analysis | `continuous-improvement` (CEK `kaizen`) | unified installer |
+| First-principles, evidence-audited decisions | `first-principles-reasoning` (CEK `fpf`, RED: high token cost) | unified installer |
+| Native CEK docs, Git, TDD, tech-stack, MCP, or extension workflows | the matching capability from `--list` | unified installer |
 
 **RED-tier only if:** project becomes multi-agent/very large → `swarm-orchestration` or `dispatching-parallel-agents`; RAG needed → `agentdb-vector-search`.
 **BLACK-tier (`v3-*`, `flow-nexus-*`, `dual-mode`, `worker-benchmarks`): never — they are ruflo internals. fetch-skill.sh refuses them.**
@@ -133,10 +149,10 @@ Skills are NOT stored in the project — they are downloaded when needed:
 
 ```bash
 FETCH="${CLAUDE_PLUGIN_ROOT}/skills/smart/scripts/fetch-skill.sh"   # or .claude/skills/smart/scripts/fetch-skill.sh
-bash "$FETCH" --list            # list skills available from all standalone sources
-bash "$FETCH" <skill-name>      # install one skill (sparse-checkout, not the whole repo)
-bash "$FETCH" --installed       # list currently installed skills
-bash "$FETCH" --update <skill>  # refresh an installed skill from its ORIGINAL source
+bash "$FETCH" --list                 # list all standalone and plugin capabilities
+bash "$FETCH" <capability-name>       # resolve source/package and install it
+bash "$FETCH" --installed            # list installed standalone skills and plugins
+bash "$FETCH" --update <capability>  # update from its original source/package
 ```
 
 Source priority when the same name exists twice: this repo → anthropics/skills → obra/superpowers → ruflo → claude-plugins-official → ui-ux-pro-max-skill → marketingskills. `stop-slop` and `remotion-video` are resolved through root-folder aliases. Nested skills (the 7 local skills, playground, claude-md-improver, plugin-dev suite, mcp-server-dev suite, …) are resolved through the alias map inside the script — just use the skill name.
@@ -147,7 +163,11 @@ Local skills (project-planner, project-memory, step-pilot, code-review, debug-de
 bash "$FETCH" project-memory
 ```
 
-Context Engineering Kit is intentionally installed through its own marketplace (`/plugin marketplace add NeoLabHQ/context-engineering-kit`) so its commands, agents, hooks, and skills remain intact.
+Context Engineering Kit remains in its native marketplace so its commands, agents, hooks,
+and skills remain intact, but installation is fully automatic. For example,
+`fetch-skill.sh spec-driven-development` adds the marketplace if needed and installs
+`sdd@NeoLabHQ/context-engineering-kit`; `fetch-skill.sh cek:reflexion` provides an explicit direct alias.
+The user does not perform marketplace setup or choose the plugin.
 
 The script auto-adds `.claude/skills/` to the project's `.gitignore` on first install — everything is re-downloadable, do not bloat the project repo.
 
@@ -174,7 +194,7 @@ Skill roadmap:
 
 ## Anti-Patterns (SMART never does these)
 
-1. **Install everything at once** — only what the moment needs (max 3 new).
+1. **Install everything at once** — only what the moment needs (max 3 new capabilities).
 2. **Use `agentdb-*` for the product database** — those are AGENT memory, not the product DB. The product DB comes from the project's own plan/architecture.
 3. **Install any BLACK-tier skill** — never (ruflo internals).
 4. **Skip the report** — every SMART invocation must end with the status report.

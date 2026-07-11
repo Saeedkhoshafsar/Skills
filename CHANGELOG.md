@@ -5,6 +5,18 @@ Versioning: bump plugin versions in `.claude-plugin/marketplace.json` and each
 plugin's `plugin.json` — `claude plugin update` only detects updates through a
 version bump in `marketplace.json`.
 
+## [1.5.0] - 2026-07-11
+
+### Added
+- Unified capability installation in `fetch-skill.sh`: SMART now resolves both standalone skills and native marketplace plugins from one capability name.
+- Automatic Context Engineering Kit marketplace setup and selective installation for reflection, SDD, judged subagents, review, DDD, Kaizen, FPF, docs, Git, TDD, tech-stack, MCP, and agent-customization workflows.
+- Idempotent native-plugin detection, `cek:<plugin>` direct aliases, plugin-aware `--installed`, and native-plugin `--update` support.
+
+### Changed
+- SMART now owns source, package-type, marketplace, and command decisions; users activate SMART only and are never asked where or how to install a capability.
+- The three-install limit now counts standalone skills and native plugins together.
+- Marketplace version `1.5.0`; SMART version `1.4.0`.
+
 ## [1.4.0] - 2026-07-11
 
 ### Added
