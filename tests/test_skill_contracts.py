@@ -13,6 +13,8 @@ SMART = ROOT / "skills/smart/skills/smart/SKILL.md"
 PLANNER = ROOT / "skills/project-planner/skills/project-planner/SKILL.md"
 MEMORY = ROOT / "skills/project-memory/skills/project-memory/SKILL.md"
 PILOT = ROOT / "skills/step-pilot/skills/step-pilot/SKILL.md"
+SECURITY = ROOT / "skills/security-check/skills/security-check/SKILL.md"
+GATES = ROOT / "skills/smart/skills/smart/scripts/smart-gates.py"
 
 
 def text(path: Path) -> str:
@@ -99,6 +101,13 @@ class SmartCognitionContractTests(unittest.TestCase):
         self.assertIn("project-memory", self.smart)
         self.assertIn("next 1–3 actions", self.smart)
 
+    def test_machine_gate_protocol_is_required(self) -> None:
+        self.assertTrue(GATES.is_file())
+        for gate in ("vision check", "verify check", "release check"):
+            with self.subTest(gate=gate):
+                self.assertIn(gate, self.smart)
+        self.assertIn("not a substitute for a passing artifact", self.smart)
+
 
 class DiscoveryPlanningContractTests(unittest.TestCase):
     @classmethod
@@ -177,6 +186,18 @@ class ContinuityAndExecutionContractTests(unittest.TestCase):
         self.assertIn("same symptom RED 3 times", self.pilot)
         self.assertIn("invoke `debug-detective`", self.pilot)
         self.assertIn("Do not count repeated commands", self.pilot)
+
+    def test_execution_and_memory_require_machine_evidence(self) -> None:
+        self.assertIn("smart-gates.py vision check", self.pilot)
+        self.assertIn("smart-gates.py verify check", self.pilot)
+        self.assertIn(".smart/evidence/vision-lock.json", self.memory)
+        self.assertIn(".smart/evidence/release.json", self.memory)
+
+    def test_security_contract_emits_structured_release_verdict(self) -> None:
+        security = text(SECURITY)
+        self.assertIn(".smart/evidence/security.json", security)
+        self.assertIn('"critical_findings": 0', security)
+        self.assertIn('"verdict": "PASS"', security)
 
 
 if __name__ == "__main__":

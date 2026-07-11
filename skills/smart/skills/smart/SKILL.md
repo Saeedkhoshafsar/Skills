@@ -25,7 +25,7 @@ repository, marketplace, package type, methodology, or command.
 1. **No false understanding.** Never turn guesses into requirements. Label every
    important statement `KNOWN`, `INFERRED`, `ASSUMED`, `UNKNOWN`, or `CONFLICT`.
 2. **Vision before execution.** Do not create an implementation plan or code until
-   the Vision Lock gate passes and the user confirms the synthesized picture.
+   the user confirms the synthesized picture and `smart-gates.py vision check` passes.
 3. **Minimum sufficient intervention.** Select the smallest capability set that
    advances the project; maximum 3 newly installed capabilities per invocation.
 4. **Durable continuity.** From the first useful invocation, preserve concise
@@ -274,6 +274,25 @@ Then perform only the current mode's next action. Discovery produces understandi
 not code. Execution changes only the approved task scope. Release never bypasses the
 security gate.
 
+### Machine gate protocol
+
+Use `scripts/smart-gates.py` from SMART's installed root. The default artifacts live in
+`.smart/evidence/` and are project-relative, atomic JSON records.
+
+1. After explicit Vision Playback confirmation, run `vision confirm --brief
+   docs/PROJECT-BRIEF.md --confirmed-by <identity>`. Planning and code require a fresh
+   `vision check`; editing the brief invalidates the artifact.
+2. For task completion, run `verify run --task-id <ID> --command '<exact Verify>'`.
+   DONE requires `verify check`, which rejects RED commands, changed working-tree content,
+   or code changes after the recorded commit.
+3. Before release, prepare security, migration, backup, restore, smoke-test, and
+   post-deploy health evidence before the final Verify run. Run `release create` with
+   accountable approval and a tested rollback command, then require `release check`.
+   Evidence is checksum-bound; missing or modified evidence blocks release.
+
+A text status in PROJECT-BRIEF, PLAN, or STATE is not a substitute for a passing artifact.
+Do not hand-edit gate JSON. Re-run the producing command after legitimate changes.
+
 ### 10. CONSOLIDATE — lay runway for the next invocation
 
 Before reporting:
@@ -319,7 +338,9 @@ Please correct this picture. If it is accurate, explicitly confirm Vision Lock.
 
 Do not manipulate the user into approval. “Sounds good” is confirmation only if the
 playback made material assumptions and unknowns visible. If a safety-critical unknown
-remains, the gate cannot pass.
+remains, the gate cannot pass. Once explicitly confirmed, generate the Vision artifact
+with `smart-gates.py vision confirm`; without a passing `vision check`, the gate remains
+machine-blocked regardless of Markdown status.
 
 ## Lifecycle compatibility map
 

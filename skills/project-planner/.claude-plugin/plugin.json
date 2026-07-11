@@ -1,7 +1,7 @@
 {
   "name": "project-planner",
   "description": "Adaptive discovery and planning: Project Brief, epistemic map, viability/risk review, Vision Lock, and risk-ordered atomic tasks.",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "author": {
     "name": "Saeedkhoshafsar"
   },
