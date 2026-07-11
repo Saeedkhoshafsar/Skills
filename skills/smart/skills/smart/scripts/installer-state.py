@@ -16,7 +16,7 @@ SKILL_RE = re.compile(r"^[a-z0-9][a-z0-9._-]*$")
 REPO_RE = re.compile(r"^[A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+$")
 REF_RE = re.compile(r"^[A-Za-z0-9][A-Za-z0-9._/-]*$")
 COMMIT_RE = re.compile(r"^[0-9a-f]{40}$")
-TREE_RE = re.compile(r"^[0-9a-f]{64}$")
+SHA256_RE = re.compile(r"^[0-9a-f]{64}$")
 REVIEWER_RE = re.compile(r"^[A-Za-z0-9][A-Za-z0-9@._-]{1,127}$")
 
 
@@ -87,11 +87,21 @@ def validate_target(value: str, skill: str) -> tuple[Path, Path]:
     target = (Path.cwd() / raw).resolve() if not raw.is_absolute() else raw.resolve()
     root = project_root()
     try:
-        target.relative_to(root)
+        relative_target = target.relative_to(root)
     except ValueError:
         fail(f"target must stay inside project root {root}")
     if target == root:
         fail("target may not be the project root")
+    sensitive_prefixes = (
+        (".git",),
+        (".github", "workflows"),
+        ("node_modules",),
+        (".venv",),
+        ("vendor",),
+    )
+    relative_parts = relative_target.parts
+    if any(relative_parts[: len(prefix)] == prefix for prefix in sensitive_prefixes):
+        fail(f"target may not be inside sensitive project path {relative_target}")
     if raw.is_symlink() or target.is_symlink():
         fail("target may not be a symlink")
     destination = target / skill
@@ -153,6 +163,13 @@ def command_manifest(args: argparse.Namespace) -> None:
     print(tree_hash)
 
 
+def command_file_sha256(args: argparse.Namespace) -> None:
+    path = Path(args.file).resolve()
+    if not path.is_file() or path.is_symlink():
+        fail(f"hash input must be a regular file: {path}")
+    print(hashlib.sha256(path.read_bytes()).hexdigest())
+
+
 def command_lock_get(args: argparse.Namespace) -> None:
     skill = validate_skill(args.skill)
     lock = read_json(Path(args.lockfile), {"lockfile_version": 1, "skills": {}})
@@ -164,11 +181,21 @@ def command_lock_get(args: argparse.Namespace) -> None:
     validate_repo_path(str(entry.get("path", "")))
     if not COMMIT_RE.fullmatch(str(entry.get("resolved_commit", ""))):
         fail("lock entry contains an invalid commit")
-    if not TREE_RE.fullmatch(str(entry.get("tree_sha256", ""))):
+    if not SHA256_RE.fullmatch(str(entry.get("tree_sha256", ""))):
         fail("lock entry contains an invalid tree hash")
+    if not SHA256_RE.fullmatch(str(entry.get("scan_report_sha256", ""))):
+        fail("lock entry contains an invalid scan report hash")
     if entry.get("review_status") != "VERIFIED":
         fail("lock entry is not VERIFIED")
-    fields = ("repository", "requested_ref", "path", "resolved_commit", "tree_sha256", "review_status")
+    fields = (
+        "repository",
+        "requested_ref",
+        "path",
+        "resolved_commit",
+        "tree_sha256",
+        "scan_report_sha256",
+        "review_status",
+    )
     print("\t".join(str(entry.get(field, "")) for field in fields))
 
 
@@ -179,8 +206,10 @@ def command_lock_put(args: argparse.Namespace) -> None:
     validate_repo_path(args.path)
     if not COMMIT_RE.fullmatch(args.commit):
         fail("resolved commit must be a full 40-character lowercase SHA")
-    if not TREE_RE.fullmatch(args.tree_hash):
+    if not SHA256_RE.fullmatch(args.tree_hash):
         fail("tree hash must be a full 64-character lowercase SHA-256")
+    if not SHA256_RE.fullmatch(args.scan_report_hash):
+        fail("scan report hash must be a full 64-character lowercase SHA-256")
     if not REVIEWER_RE.fullmatch(args.reviewed_by):
         fail("reviewer identity must use 2-128 letters, digits, @, dot, underscore, or hyphen")
     lock_path = Path(args.lockfile)
@@ -196,6 +225,7 @@ def command_lock_put(args: argparse.Namespace) -> None:
         "path": args.path,
         "resolved_commit": args.commit,
         "tree_sha256": args.tree_hash,
+        "scan_report_sha256": args.scan_report_hash,
         "review_status": "VERIFIED",
         "verified_by": args.reviewed_by,
         "verified_at": utc_now(),
@@ -207,8 +237,10 @@ def command_state_put(args: argparse.Namespace) -> None:
     skill = validate_skill(args.skill)
     if not COMMIT_RE.fullmatch(args.commit):
         fail("resolved commit must be a full 40-character lowercase SHA")
-    if args.tree_hash and not TREE_RE.fullmatch(args.tree_hash):
+    if args.tree_hash and not SHA256_RE.fullmatch(args.tree_hash):
         fail("tree hash must be empty or a full 64-character lowercase SHA-256")
+    if args.scan_report_hash and not SHA256_RE.fullmatch(args.scan_report_hash):
+        fail("scan report hash must be empty or a full 64-character lowercase SHA-256")
     state_path = Path(args.state_file)
     state = read_json(state_path, {"schema_version": 1, "skills": {}})
     skills = state.setdefault("skills", {})
@@ -219,6 +251,7 @@ def command_state_put(args: argparse.Namespace) -> None:
         "path": validate_repo_path(args.path),
         "resolved_commit": args.commit,
         "tree_sha256": args.tree_hash,
+        "scan_report_sha256": args.scan_report_hash,
         "quarantine_path": args.quarantine,
         "updated_at": utc_now(),
     }
@@ -231,7 +264,16 @@ def command_state_get(args: argparse.Namespace) -> None:
     entry = state.get("skills", {}).get(skill)
     if not isinstance(entry, dict):
         raise SystemExit(1)
-    fields = ("status", "repository", "requested_ref", "path", "resolved_commit", "tree_sha256", "quarantine_path")
+    fields = (
+        "status",
+        "repository",
+        "requested_ref",
+        "path",
+        "resolved_commit",
+        "tree_sha256",
+        "scan_report_sha256",
+        "quarantine_path",
+    )
     print("\t".join(str(entry.get(field, "")) for field in fields))
 
 
@@ -255,6 +297,10 @@ def parser() -> argparse.ArgumentParser:
     manifest.add_argument("directory")
     manifest.set_defaults(func=command_manifest)
 
+    file_sha256 = commands.add_parser("file-sha256")
+    file_sha256.add_argument("file")
+    file_sha256.set_defaults(func=command_file_sha256)
+
     lock_get = commands.add_parser("lock-get")
     lock_get.add_argument("lockfile")
     lock_get.add_argument("skill")
@@ -268,6 +314,7 @@ def parser() -> argparse.ArgumentParser:
     lock_put.add_argument("path")
     lock_put.add_argument("commit")
     lock_put.add_argument("tree_hash")
+    lock_put.add_argument("scan_report_hash")
     lock_put.add_argument("reviewed_by")
     lock_put.set_defaults(func=command_lock_put)
 
@@ -280,6 +327,7 @@ def parser() -> argparse.ArgumentParser:
     state_put.add_argument("path")
     state_put.add_argument("commit")
     state_put.add_argument("tree_hash")
+    state_put.add_argument("scan_report_hash")
     state_put.add_argument("quarantine")
     state_put.set_defaults(func=command_state_put)
 

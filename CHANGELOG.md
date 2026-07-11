@@ -5,12 +5,22 @@ Versioning: bump plugin versions in `.claude-plugin/marketplace.json` and each
 plugin's `plugin.json` — `claude plugin update` only detects updates through a
 version bump in `marketplace.json`.
 
+## [2.1.1] - 2026-07-11
+
+### Changed
+- Internal SMART capability sources now resolve from the stable `main` branch instead of the development branch.
+
+### Security
+- Installer targets under `.git`, `.github/workflows`, `node_modules`, `.venv`, and `vendor` are rejected even when they remain inside the project root.
+- Scan-report SHA-256 is recorded in installer state and lock entries, checked again before approval, and verified for active installations.
+- Behavioral coverage now includes sensitive targets, hardlinks, file/size limits, active-tree tampering, scan-report tampering, and stable internal refs.
+
 ## [2.1.0] - 2026-07-11
 
 ### Added
 - Trusted Installer v1 for standalone skills: commit lockfile, deterministic reinstall, quarantine lifecycle, checksum manifests, static pre-screening, explicit accountable activation, and lock verification.
 - Safe `candidate` intake for skills found during repository research, allowing reuse before creation without silently trusting or catalog-promoting third-party code.
-- Behavioral installer tests using local Git fixtures, now executed with all unit tests in CI.
+- Behavioral installer tests using local Git fixtures; CI execution remains pending until the workflow can be updated with workflow-authorized credentials.
 
 ### Security
 - Skill names, repositories, refs, repository paths, destinations, symlinks, hardlinks, file counts, and payload sizes are validated fail-closed.
