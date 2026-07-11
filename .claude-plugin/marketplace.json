@@ -6,14 +6,14 @@
   },
   "metadata": {
     "description": "SMART skill-manager ecosystem: phase-aware skill orchestration across standalone skill sources (including Anthropic, obra/superpowers, UI/UX, and marketing skills), atomic planning, persistent project memory, step-by-step execution, local code review, systematic debugging, and security auditing.",
-    "version": "1.5.0"
+    "version": "2.0.0"
   },
   "plugins": [
     {
       "name": "smart",
       "source": "./skills/smart",
-      "description": "Mother skill / skill manager: senses project state, detects the current phase AND the task's capability needs, then installs only the capabilities the moment needs — standalone skills from curated GitHub sources or structured plugins from their native marketplaces. Activate this one — it decides the source, package type, and command.",
-      "version": "1.4.0",
+      "description": "Project intelligence orchestrator: builds a truthful shared model, enforces Vision Lock before planning/code, preserves durable memory and runway, and installs or creates only the capabilities required for the next best action.",
+      "version": "2.0.0",
       "author": { "name": "Saeedkhoshafsar" },
       "keywords": ["capability-manager", "skill-manager", "plugin-orchestration", "phase-detection"],
       "category": "workflow"
@@ -21,8 +21,8 @@
     {
       "name": "project-planner",
       "source": "./skills/project-planner",
-      "description": "Professional project planning from zero: targeted user interview, project-size assessment (S/M/L), 13-layer checklist, and an atomic PLAN.md with acceptance criteria + verify commands per task.",
-      "version": "1.0.1",
+      "description": "Adaptive idea discovery and planning: Project Brief, epistemic map, viability/risk review, mandatory Vision Lock, and a risk-ordered atomic execution plan.",
+      "version": "1.1.0",
       "author": { "name": "Saeedkhoshafsar" },
       "keywords": ["planning", "roadmap", "interview"],
       "category": "planning"
@@ -30,8 +30,8 @@
     {
       "name": "project-memory",
       "source": "./skills/project-memory",
-      "description": "Zero-dependency persistent project memory: docs/STATE.md holds the current task, errors, bugs, decisions, and unfinished work so any agent resumes exactly where the last one stopped.",
-      "version": "1.0.1",
+      "description": "Durable project intelligence: compact resume state plus canonical brief, plan, decisions, research, assumptions, capability inventory, change ledger, and future runway.",
+      "version": "1.1.0",
       "author": { "name": "Saeedkhoshafsar" },
       "keywords": ["memory", "state", "resume", "context"],
       "category": "workflow"
@@ -39,8 +39,8 @@
     {
       "name": "step-pilot",
       "source": "./skills/step-pilot",
-      "description": "Step-by-step plan executor: implement -> test -> verify -> record in STATE.md -> commit. No step starts before the previous one passes its gate.",
-      "version": "1.0.1",
+      "description": "Evidence-gated plan execution: requires confirmed Vision Lock, runs one scoped task through fresh verification and memory consolidation, and enters recovery instead of thrashing.",
+      "version": "1.1.0",
       "author": { "name": "Saeedkhoshafsar" },
       "keywords": ["execution", "tdd", "verify", "gate"],
       "category": "workflow"

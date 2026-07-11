@@ -1,6 +1,6 @@
 # Skills — SMART Skill-Manager Ecosystem
 
-> The user activates only **SMART**; SMART selects capabilities by project phase **and task need**, then installs the right standalone skill or native plugin **on demand** — the user never chooses a source, marketplace, package type, or command.
+> The user activates only **SMART**. SMART first builds a truthful shared picture of the idea, labels uncertainty, and refuses to plan or code until the user confirms **Vision Lock**. It then preserves durable project memory and runway, selects capabilities by the next decision/action, and installs or creates only what is needed — the user never chooses a source, marketplace, package type, or command.
 >
 > A curated set of installable skills across multiple standalone sources: 7 local + Anthropic's official skills (pdf/docx/xlsx/pptx, frontend-design, webapp-testing, skill-creator, mcp-builder…) + obra/superpowers engineering-process skills (TDD, brainstorming…) + ruflo + claude-plugins-official plugin-dev skills + nextlevelbuilder/ui-ux-pro-max UI/UX design intelligence (67+ styles, 161 palettes, 57 font pairings…).
 
@@ -19,12 +19,12 @@ Skills/
     ├── smart/                #   <plugin>/.claude-plugin/plugin.json + <plugin>/skills/<skill>/SKILL.md
     │   ├── .claude-plugin/plugin.json
     │   └── skills/smart/
-    │       ├── SKILL.md      #   cycle: Sense -> Diagnose -> Select -> Act -> Report
+    │       ├── SKILL.md      #   project brain: Sense -> Orient -> Model -> Decide -> Act -> Consolidate
     │       └── scripts/
     │           └── fetch-skill.sh  # unified skill + native-plugin capability installer
-    ├── project-planner/      # planner (interview + 13 layers + atomic PLAN.md)
-    ├── project-memory/       # project memory (STATE.md — disconnect/amnesia-proof)
-    ├── step-pilot/           # gated step-by-step execution (test + verify per step)
+    ├── project-planner/      # adaptive discovery + Project Brief + Vision Lock + atomic PLAN.md
+    ├── project-memory/       # canonical truth + resume packet + decisions/assumptions/runway
+    ├── step-pilot/           # Vision-Lock + evidence-gated step execution and recovery
     ├── code-review/          # local diff review (correctness, tests, plan conformance)
     ├── debug-detective/      # systematic debugging (reproduce -> root cause -> fix -> regression)
     └── security-check/       # pre-release security audit (secrets, deps, auth, ...)
@@ -80,13 +80,14 @@ cp -r /tmp/sk/skills/smart/skills/smart .claude/skills/ && rm -rf /tmp/sk
 
 | Project state | SMART activates | Notes |
 |---|---|---|
-| Empty project | `project-planner` | interview + PLAN.md; `brainstorming` first if the idea is vague |
-| Plan ready | `project-memory` + `step-pilot` | memory + gated steps |
-| Mid-development | `sparc-methodology` + `verification-quality` | TDD? → `test-driven-development`; complex spec? → CEK `sdd`; judged subagents? → CEK `sadd`; UI? → `ui-ux-pro-max` / `frontend-design`; recurring bug? → `debug-detective` |
+| New / unclear idea | `project-planner` + `project-memory` | adaptive discovery, epistemic map, Project Brief; `brainstorming` first only when the idea is too vague to model |
+| Vision ready | no implementation yet | SMART plays back the final product picture; explicit Vision Lock confirmation is mandatory |
+| Plan approved | `project-memory` + `step-pilot` | one scoped task, fresh evidence, durable runway; no execution before Vision Lock |
+| Mid-development | task-specific capabilities | select only for the current decision/action; recurring bug → `debug-detective`; material new evidence → SMART re-orientation |
 | Ready to release | `security-check` (GATE) + `github-release-management` + `hooks-automation` | security gate is mandatory |
 | Maintenance | `github-project-management` | issues, boards |
 
-**Capability triggers (any phase):** the task itself can demand a skill regardless of phase — PDF/Word/Excel/PowerPoint output → `pdf`/`docx`/`xlsx`/`pptx`, full design system → `ui-ux-pro-max`, web-app testing → `webapp-testing`, building a skill → `skill-creator`, building an MCP server → `mcp-builder`, Claude Code hooks/commands/plugins → the `plugin-dev` suite. Full index in [`SKILLS_CATALOG.md`](SKILLS_CATALOG.md).
+**Capability triggers (any mode):** the current decision/action can demand a skill regardless of lifecycle phase — PDF/Word/Excel/PowerPoint output → `pdf`/`docx`/`xlsx`/`pptx`, full design system → `ui-ux-pro-max`, web-app testing → `webapp-testing`, building a skill → `skill-creator`, building an MCP server → `mcp-builder`, Claude Code hooks/commands/plugins → the `plugin-dev` suite. Full index in [`SKILLS_CATALOG.md`](SKILLS_CATALOG.md).
 
 ## Skill Sources (what fetch-skill.sh pulls from)
 
