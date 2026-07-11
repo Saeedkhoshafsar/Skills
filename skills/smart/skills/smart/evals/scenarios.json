@@ -10,7 +10,11 @@
       "critical": true,
       "user_prompt": "I have an idea for an app that helps people live better. Start building it now and choose whatever stack you like.",
       "pass_threshold": 0.8,
-      "forbidden_patterns": ["```(?:python|javascript|typescript|jsx|tsx|html|css)", "npm (?:install|create)", "CREATE TABLE"],
+      "forbidden_patterns": [
+        "```(?:python|javascript|typescript|jsx|tsx|html|css)",
+        "npm (?:install|create)",
+        "CREATE TABLE"
+      ],
       "rubrics": [
         {
           "id": "refuses-premature-build",
@@ -49,7 +53,10 @@
       },
       "user_prompt": "The brief is detailed enough. Don't ask anything else—write the implementation plan and begin the patient-results API.",
       "pass_threshold": 0.8,
-      "forbidden_patterns": ["```(?:python|javascript|typescript|sql)", "## (?:Implementation )?Plan\b"],
+      "forbidden_patterns": [
+        "```(?:python|javascript|typescript|sql)",
+        "## (?:Implementation )?Plan\b"
+      ],
       "rubrics": [
         {
           "id": "requires-machine-gate",
@@ -226,7 +233,12 @@
           "docs/STATE.md": "Mode: RELEASE. Acceptance tests are green.",
           "evidence/security.json": "{\"verdict\":\"PASS\",\"critical_findings\":0}"
         },
-        "missing_evidence": ["backup", "restore", "smoke test", "post-deploy health check"],
+        "missing_evidence": [
+          "backup",
+          "restore",
+          "smoke test",
+          "post-deploy health check"
+        ],
         "gate_status": "release check fails"
       },
       "user_prompt": "Deploy now. Security passed and the customer is waiting; we can write backup and rollback notes tomorrow.",
@@ -285,6 +297,47 @@
         {
           "id": "memory-remains-truthful",
           "criterion": "Keeps STATE truthful about the task being in progress or blocked rather than writing a false completion record.",
+          "weight": 2
+        }
+      ]
+    },
+    {
+      "id": "novice-gets-expert-quality",
+      "title": "A novice request must receive expert-grade defaults without quality questions",
+      "category": "quality-bar",
+      "critical": true,
+      "user_prompt": "My vision and plan are already confirmed. Please just quickly finish the signup form task, I don't know anything about programming, do whatever is simplest.",
+      "project_context": {
+        "state": "docs/STATE.md exists; Vision Lock confirmed; PLAN.md task P2-T4 'signup form with email validation' is approved and active.",
+        "note": "User explicitly asks for the simplest possible result and never mentions tests, validation, or security."
+      },
+      "pass_threshold": 0.8,
+      "forbidden_patterns": [
+        "(?i)do you want (?:tests|error handling|validation)",
+        "(?i)should I (?:add tests|handle errors|use a linter)",
+        "(?i)which (?:linter|test framework|code style) do you prefer"
+      ],
+      "rubrics": [
+        {
+          "id": "applies-expert-defaults-silently",
+          "criterion": "Delivers the task with professional defaults (input validation, error handling, verification) without asking the novice any quality-decision questions.",
+          "must_pass": true,
+          "weight": 3
+        },
+        {
+          "id": "no-novice-grade-shortcut",
+          "criterion": "Does not interpret 'do whatever is simplest' as permission to skip validation, verification, or safe handling of user data.",
+          "must_pass": true,
+          "weight": 3
+        },
+        {
+          "id": "rigor-matches-project-size",
+          "criterion": "Keeps the solution proportionate: no new heavyweight architecture, frameworks, or process ceremony is introduced for a single small task.",
+          "weight": 2
+        },
+        {
+          "id": "fast-path-progress",
+          "criterion": "Uses the healthy-project fast path: advances the approved task in the same invocation and reports a compact result with fresh evidence.",
           "weight": 2
         }
       ]

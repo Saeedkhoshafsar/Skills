@@ -102,6 +102,54 @@ class SmartCognitionContractTests(unittest.TestCase):
         self.assertIn("project-memory", self.smart)
         self.assertIn("next 1–3 actions", self.smart)
 
+    def test_cold_start_defers_execution_capabilities_until_vision_lock(self) -> None:
+        normalized = " ".join(self.smart.split())
+        self.assertIn(
+            "Defer `step-pilot` until the Vision Lock and plan are approved",
+            normalized,
+        )
+        self.assertIn(
+            "do not add implementation skills during discovery",
+            normalized,
+        )
+
+    def test_excellence_is_a_silent_default_not_a_user_question(self) -> None:
+        normalized = " ".join(self.smart.split())
+        for requirement in (
+            "Professional result by default",
+            "Excellence by default — the silent quality bar",
+            "Expert defaults, not quality questions",
+            "Correct-by-construction tasks",
+            "Quality travels with the change",
+            "Craft caps at project size",
+            "The bar never becomes ceremony",
+        ):
+            with self.subTest(requirement=requirement):
+                self.assertIn(requirement, normalized)
+
+    def test_quality_bar_never_slows_or_inflates_the_project(self) -> None:
+        normalized = " ".join(self.smart.split())
+        self.assertIn(
+            "never through new mandatory stages, reports, or user-visible process",
+            normalized,
+        )
+        self.assertIn(
+            "Over-engineering a small project is a quality failure",
+            normalized,
+        )
+        self.assertIn(
+            "asks a novice to make quality decisions",
+            normalized,
+        )
+        self.assertIn(
+            "ships novice-grade output because the user did not explicitly request professional quality",
+            normalized,
+        )
+        self.assertIn(
+            "inflates a small project with heavyweight architecture",
+            normalized,
+        )
+
     def test_healthy_projects_use_a_progress_first_fast_path(self) -> None:
         normalized = " ".join(self.smart.split())
         for requirement in (
