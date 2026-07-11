@@ -7,20 +7,21 @@ version bump in `marketplace.json`.
 
 ## [Unreleased]
 
-### Added
-- A manually activatable GitHub Actions template for live SMART behavioral evaluation, with secret preflight checks, per-scenario dispatch, configurable generation/judge models, fail threshold, failure logs, and 30-day evidence artifacts.
-- Durable `docs/STATE.md` continuity with exact live-evaluation blockers, owner actions, command packet, and a three-step runway for the next session.
-- A deterministic contract test for the staged workflow's secret usage and evidence retention behavior.
+### Changed
+- SMART's adversarial scenarios are now validated entirely offline with a dependency-free schema validator and CI contract tests.
+- Durable `docs/STATE.md` continuity is refocused on SMART's core role as the project's zero-configuration skill-manager brain.
+
+### Removed
+- The live model-evaluation harness, semantic observer, staged paid workflow, API credentials, secrets, model selection, and external endpoint configuration.
 
 ## [2.3.0] - 2026-07-11
 
 ### Added
-- Model-level behavioral evaluation harness with separate generation and semantic judging calls, weighted fail-closed rubrics, saved-response re-judging, and atomic JSON reports.
-- Eight adversarial SMART scenarios covering Vision Lock, durable resume, conflict recovery, capability restraint, supply-chain safety, release evidence, and fresh verification.
-- Deterministic tests for scenario validation, critical-rubric enforcement, forbidden-output guards, judge-result validation, filtering, endpoint handling, and report aggregation.
+- Eight adversarial SMART scenario contracts covering Vision Lock, durable resume, conflict recovery, capability restraint, supply-chain safety, release evidence, and fresh verification.
+- Deterministic tests for scenario schema, safety criteria, filtering, thresholds, types, identifiers, and forbidden-pattern syntax.
 
 ### Changed
-- GitHub Actions now runs the complete unit and behavioral test suite on pushes and pull requests, closing the CI-enforcement gap recorded in `2.2.0`.
+- GitHub Actions runs the complete unit and offline contract-test suite on pushes and pull requests, closing the CI-enforcement gap recorded in `2.2.0`.
 
 ## [2.2.0] - 2026-07-11
 
