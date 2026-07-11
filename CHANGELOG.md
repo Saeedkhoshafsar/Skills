@@ -12,7 +12,10 @@ version bump in `marketplace.json`.
 - Durable `docs/STATE.md` continuity is refocused on SMART's core role as the project's zero-configuration skill-manager brain.
 - Bundled companion capabilities now install idempotently as native plugins from SMART's trusted marketplace; users are no longer asked to install companions, choose a source, or run additional setup commands.
 - Third-party quarantine now emits a structured approval handoff for SMART instead of printing user-facing activation commands; SMART presents one plain-language approve-or-reject decision and performs approved mechanics itself.
-- SMART and marketplace version `2.3.2`.
+- Healthy projects now use a progress-first SMART fast path: one focused state/task read, one mode decision, immediate approved action, fresh verification, and only the changed memory delta.
+- Step Pilot treats green-gate execution as one internal pass rather than nine user-visible phases; deeper orchestration activates only on an explicit trigger.
+- Workflow changes that cannot be written with the current GitHub credential are staged under `ci/` with an explicit post-PR manual destination instead of blocking product work.
+- SMART and marketplace version `2.3.3`; Step Pilot version `1.2.1`.
 
 ### Security
 - Third-party standalone capabilities still use the existing fail-closed quarantine, static scan, accountable approval, and immutable lock workflow; first-party routing does not weaken that boundary.

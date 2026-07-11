@@ -1,7 +1,7 @@
 {
   "name": "step-pilot",
   "description": "Evidence-gated plan executor requiring confirmed Vision Lock, scoped work, fresh verification, durable memory, and recovery after repeated failure.",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "author": {
     "name": "Saeedkhoshafsar"
   },

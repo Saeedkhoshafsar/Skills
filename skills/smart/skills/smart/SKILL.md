@@ -72,7 +72,35 @@ If the idea is too vague to answer even basic outcome questions, `brainstorming`
 precede the planner. Because of the 3-capability limit, do not add implementation
 skills during discovery.
 
-## Operating loop — run every invocation
+## Operating loop — use the shortest safe path
+
+SMART is a control plane, not a second project. Its orchestration must consume less effort
+than the work it unlocks. Default to the fast path; enter the full loop only when evidence
+shows that orientation, approval, recovery, or a phase transition is actually needed.
+
+### Fast path — default for a healthy, known project
+
+When STATE is current, Vision Lock/plan gates match the requested work, and no material
+conflict or new risk exists:
+
+1. Read the STATE resume packet, git status, and only the current task's referenced files.
+2. Confirm the active mode and task in one internal pass; do not rebuild the Project Model.
+3. Reuse active capabilities. Activate at most one additional capability only if the next
+   action cannot be completed correctly without it.
+4. Execute the next approved action immediately, verify it, and write only the memory delta.
+5. Report outcome, evidence, blocker (if any), and one NEXT action.
+
+Do not reopen settled discovery, reread the full repository, reinstall present capabilities,
+rewrite unchanged records, or run every specialist as ceremony. A normal continuation should
+advance project work in the same invocation, not end after describing SMART's process.
+
+### Escalate to the full loop only when triggered
+
+Use the detailed stages below when there is no reliable STATE, Vision Lock or plan is missing
+or stale, user intent conflicts with evidence, a material scope/risk/phase change appears,
+verification fails, or a required capability is absent. Once the trigger is resolved, return
+to the fast path. For a routine invocation, orchestration is limited to one mode decision,
+one next action, and one concise memory delta.
 
 ### 1. SENSE — inspect before speaking
 
@@ -375,23 +403,21 @@ Always-active from an approved plan onward: `project-memory` and `step-pilot`.
 Event-driven: `debug-detective` after repeated failures; `security-check` before every
 release and after material auth/payment/sensitive-data changes.
 
-## Mandatory SMART report
+## Progress-first SMART report
 
-End every invocation with a concise report in the user's language:
+End with the smallest useful report in the user's language. The default fast-path report is:
 
 ```text
-SMART — Project Intelligence Report [date]
-Mode / phase       : <mode> / <phase> — <evidence>
-Current objective  : <one outcome>
-Understanding      : confirmed <...> | inferred <...> | critical unknown <...>
-Vision Lock        : NOT READY / READY FOR CONFIRMATION / CONFIRMED
-Capabilities       : active <...> | activated now <... + reason> | created <...>
-Action / evidence  : <what happened and what proves it>
-Memory updated     : <files, or why no update was appropriate>
-Runway             : 1) <next> 2) <later> 3) <later>
-Waiting on         : <one highest-value user answer/approval, or none>
-Risks / limits     : <material caveat>
+SMART — <MODE> | <current objective>
+Progress : <observable result>
+Evidence : <fresh check or confirmed source>
+Next     : <single next best action>
 ```
+
+Add `Waiting on`, `Risk`, `Capability`, or `Memory` lines only when they materially changed
+or need user attention. Use the fuller Project Model / Vision Playback only in discovery,
+Vision Lock, conflict, recovery, or phase-transition work. Never spend more report space on
+SMART's mechanics than on the project result.
 
 ## Anti-patterns
 
@@ -402,6 +428,8 @@ SMART never:
 - asks a fixed questionnaire regardless of prior answers;
 - overwhelms a novice with jargon, installation commands, source choices, or integration setup;
 - asks the user to install bundled companion skills that SMART can activate itself;
+- reruns the full operating loop when current STATE supports the fast path;
+- finishes a healthy continuation with orchestration commentary but no project progress;
 - installs capabilities for hypothetical future work;
 - creates a new skill before a documented catalog/repository reuse search, gap proof, and evaluations;
 - uses agent memory as the product database;

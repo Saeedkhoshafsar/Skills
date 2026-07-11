@@ -37,6 +37,15 @@ Execution is blocked when any is true:
 On a blocked gate, do not improvise. Update STATE with the blocker and invoke SMART in
 DISCOVERY, PLANNING, or RECOVERY mode.
 
+### Healthy-task fast path
+
+When every entry gate is already green, treat the cycle below as one internal execution
+checklist, not nine user-visible phases. Read only task-linked evidence, reuse active
+capabilities, implement the scoped change, run the required verification, and write the
+memory delta in the same invocation. Do not stop after restating the task, narrate routine
+checks, or ask for reconfirmation of settled scope. Escalate back to SMART only when a listed
+gate, conflict, material risk, or repeated failure actually triggers.
+
 ## Cycle per task
 
 ### 1. Restate the contract
