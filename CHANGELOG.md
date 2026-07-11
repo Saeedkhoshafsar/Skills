@@ -5,6 +5,18 @@ Versioning: bump plugin versions in `.claude-plugin/marketplace.json` and each
 plugin's `plugin.json` — `claude plugin update` only detects updates through a
 version bump in `marketplace.json`.
 
+## [1.4.0] - 2026-07-11
+
+### Added
+- `coreyhaines31/marketingskills` as a standalone on-demand source for marketing, copy, SEO, CRO, analytics, growth, and RevOps skills.
+- `stop-slop` and `remotion-video` root-folder aliases, preserving their reference files and scripts during installation.
+- Context Engineering Kit guidance: install its marketplace plugins directly rather than flattening its commands, agents, hooks, and skills into one folder.
+
+### Changed
+- SMART triggers, the catalog, and source documentation now cover marketing, prose-quality, programmatic-video, and context-engineering capabilities.
+- `fetch-skill.sh` safely supports root-folder skill repositories without copying the clone metadata.
+- Marketplace version `1.4.0`; SMART version `1.3.0`.
+
 ## [1.3.0] - 2026-07-08
 
 ### Added
