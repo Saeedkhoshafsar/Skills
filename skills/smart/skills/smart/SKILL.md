@@ -17,9 +17,9 @@ No skill lives in the project up front — skills are downloaded the moment they
 
 **Golden rule:** Install the MINIMUM number of skills that moves the work forward. Never hoard.
 
-**Free hand:** SMART selects across ALL SIX sources in `SKILLS_CATALOG.md`
-(this repo, anthropics/skills, obra/superpowers, ruflo, claude-plugins-official,
-nextlevelbuilder/ui-ux-pro-max-skill) by CAPABILITY NEED, not by source. When two sources cover the same capability,
+**Free hand:** SMART selects across all applicable sources in `SKILLS_CATALOG.md`, including the
+marketing, prose-quality, and programmatic-video additions. Context Engineering Kit
+remains a separate plugin marketplace because its features are packaged as plugins, not standalone skills. by CAPABILITY NEED, not by source. When two sources cover the same capability,
 follow the duplicate-resolution table in the catalog (e.g. skill-creator beats
 skill-builder/writing-skills; local debug-detective beats systematic-debugging).
 
@@ -119,6 +119,10 @@ Emit the status report using the template at the bottom, including:
 | Design tokens / component specs | `design-system` | nextlevelbuilder |
 | HTML presentations / slide decks | `slides` | nextlevelbuilder |
 | shadcn/ui + Tailwind implementation details | `ui-styling` | nextlevelbuilder |
+| Marketing strategy, copy, SEO, CRO, growth, or RevOps | focused marketing skill (start with `product-marketing`) | coreyhaines31/marketingskills |
+| Editing prose to remove predictable AI writing patterns | `stop-slop` | hardikpandya/stop-slop |
+| Programmatic React/Remotion video creation | `remotion-video` | wshuyi/remotion-video-skill |
+| Context-engineering workflows, reflection, or spec-driven development | install the appropriate CEK plugin | NeoLabHQ/context-engineering-kit |
 
 **RED-tier only if:** project becomes multi-agent/very large → `swarm-orchestration` or `dispatching-parallel-agents`; RAG needed → `agentdb-vector-search`.
 **BLACK-tier (`v3-*`, `flow-nexus-*`, `dual-mode`, `worker-benchmarks`): never — they are ruflo internals. fetch-skill.sh refuses them.**
@@ -129,19 +133,21 @@ Skills are NOT stored in the project — they are downloaded when needed:
 
 ```bash
 FETCH="${CLAUDE_PLUGIN_ROOT}/skills/smart/scripts/fetch-skill.sh"   # or .claude/skills/smart/scripts/fetch-skill.sh
-bash "$FETCH" --list            # list skills available in all 6 sources
+bash "$FETCH" --list            # list skills available from all standalone sources
 bash "$FETCH" <skill-name>      # install one skill (sparse-checkout, not the whole repo)
 bash "$FETCH" --installed       # list currently installed skills
 bash "$FETCH" --update <skill>  # refresh an installed skill from its ORIGINAL source
 ```
 
-Source priority when the same name exists twice: this repo → anthropics/skills → obra/superpowers → ruflo → claude-plugins-official → ui-ux-pro-max-skill. Nested skills (the 7 local skills, playground, claude-md-improver, plugin-dev suite, mcp-server-dev suite, …) are resolved through the alias map inside the script — just use the skill name.
+Source priority when the same name exists twice: this repo → anthropics/skills → obra/superpowers → ruflo → claude-plugins-official → ui-ux-pro-max-skill → marketingskills. `stop-slop` and `remotion-video` are resolved through root-folder aliases. Nested skills (the 7 local skills, playground, claude-md-improver, plugin-dev suite, mcp-server-dev suite, …) are resolved through the alias map inside the script — just use the skill name.
 
 Local skills (project-planner, project-memory, step-pilot, code-review, debug-detective, security-check) are also fetchable by name — the alias map points at their `skills/<plugin>/skills/<skill>` paths in this repo:
 
 ```bash
 bash "$FETCH" project-memory
 ```
+
+Context Engineering Kit is intentionally installed through its own marketplace (`/plugin marketplace add NeoLabHQ/context-engineering-kit`) so its commands, agents, hooks, and skills remain intact.
 
 The script auto-adds `.claude/skills/` to the project's `.gitignore` on first install — everything is re-downloadable, do not bloat the project repo.
 
