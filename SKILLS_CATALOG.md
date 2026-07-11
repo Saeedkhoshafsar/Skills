@@ -1,7 +1,7 @@
 # SKILLS_CATALOG — Verified Skill Catalog (SMART's decision source)
 
 > Input for the **SMART** mother skill. Each skill: name + one-line purpose + tier.
-> Verified on 2026-07-08: all six sources listed and checked skill-by-skill — **86 installable skills** (7 local + 79 external; the 14 BLACK-tier ruflo internals and obra's `using-superpowers` are listed but never installed), duplicates resolved by source priority.
+> Verified on 2026-07-11: standalone skill sources are listed below; duplicate resolution and the supply-chain gate apply to every external download. Context Engineering Kit is documented separately because it is a plugin marketplace rather than a flat skill source.
 
 **Sources (priority order — first source that has a skill wins):**
 | # | Source | Count | Path | Content |
@@ -12,6 +12,7 @@
 | 4 | `Saeedkhoshafsar/ruflo` | 39 | `.claude/skills/` | memory, GitHub, swarm, quality |
 | 5 | `Saeedkhoshafsar/claude-plugins-official` | 17 | `plugins/*/skills/` | Claude Code plugin dev + tools |
 | 6 | `nextlevelbuilder/ui-ux-pro-max-skill` | 7 | `.claude/skills/` | UI/UX design intelligence: styles, palettes, fonts, brand, banners, slides |
+| 7 | `coreyhaines31/marketingskills` | many | `skills/` | marketing strategy, copy, SEO, CRO, growth, and RevOps |
 
 **Duplicate resolution (same capability in several sources):**
 | Capability | Winner | Losers (do NOT fetch) | Why |
@@ -184,6 +185,25 @@
 
 > `ui-ux-pro-max` is the flagship: SMART's default pick whenever a task needs a FULL design system (industry-matched colors + typography + layout pattern). For pure creative art direction keep `frontend-design` (anthropics); the two complement each other.
 
+## Additional External Sources
+
+| Source | Integration | Use when | License / caution |
+|---|---|---|---|
+| `coreyhaines31/marketingskills` | `fetch-skill.sh <skill-name>` from `skills/` | marketing strategy, copywriting, SEO, CRO, analytics, growth, and RevOps; start with `product-marketing` to create shared context | MIT; skills intentionally reference `.agents/product-marketing.md` |
+| `hardikpandya/stop-slop` | `fetch-skill.sh stop-slop` | editing prose to remove predictable AI phrasing and structures | MIT; intentionally strict style rules, so use only when the requested voice fits |
+| `wshuyi/remotion-video-skill` | `fetch-skill.sh remotion-video` | creating React/Remotion videos, animations, subtitles, or TTS-driven scenes | MIT; requires Node.js 18+, Python for TTS, and `ffprobe` for audio-duration detection |
+| `NeoLabHQ/context-engineering-kit` | install its marketplace/plugin directly | reflection, spec-driven development, TDD, review, git, docs, or context-engineering workflows | GPL-3.0; do not flatten into `fetch-skill.sh` because its plugins also contain commands, agents, and hooks |
+
+### Capability additions
+
+| The task needs… | Fetch / install |
+|---|---|
+| Product marketing context | `product-marketing` |
+| Copy, SEO, CRO, launch, pricing, analytics, or RevOps | the focused `marketingskills` entry after checking `product-marketing` |
+| Direct, human-sounding prose review | `stop-slop` |
+| Programmatic video with React and Remotion | `remotion-video` |
+| Context-engineering workflows | `/plugin marketplace add NeoLabHQ/context-engineering-kit`, then install the required plugin |
+
 ## Category 13 — ruflo-internal — NEVER install (14, all BLACK)
 
 | Skill(s) | What it is |
@@ -257,7 +277,7 @@ Every SMART invocation:
 2. SELECT skills matching phase and tier from this catalog
    - rule: minimum skill count that moves the work forward (anti-greed)
    - GREEN default-allowed | YELLOW with reason | RED big projects only | BLACK never
-   - SMART has FREE HAND across all 6 sources: pick by capability need,
+   - SMART has FREE HAND across all standalone sources: pick by capability need,
      not by source. Check the duplicate-resolution table first.
 3. REPORT the skill roadmap: "these 3 now; those 2 after Phase 2"
 ```
@@ -285,6 +305,10 @@ Every SMART invocation:
 | Interactive visual explorer for a topic | playground |
 | Parallel independent workstreams (big project) | dispatching-parallel-agents / using-git-worktrees |
 | Usage/cost report of Claude Code sessions | session-report |
+| Marketing strategy, copy, SEO, CRO, growth, or RevOps | focused `marketingskills` entry (start with `product-marketing`) |
+| Remove predictable AI prose patterns | stop-slop |
+| Programmatic Remotion video | remotion-video |
+| Context engineering / reflection / SDD plugins | Context Engineering Kit marketplace |
 
 ## Install Commands
 
