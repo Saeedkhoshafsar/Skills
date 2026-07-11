@@ -185,21 +185,29 @@ EVALS=skills/smart/skills/smart/evals
 python3 "$EVALS/run_behavioral_evals.py" --validate-only
 ```
 
-A live run needs an OpenAI-compatible endpoint. Configure `SMART_EVAL_API_KEY` and, when needed, `SMART_EVAL_BASE_URL`; `OPENAI_API_KEY` and `OPENAI_BASE_URL` are accepted as fallbacks. Responses and semantic rubric judgments are separate model calls. Critical rubric failures and deterministic forbidden-output matches fail closed.
+A live run needs an OpenAI-compatible endpoint. Configure `SMART_EVAL_API_KEY` and, when needed, `SMART_EVAL_BASE_URL`; `OPENAI_API_KEY` and `OPENAI_BASE_URL` are accepted as fallbacks. By default, the harness makes only the response-generation call and records deterministic forbidden-output checks; semantic criteria remain explicitly `review_required`, so generation-only reports never claim a semantic pass rate. Optional judging adds one model call per scenario. It may reuse the generation model and API account or use a different model; a separate Judge API is never required. When judging is enabled, critical rubric failures and deterministic forbidden-output matches fail closed.
 
 ```bash
 export SMART_EVAL_API_KEY='<secret>'
 export SMART_EVAL_BASE_URL='https://api.openai.com/v1'
 export SMART_EVAL_MODEL='gpt-5-mini'
 
+# Cost-minimal default: one generation call per scenario, no Judge call.
 python3 "$EVALS/run_behavioral_evals.py" \
+  --output .smart/evidence/behavioral-eval.json
+
+# Opt in to semantic judging. Omit --judge-model to reuse the generation model/API.
+python3 "$EVALS/run_behavioral_evals.py" \
+  --judge \
+  --judge-model gpt-5-mini \
   --output .smart/evidence/behavioral-eval.json
 
 # Run or re-judge selected scenarios; saved responses are {"scenario-id":"response"}.
 python3 "$EVALS/run_behavioral_evals.py" \
   --scenario vague-idea-no-code \
   --scenario release-with-missing-evidence \
-  --responses saved-responses.json
+  --responses saved-responses.json \
+  --judge
 ```
 
 The live suite is intentionally not a required pull-request check: external model behavior, credentials, latency, and cost are nondeterministic. CI validates the scenario schema, scoring logic, critical-failure behavior, and all existing unit tests; scheduled or release evaluation runs can preserve the JSON report as evidence.
@@ -210,6 +218,6 @@ A manually dispatchable workflow is staged at `ci/github-workflow-behavioral-eva
 
 1. Add Actions secrets named `SMART_EVAL_API_KEY` and `SMART_EVAL_BASE_URL` under **Settings → Secrets and variables → Actions**.
 2. Copy the template verbatim to `.github/workflows/behavioral-eval.yml` using a workflow-authorized commit or the GitHub web editor.
-3. Open **Actions → behavioral-eval → Run workflow**, start with `scenario=all`, and download the retained `smart-behavioral-eval-<run-id>` artifact.
+3. Open **Actions → behavioral-eval → Run workflow**, start with `scenario=all` and `use_judge=false`, and download the retained `smart-behavioral-eval-<run-id>` artifact. Enable `use_judge` only when semantic scoring is worth the additional per-scenario call; `judge_model` can remain blank to reuse the generation model.
 
-The workflow never prints secret values. It uploads the evaluator log even on failure and uploads `behavioral-eval.json` when evaluation reaches report generation. Do not schedule it until manual runs establish acceptable model cost, latency, and judge stability. Current progress, blockers, exact owner actions, and the next-session command packet are preserved in [`docs/STATE.md`](docs/STATE.md).
+The workflow never prints secret values. It uploads the evaluator log even on failure and uploads `behavioral-eval.json` when evaluation reaches report generation. In generation-only mode, `fail_under` is intentionally not applied because no semantic pass rate is claimed; deterministic forbidden-pattern matches still fail the run. Do not schedule it until manual runs establish acceptable model cost and latency and, if enabled, judge stability. Current progress, blockers, exact owner actions, and the next-session command packet are preserved in [`docs/STATE.md`](docs/STATE.md).

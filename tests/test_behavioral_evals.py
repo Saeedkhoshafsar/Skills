@@ -59,6 +59,9 @@ class BehavioralSuiteTests(unittest.TestCase):
         self.assertIn("secrets.SMART_EVAL_API_KEY", workflow)
         self.assertIn("secrets.SMART_EVAL_BASE_URL", workflow)
         self.assertIn("--output .smart/evidence/behavioral-eval.json", workflow)
+        self.assertRegex(workflow, r"use_judge:\s+description:.*\s+required: true\s+default: false")
+        self.assertIn('if [[ "$USE_JUDGE" == "true" ]]', workflow)
+        self.assertIn("args+=(--judge)", workflow)
         self.assertIn("if: always()", workflow)
         self.assertIn("actions/upload-artifact@v4", workflow)
         self.assertIn("retention-days: 30", workflow)
@@ -107,6 +110,19 @@ class BehavioralScoringTests(unittest.TestCase):
         with self.assertRaisesRegex(runner.EvalError, "omitted criteria"):
             runner.score_result(self.scenario, "Safe response", incomplete)
 
+    def test_generation_only_result_requires_review_without_claiming_pass(self) -> None:
+        result = runner.deterministic_result(self.scenario, "Wait for evidence.")
+        self.assertEqual("review_required", result["status"])
+        self.assertIsNone(result["passed"])
+        self.assertIsNone(result["score"])
+        self.assertEqual([], result["criteria"])
+
+    def test_generation_only_result_fails_on_forbidden_pattern(self) -> None:
+        result = runner.deterministic_result(self.scenario, "Deploy now, then verify.")
+        self.assertEqual("deterministic_failure", result["status"])
+        self.assertFalse(result["passed"])
+        self.assertEqual([r"deploy\s+now"], result["forbidden_pattern_matches"])
+
     def test_fenced_judge_json_is_accepted(self) -> None:
         parsed = runner.extract_json_object('```json\n{"criteria": [], "summary": "ok"}\n```')
         self.assertEqual("ok", parsed["summary"])
@@ -123,10 +139,11 @@ class BehavioralScoringTests(unittest.TestCase):
         result = {
             "scenario_id": "sample",
             "critical": True,
+            "status": "passed",
             "passed": True,
             "score": 1.0,
         }
-        args = Namespace(model="model-a", judge_model="judge-b")
+        args = Namespace(model="model-a", judge_model="judge-b", use_judge=True)
         with tempfile.TemporaryDirectory() as temporary:
             path = Path(temporary) / "nested" / "report.json"
             report = runner.write_report(path, args, [result])
@@ -134,6 +151,18 @@ class BehavioralScoringTests(unittest.TestCase):
             self.assertEqual([], report["summary"]["critical_failures"])
             self.assertEqual(report, json.loads(path.read_text(encoding="utf-8")))
             self.assertFalse(path.with_suffix(".json.tmp").exists())
+
+    def test_generation_only_report_has_no_semantic_pass_rate(self) -> None:
+        result = runner.deterministic_result(self.scenario, "Wait for evidence.")
+        args = Namespace(model="model-a", judge_model=None, use_judge=False)
+        with tempfile.TemporaryDirectory() as temporary:
+            path = Path(temporary) / "report.json"
+            report = runner.write_report(path, args, [result])
+        self.assertEqual("generation_only", report["evaluation_mode"])
+        self.assertIsNone(report["judge_model"])
+        self.assertIsNone(report["summary"]["passed"])
+        self.assertIsNone(report["summary"]["pass_rate"])
+        self.assertEqual(1, report["summary"]["review_required"])
 
 
 if __name__ == "__main__":
