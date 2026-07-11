@@ -10,7 +10,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      
+
       - name: Run unit and behavioral tests
         run: python3 -m unittest discover -s tests -v
 
@@ -57,8 +57,3 @@ jobs:
             [ -d "skills/$name" ] || { echo "MARKETPLACE ENTRY WITHOUT DIRECTORY: $name"; exit 1; }
             echo "OK: $name"
           done
-
-
-# pushing files under .github/workflows/. To enable CI, copy this file
-# manually in the GitHub web UI (or with a personal token):
-#   .github/workflows/validate.yml
