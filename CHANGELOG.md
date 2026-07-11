@@ -5,6 +5,19 @@ Versioning: bump plugin versions in `.claude-plugin/marketplace.json` and each
 plugin's `plugin.json` — `claude plugin update` only detects updates through a
 version bump in `marketplace.json`.
 
+## [2.2.0] - 2026-07-11
+
+### Added
+- Machine-verifiable Vision Lock artifacts bound to the exact Project Brief SHA-256 and accountable confirmer identity.
+- Fresh Verify artifacts bound to the current full commit, command result, and working-tree fingerprint; code or worktree changes invalidate GREEN evidence.
+- Release Gate artifacts that require and checksum-bind security, migration, backup, restore, smoke-test, and post-deploy health evidence plus accountable approval and rollback instructions.
+- Behavioral gate tests for stale/tampered evidence, failed commands, changed briefs and trees, unsafe evidence paths, and blocked security results.
+
+### Changed
+- SMART, Project Planner, Project Memory, Step Pilot, and Security Check now require machine gate results in addition to Markdown state.
+- Security Check emits a structured release verdict; SMART `2.2.0`, planner/memory/step-pilot `1.2.0`, and security-check `1.1.0`.
+- The CI unit/behavioral-test step is prepared but remains pending because the automation token lacks GitHub's `workflows` permission; local execution is mandatory meanwhile.
+
 ## [2.1.1] - 2026-07-11
 
 ### Changed

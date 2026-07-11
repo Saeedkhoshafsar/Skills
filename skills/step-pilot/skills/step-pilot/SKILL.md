@@ -27,7 +27,7 @@ Before touching code, read:
 
 Execution is blocked when any is true:
 
-- Vision Lock is not explicitly `CONFIRMED`;
+- Vision Lock is not explicitly `CONFIRMED` or `smart-gates.py vision check` is not GREEN;
 - plan or current task is absent/unapproved;
 - a critical unknown/expired assumption can invalidate this task;
 - dependency evidence is missing;
@@ -83,7 +83,9 @@ Run fresh checks in this order where applicable:
 5. security/privacy/accessibility/performance check when the task risk calls for it.
 
 A command that was green before the change is not completion evidence unless rerun.
-“Looks good” and model confidence are never verification.
+“Looks good” and model confidence are never verification. Execute the task's final command
+through `smart-gates.py verify run --task-id <ID> --command '<Verify>'`; completion also
+requires `smart-gates.py verify check` against the unchanged working tree.
 
 ### 6. Evidence gate
 
@@ -117,7 +119,7 @@ Before commit:
 ```text
 [ ] scope matches approved task and non-goals
 [ ] dependencies and acceptance are satisfied
-[ ] fresh Verify is GREEN
+[ ] fresh Verify is GREEN: `.smart/evidence/verify.json` exists and `smart-gates.py verify check` passes
 [ ] rollback/recovery remains possible where required
 [ ] STATE and canonical records match repository reality
 [ ] no secret or unnecessary personal data entered memory/git

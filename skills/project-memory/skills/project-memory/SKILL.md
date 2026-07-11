@@ -78,6 +78,7 @@ Do not modify memory merely because a session started.
 | Last evidence | `<command>` -> GREEN/RED at <time>, or user confirmation/source |
 | Blocker / waiting on | <one precise item or none> |
 | Vision Lock | NOT READY / READY FOR CONFIRMATION / CONFIRMED <date> |
+| Machine gates | Vision `<artifact/check>`; Verify `<artifact/check>`; Release `<artifact/check or N/A>` |
 | Branch / head | <branch / short hash> |
 
 ## Epistemic delta
@@ -118,17 +119,18 @@ Do not modify memory merely because a session started.
 | Event | Required memory delta |
 |---|---|
 | reliable discovery answer | update brief; add only changed truth to Epistemic delta |
-| Vision Playback confirmation | brief Vision Lock + STATE status + confirmation source/date |
+| Vision Playback confirmation | brief Vision Lock + STATE status + `.smart/evidence/vision-lock.json` produced by `smart-gates.py` |
 | temporary assumption | assumption, owner, validation test, expiry/reversal trigger |
 | material decision | append decision record; link concise consequence from STATE |
 | task starts | current objective/task, exact starting point, expected evidence |
 | meaningful checkpoint | exact progress and changed runway; no premature DONE |
 | error/failing check | exact command/input/output summary, attempt count, next diagnostic |
-| task completion | verification command/result/time, completed ledger entry, next task |
+| task completion | GREEN `.smart/evidence/verify.json`, command/result/time, completed ledger entry, next task |
 | scope/plan change | brief/plan/decision first, then STATE pointer and impact |
 | capability installed/created | inventory trigger, source/type, supply-chain/eval status |
 | before risky/long operation | checkpoint exact progress and rollback/recovery instruction |
 | phase/mode change | reason/evidence, new objective, refreshed runway |
+| release readiness | READY `.smart/evidence/release.json`, evidence paths/checksums, approver, rollback |
 
 “Meaningful” means the event changes understanding, decisions, progress, risk, or what
 the next agent should do. Do not record formatting-only edits as product events.

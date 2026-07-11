@@ -21,7 +21,8 @@ Skills/
     │   └── skills/smart/
     │       ├── SKILL.md      #   project brain: Sense -> Orient -> Model -> Decide -> Act -> Consolidate
     │       └── scripts/
-    │           └── fetch-skill.sh  # unified skill + native-plugin capability installer
+    │           ├── fetch-skill.sh  # unified skill + native-plugin capability installer
+    │           └── smart-gates.py  # machine-verifiable Vision, Verify, and Release gates
     ├── project-planner/      # adaptive discovery + Project Brief + Vision Lock + atomic PLAN.md
     ├── project-memory/       # canonical truth + resume packet + decisions/assumptions/runway
     ├── step-pilot/           # Vision-Lock + evidence-gated step execution and recovery
@@ -142,3 +143,33 @@ bash skills/smart/skills/smart/scripts/fetch-skill.sh candidate \
 ```
 
 `candidate` is intentionally not an approval. Static scanning cannot prove safety. Symlinks, hardlinks, path escape, oversized payloads, and unsafe destinations fail closed; suspicious executables, binaries, secret access, network/bootstrap patterns, and missing licenses require review. Silent fallback to a default branch is forbidden. Native marketplace plugins retain their native install/update mechanism and must be reviewed under their marketplace provenance controls.
+
+## Machine-verifiable execution gates
+
+SMART includes `smart-gates.py` so Vision Lock, task verification, and release readiness are executable checks rather than Markdown promises. Artifacts are written atomically under `.smart/evidence/`, bind evidence by SHA-256, reject paths outside the Git project, and fail closed when the brief, working tree, commit ancestry, or release evidence changes.
+
+```bash
+GATES=skills/smart/skills/smart/scripts/smart-gates.py
+
+# Product owner confirms the exact Project Brief.
+python3 "$GATES" vision confirm \
+  --brief docs/PROJECT-BRIEF.md --confirmed-by <identity>
+python3 "$GATES" vision check
+
+# Run and bind fresh task verification to the current commit and working tree.
+python3 "$GATES" verify run \
+  --task-id P1-T3 --command 'python3 -m unittest discover -s tests -v'
+python3 "$GATES" verify check
+
+# Release evidence files must already exist before Verify runs. The security report is
+# JSON with at least {"verdict":"PASS","critical_findings":0}.
+python3 "$GATES" release create --version <version> --approved-by <identity> \
+  --security-report evidence/security.json --migration-plan evidence/migration.txt \
+  --backup-evidence evidence/backup.txt --restore-evidence evidence/restore.txt \
+  --rollback-command '<tested rollback command>' \
+  --smoke-test-evidence evidence/smoke.txt \
+  --health-check-evidence evidence/health.txt
+python3 "$GATES" release check
+```
+
+For projects where migration, backup, or restore is genuinely not applicable, provide a reviewed evidence file that states `NOT_APPLICABLE`, the reason, owner, and date; omitting the evidence is intentionally not allowed.

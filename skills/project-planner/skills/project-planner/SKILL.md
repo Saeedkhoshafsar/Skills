@@ -167,6 +167,10 @@ Vision Lock may be `READY FOR CONFIRMATION` only when:
 - remaining assumptions have a test, owner, and expiry/reversal trigger.
 
 Do not create PLAN.md while status is NOT READY or merely ready for confirmation.
+After explicit confirmation, run SMART's `smart-gates.py vision confirm --brief
+docs/PROJECT-BRIEF.md --confirmed-by <identity>`. PLAN.md creation is blocked until
+`smart-gates.py vision check` passes. Any later Brief edit invalidates the lock and
+requires a new playback and confirmation.
 
 ## Stage 5 — Size by uncertainty and consequence
 
@@ -219,6 +223,7 @@ Write `docs/PLAN.md`:
 # <Project> — Execution Plan
 
 > Vision Lock: CONFIRMED on <date>. Brief: docs/PROJECT-BRIEF.md
+> Machine evidence: .smart/evidence/vision-lock.json (`vision check` GREEN)
 
 ## Outcomes, non-goals, and release gates
 ## Locked decisions and reversible defaults

@@ -70,6 +70,22 @@ VERDICT: RELEASE BLOCKED (1 CRITICAL)   |   or: OK TO RELEASE
 ```
 
 - Record every CRITICAL/IMPORTANT finding in STATE.md too (bug table or tech debt).
+- Also write `.smart/evidence/security.json` for the machine Release Gate:
+
+```json
+{
+  "schema": "smart.security-report/v1",
+  "verdict": "PASS",
+  "critical_findings": 0,
+  "important_findings": 0,
+  "checked_at": "<UTC timestamp>",
+  "checked_by": "<accountable identity>",
+  "report_path": "<human-readable report path>"
+}
+```
+
+Use `verdict: "BLOCKED"` whenever a CRITICAL remains. The Release Gate requires `PASS`
+and exactly zero critical findings, then checksum-binds this JSON to the release artifact.
 - Fixing a leaked secret = **move it + ROTATE the key** (removing it from code is not enough — it stays in git history).
 
 ## Anti-Patterns
