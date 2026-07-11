@@ -1,7 +1,7 @@
 {
   "name": "step-pilot",
-  "description": "Step-by-step plan executor: implement, test, verify, record in STATE.md, commit. No step starts before the previous gate is green.",
-  "version": "1.0.1",
+  "description": "Evidence-gated plan executor requiring confirmed Vision Lock, scoped work, fresh verification, durable memory, and recovery after repeated failure.",
+  "version": "1.1.0",
   "author": {
     "name": "Saeedkhoshafsar"
   },

@@ -5,6 +5,21 @@ Versioning: bump plugin versions in `.claude-plugin/marketplace.json` and each
 plugin's `plugin.json` — `claude plugin update` only detects updates through a
 version bump in `marketplace.json`.
 
+## [2.0.0] - 2026-07-11
+
+### Added
+- Evidence-aware Project Model with explicit `KNOWN`, `INFERRED`, `ASSUMED`, `UNKNOWN`, and `CONFLICT` states.
+- Adaptive, information-gain discovery for non-expert idea owners plus a mandatory Vision Playback and explicit Vision Lock before planning or code.
+- Operating modes independent of filesystem phase: bootstrap, discovery, vision-lock, planning, execution, recovery, stabilization, release, and maintenance.
+- Canonical Project Brief / Plan / State / Decisions / Research memory model, assumption expiry, capability inventory, meaningful change ledger, and a three-action runway.
+- Specialist-lens routing and a gated capability-gap protocol using `skill-creator`, least privilege, and adversarial evaluations.
+
+### Changed
+- SMART now chooses the next best action by information gain, user value, risk reduction, reversibility, effort, and dependencies before selecting capabilities.
+- Project Planner now performs viability/responsibility review and sequences plans by learning and risk rather than a fixed seven-question interview.
+- Step Pilot refuses execution without confirmed Vision Lock and fresh acceptance evidence, and enters recovery instead of repeating failed fixes.
+- Marketplace version `2.0.0`; SMART `2.0.0`; planner, memory, and step-pilot `1.1.0`.
+
 ## [1.5.0] - 2026-07-11
 
 ### Added

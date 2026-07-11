@@ -226,10 +226,10 @@
 
 | Skill | Purpose | Phase / trigger |
 |---|---|---|
-| smart | Capability manager: detects project/task needs, then installs the right standalone skills or native plugins on demand | Every session start / phase change |
-| project-planner | User interview + S/M/L sizing + atomic PLAN.md (13 layers, CTB style) | Phase 0 (empty project) |
-| project-memory | File-based memory STATE.md: current task, errors, decisions (disconnect-proof) | Phase 1+ (always active) |
-| step-pilot | Step-by-step execution: implement -> test -> verify -> record -> commit | Phase 1+ (always active) |
+| smart | Project intelligence: truthful model, mode orientation, Vision Lock, next-best-action capability orchestration/creation, consolidation | Every session start / material evidence or phase change |
+| project-planner | Adaptive discovery + Project Brief + epistemic/viability review + Vision Lock + risk-ordered atomic plan | Phase 0 until vision and roadmap approval |
+| project-memory | Canonical truth records + compact STATE resume packet, assumptions, capability inventory, change ledger, runway | From first reliable facts onward |
+| step-pilot | Vision-Lock and evidence-gated execution: one scoped task -> fresh verify -> consolidate -> commit/recovery | Approved plan onward |
 | code-review | Local diff review: correctness, readability, tests, plan conformance | Phase 3 / before merge |
 | debug-detective | Systematic debugging: reproduce -> isolate -> hypothesize -> minimal fix -> regression | Trigger: bug / 3 red verifies |
 | security-check | 5-axis pre-release security audit: secrets, deps, input, auth/RLS, defaults | Phase 4 gate (mandatory) |
@@ -276,18 +276,17 @@
 
 ```
 Every SMART invocation:
-1. SENSE the project state
-   - empty?              -> Phase 0: discovery + planning
-   - plan but no code?   -> Phase 1: setup (memory + steps)
-   - mid-development?    -> Phase 2: code + test + git
-   - ready to release?   -> Phase 4: security gate + CI/CD + release
-2. SELECT capabilities matching phase and tier from this catalog
-   - rule: minimum capability count that moves the work forward (max 3; anti-greed)
-   - GREEN default-allowed | YELLOW with reason | RED big projects only | BLACK never
-   - SMART has FREE HAND across standalone sources and native marketplaces: pick by
-     capability need, never source/package type. Check duplicate resolution first.
-3. ACT through fetch-skill.sh; it resolves sparse skill vs native plugin automatically
-4. REPORT the capability roadmap: "these 3 now; those 2 after Phase 2"
+1. SENSE focused evidence from STATE, brief, plan, decisions, research, git, and tests.
+2. ORIENT one operating mode (BOOTSTRAP, DISCOVERY, VISION-LOCK, PLANNING,
+   EXECUTION, RECOVERY, STABILIZATION, RELEASE, or MAINTENANCE).
+3. MODEL facts with KNOWN / INFERRED / ASSUMED / UNKNOWN / CONFLICT labels.
+4. DECIDE the next best action by information gain, user value, risk reduction,
+   reversibility, effort, and dependencies. No plan/code before confirmed Vision Lock.
+5. SELECT the minimum capability set for that action (max 3; tier/duplicate rules).
+   If a proven recurring capability gap exists, use skill-creator and evaluations.
+6. ACT through fetch-skill.sh and apply the mode gate; supply-chain review external skills.
+7. CONSOLIDATE canonical truth, current state, assumptions, decisions, capability
+   inventory, change ledger, and the next-three-action runway; then REPORT.
 ```
 
 ### Capability-need quick index (SMART's free-hand lookup)
