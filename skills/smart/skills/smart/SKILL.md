@@ -278,10 +278,15 @@ and hard blockers, creates a file/checksum manifest, and reports findings. Revie
 `SKILL.md`, every script, provenance, license, executable/binary files, network calls,
 out-of-project writes, secret access, and contract fit. Static scan success is not proof
 of safety. Only after accountable review may the reviewer run `approve`; activation
-writes `.smart-lock.json`. If human approval is required, explain the evidence and ask
-for the approval decision in plain language—never hand the user installation commands or
-source choices. Ordinary `install` must reproduce the locked commit, while only explicit
-`update` may resolve a newer candidate. Never use quarantined content.
+writes `.smart-lock.json`. When the installer emits
+`third_party_approval_required`, SMART must inspect the referenced candidate and scan report,
+summarize provenance, material findings, requested access, and residual risk in the user's
+language, then ask exactly one plain-language approve-or-reject question. Never expose an
+installation command, reviewer flag, source choice, or package mechanic. Approval is valid
+only after that explicit decision; SMART then invokes `approve` itself with the accountable
+identity. Rejection leaves the candidate quarantined and unavailable. Ordinary `install` must
+reproduce the locked commit, while only explicit `update` may resolve a newer candidate.
+Never use quarantined content or treat static scan success as user consent.
 
 Then perform only the current mode's next action. Discovery produces understanding,
 not code. Execution changes only the approved task scope. Release never bypasses the

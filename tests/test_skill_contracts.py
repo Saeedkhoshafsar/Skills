@@ -114,6 +114,18 @@ class SmartCognitionContractTests(unittest.TestCase):
         )
         self.assertIn("no user setup step", normalized)
 
+    def test_third_party_approval_is_plain_language_and_smart_owned(self) -> None:
+        normalized = " ".join(self.smart.split())
+        for requirement in (
+            "third_party_approval_required",
+            "ask exactly one plain-language approve-or-reject question",
+            "SMART then invokes `approve` itself",
+            "Rejection leaves the candidate quarantined and unavailable",
+            "Never use quarantined content or treat static scan success as user consent",
+        ):
+            with self.subTest(requirement=requirement):
+                self.assertIn(requirement, normalized)
+
     def test_machine_gate_protocol_is_required(self) -> None:
         self.assertTrue(GATES.is_file())
         for gate in ("vision check", "verify check", "release check"):

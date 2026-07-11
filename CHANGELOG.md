@@ -11,10 +11,12 @@ version bump in `marketplace.json`.
 - SMART's adversarial scenarios are now validated entirely offline with a dependency-free schema validator and CI contract tests.
 - Durable `docs/STATE.md` continuity is refocused on SMART's core role as the project's zero-configuration skill-manager brain.
 - Bundled companion capabilities now install idempotently as native plugins from SMART's trusted marketplace; users are no longer asked to install companions, choose a source, or run additional setup commands.
-- SMART and marketplace version `2.3.1`.
+- Third-party quarantine now emits a structured approval handoff for SMART instead of printing user-facing activation commands; SMART presents one plain-language approve-or-reject decision and performs approved mechanics itself.
+- SMART and marketplace version `2.3.2`.
 
 ### Security
 - Third-party standalone capabilities still use the existing fail-closed quarantine, static scan, accountable approval, and immutable lock workflow; first-party routing does not weaken that boundary.
+- Static scan success remains explicitly non-consensual: rejected candidates stay quarantined, and activation still requires an accountable human decision.
 
 ### Removed
 - The live model-evaluation harness, semantic observer, staged paid workflow, API credentials, secrets, model selection, and external endpoint configuration.
