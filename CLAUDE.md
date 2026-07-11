@@ -4,9 +4,11 @@ You are working with the **SMART skill-manager ecosystem**. Read this file first
 
 ## What this repo is
 
-A set of 7 local skills plus a verified catalog of 79 external skills from 5 GitHub
-sources (anthropics/skills, obra/superpowers, ruflo, claude-plugins-official,
-nextlevelbuilder/ui-ux-pro-max-skill). The design:
+A set of 7 local skills plus a curated external catalog. Standalone sources include
+anthropics/skills, obra/superpowers, ruflo, claude-plugins-official,
+nextlevelbuilder/ui-ux-pro-max-skill, coreyhaines31/marketingskills, stop-slop,
+and remotion-video. Context Engineering Kit remains a plugin marketplace because it
+ships commands, agents, and hooks alongside skills. The design:
 the user activates only `smart`; `smart` senses the project phase AND the task's
 capability needs, then installs the minimum set of other skills on-demand from GitHub.
 SMART has a free hand across all sources — it selects by capability, not by source.
@@ -40,7 +42,8 @@ SMART has a free hand across all sources — it selects by capability, not by so
 7. **security-check is a mandatory gate before every release.** A CRITICAL finding blocks the release.
 8. **Duplicates are resolved by the catalog table, not ad hoc.** e.g. skill authoring → `skill-creator` (anthropics), debugging → local `debug-detective`, TDD → `test-driven-development` (obra).
 9. **Capability triggers override phase defaults.** "Produce an Excel report" in any phase → fetch `xlsx` now; "design a full UI" → fetch `ui-ux-pro-max`.
-10. **Supply-chain gate.** After fetching any EXTERNAL skill, skim its SKILL.md and scripts once (30 seconds) before using it — delete and report anything suspicious.
+10. **Context Engineering Kit is plugin-only.** Install only its needed plugins through its marketplace; do not flatten it into `.claude/skills/`.
+11. **Supply-chain gate.** After fetching any EXTERNAL skill, skim its SKILL.md and scripts once (30 seconds) before using it — delete and report anything suspicious.
 
 ## Conventions
 
