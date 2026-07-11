@@ -13,6 +13,8 @@ allowed-tools: Read, Glob, Grep, Bash, Write
 
 **Outputs:**
 
+- `docs/PROJECT-MIND.md` — the atomic mind network of the intended product (node
+  protocol in `project-memory`), grown with every reliable discovery answer.
 - `docs/PROJECT-BRIEF.md` — the confirmed product model and uncertainty map.
 - `docs/PLAN.md` — an ordered, risk-aware execution plan created only after Vision Lock.
 
@@ -58,6 +60,8 @@ only 1–3 questions with the highest decision impact and uncertainty.
 2. Explain in one sentence why an answer affects the project.
 3. Offer examples/options and “I don't know” when abstraction is difficult.
 4. Reflect the answer as `KNOWN` or `INFERRED`; ask for correction where material.
+5. Write every reliable answer into the mind network as atomic node(s) in the same
+   turn; an answer that never becomes a node is lost to the next session.
 5. When the user does not know, propose a reversible assumption plus a validation test.
 6. Do not ask implementation questions before they are decision-relevant.
 7. Stop interviewing when additional answers no longer change the next product decision.
@@ -164,9 +168,14 @@ Vision Lock may be `READY FOR CONFIRMATION` only when:
 - failure conditions and non-goals are visible;
 - material constraints and sensitive-data/safety/compliance risks are surfaced;
 - success evidence and the MVP learning objective are explicit;
-- remaining assumptions have a test, owner, and expiry/reversal trigger.
+- remaining assumptions have a test, owner, and expiry/reversal trigger;
+- the Project Mind coverage sweep is COMPLETE: every relevant domain has nodes or an
+  explicit `not applicable`, and no critical-path node is `UNKNOWN` or `CONFLICT`.
 
 Do not create PLAN.md while status is NOT READY or merely ready for confirmation.
+“Let's just start and figure it out as we build” is not an acceptable path past this
+gate under any schedule pressure; the correct response is sharper key questions that
+close the remaining gaps quickly.
 After explicit confirmation, run SMART's `smart-gates.py vision confirm --brief
 docs/PROJECT-BRIEF.md --confirmed-by <identity>`. PLAN.md creation is blocked until
 `smart-gates.py vision check` passes. Any later Brief edit invalidates the lock and
@@ -234,6 +243,7 @@ Write `docs/PLAN.md`:
 
 ### P0-T1 — <atomic outcome>
 **Why now:** <risk, dependency, or learning unlocked>
+**Realizes:** <mind node IDs, e.g. M-EXP-04, M-BEH-07>
 **Depends on:** <IDs or none>
 **Files:** <exact files to create/modify>
 **Accept:**
@@ -255,7 +265,9 @@ Write `docs/PLAN.md`:
 6. The first product milestone is a thin end-to-end user outcome, not disconnected
    technical layers.
 7. Every phase has entry/exit evidence and a rollback or recovery path where relevant.
-8. The user approves the roadmap before `project-memory` sets the first current task.
+8. Every task cites the mind node IDs it realizes; must-have nodes not covered by any
+   milestone are surfaced as gaps, and node-less tasks are challenged as scope creep.
+9. The user approves the roadmap before `project-memory` sets the first current task.
 
 ## Stage 8 — Handoff
 

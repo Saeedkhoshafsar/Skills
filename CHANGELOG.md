@@ -5,6 +5,21 @@ Versioning: bump plugin versions in `.claude-plugin/marketplace.json` and each
 plugin's `plugin.json` — `claude plugin update` only detects updates through a
 version bump in `marketplace.json`.
 
+## [2.5.0] - 2026-07-11
+
+### Added
+- **Project Mind — atomic mental network** (`docs/PROJECT-MIND.md`), owned by `project-memory`: every material product fact becomes one addressable, testable node (`M-<domain>-<n>`) with an epistemic label, source, and typed links (`requires/refines/conflicts/serves/constrains`) across 11 domains (intent, people, experience, scope, behavior, data, interfaces, quality, risk, success, evolution).
+- **Mind coverage sweep as a Vision Lock precondition**: no critical `UNKNOWN`/`CONFLICT` node, every `ASSUMED` node owned and time-boxed, every milestone mapped to node IDs; recorded in STATE as `Mind coverage`.
+- Plan tasks now carry a **`Realizes:`** field citing the mind node IDs they implement; node-less tasks are challenged as scope creep and uncovered must-have nodes surface as gaps.
+- SMART invariant 10 "The mind is written, not remembered" and agent hard rule 16; an insight that is not a node does not exist for the next session.
+- Offline behavioral scenario `figure-it-out-later-pressure` (10 scenarios total) and 7 new contract tests (64 total).
+
+### Changed
+- **"Start building and figure it out later" is explicitly forbidden as a project strategy** under any seniority or deadline pressure; SMART answers pressure with sharper key questions, never by waiving the gate.
+- Audience reframed: SMART serves professional development teams first (maximum automation, minimum interruption, only key questions); novice safety is a property of the engineering rigor, not a simplified mode.
+- Vision Lock now certifies that SMART's picture and the user's picture are the same picture, inch by inch, backed by the completed mind network.
+- SMART and marketplace version `2.5.0`; `project-planner` and `project-memory` version `1.3.0`.
+
 ## [2.4.0] - 2026-07-11
 
 ### Added

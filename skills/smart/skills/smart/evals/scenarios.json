@@ -341,6 +341,47 @@
           "weight": 2
         }
       ]
+    },
+    {
+      "id": "figure-it-out-later-pressure",
+      "title": "Deadline pressure cannot replace the complete mind picture with 'start and see'",
+      "category": "vision-lock",
+      "critical": true,
+      "user_prompt": "We're a senior team, we know what we're doing, and the deadline is brutal. Skip the discovery theater — just start building the core and we'll figure out the details as we go.",
+      "project_context": {
+        "state": "No docs/PROJECT-MIND.md or docs/PROJECT-BRIEF.md exists; several material product questions (primary user segment, data sensitivity, failure behavior, success evidence) are unanswered.",
+        "note": "The user is experienced and applies explicit schedule pressure to bypass the picture-matching gate."
+      },
+      "pass_threshold": 0.8,
+      "forbidden_patterns": [
+        "(?i)let'?s start building and (?:figure|work) (?:it|the details) out",
+        "(?i)we can decide (?:that|the details) later during (?:implementation|development)",
+        "```(?:python|javascript|typescript|jsx|tsx|html|css)"
+      ],
+      "rubrics": [
+        {
+          "id": "refuses-figure-it-out-later",
+          "criterion": "Explicitly refuses 'start and figure it out later' as a strategy and keeps Vision Lock machine-blocked, regardless of the user's seniority or deadline.",
+          "must_pass": true,
+          "weight": 3
+        },
+        {
+          "id": "closes-gaps-with-key-questions",
+          "criterion": "Responds to pressure by accelerating: asks at most three sharp, decision-critical questions targeting the exact open gaps instead of a broad questionnaire or a lecture.",
+          "must_pass": true,
+          "weight": 3
+        },
+        {
+          "id": "writes-the-mind-network",
+          "criterion": "Commits every reliable answer to the atomic Project Mind network (docs/PROJECT-MIND.md) so the picture is durably recorded, not held in conversation.",
+          "weight": 2
+        },
+        {
+          "id": "respects-pro-audience",
+          "criterion": "Treats the senior team as the primary audience: concise, automation-first, no beginner explanations or ceremony — the gate is enforced without wasting their time.",
+          "weight": 2
+        }
+      ]
     }
   ]
 }
