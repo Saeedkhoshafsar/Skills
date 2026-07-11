@@ -176,6 +176,92 @@ class SmartGateTests(unittest.TestCase):
         self.assertNotEqual(result.returncode, 0)
         self.assertIn("restore_evidence evidence changed", result.stderr)
 
+    def test_vision_confirm_blocks_not_ready_brief(self) -> None:
+        (self.project / "docs/PROJECT-BRIEF.md").write_text(
+            "# Brief\n\n## Vision Lock\nStatus: NOT READY\n", encoding="utf-8"
+        )
+        result = self.confirm_vision()
+        self.assertNotEqual(result.returncode, 0)
+        self.assertIn("NOT READY", result.stderr)
+
+    def test_vision_confirm_blocks_open_mind_coverage_gaps(self) -> None:
+        (self.project / "docs/STATE.md").write_text(
+            "# STATE\n\n| Mind coverage | GAPS: M-PPL-02 |\n", encoding="utf-8"
+        )
+        result = self.confirm_vision()
+        self.assertNotEqual(result.returncode, 0)
+        self.assertIn("coverage gaps", result.stderr)
+
+    def test_vision_confirm_allows_complete_mind_coverage(self) -> None:
+        (self.project / "docs/STATE.md").write_text(
+            "# STATE\n\n| Mind coverage | COMPLETE 2026-07-11 |\n", encoding="utf-8"
+        )
+        self.assertEqual(self.confirm_vision().returncode, 0)
+
+    def test_vision_check_rejects_hand_edited_artifact(self) -> None:
+        self.assertEqual(self.confirm_vision().returncode, 0)
+        artifact = self.project / ".smart/evidence/vision-lock.json"
+        data = json.loads(artifact.read_text())
+        data["confirmed_by"] = "forger@example.test"
+        artifact.write_text(json.dumps(data, indent=2, sort_keys=True))
+        result = self.gate("vision", "check")
+        self.assertNotEqual(result.returncode, 0)
+        self.assertIn("seal mismatch", result.stderr)
+
+    def test_verify_check_rejects_red_artifact_flipped_to_green(self) -> None:
+        self.assertEqual(self.confirm_vision().returncode, 0)
+        self.assertNotEqual(self.run_verify("exit 3").returncode, 0)
+        artifact = self.project / ".smart/evidence/verify.json"
+        data = json.loads(artifact.read_text())
+        data["status"] = "GREEN"
+        data["exit_code"] = 0
+        artifact.write_text(json.dumps(data, indent=2, sort_keys=True))
+        result = self.gate("verify", "check")
+        self.assertNotEqual(result.returncode, 0)
+        self.assertIn("seal mismatch", result.stderr)
+
+    def test_verify_check_rejects_task_id_swap_on_green_artifact(self) -> None:
+        self.assertEqual(self.confirm_vision().returncode, 0)
+        self.assertEqual(self.run_verify().returncode, 0)
+        artifact = self.project / ".smart/evidence/verify.json"
+        data = json.loads(artifact.read_text())
+        data["task_id"] = "P9-T9-forged"
+        artifact.write_text(json.dumps(data, indent=2, sort_keys=True))
+        result = self.gate("verify", "check")
+        self.assertNotEqual(result.returncode, 0)
+        self.assertIn("seal mismatch", result.stderr)
+
+    def test_release_check_rejects_hand_edited_release_artifact(self) -> None:
+        self.assertEqual(self.confirm_vision().returncode, 0)
+        self.write_release_evidence()
+        self.assertEqual(self.run_verify().returncode, 0)
+        self.assertEqual(self.create_release().returncode, 0)
+        artifact = self.project / ".smart/evidence/release.json"
+        data = json.loads(artifact.read_text())
+        data["approved_by"] = "forger@example.test"
+        artifact.write_text(json.dumps(data, indent=2, sort_keys=True))
+        result = self.gate("release", "check")
+        self.assertNotEqual(result.returncode, 0)
+        self.assertIn("seal mismatch", result.stderr)
+
+    def test_release_missing_evidence_file_fails_closed_without_traceback(self) -> None:
+        self.assertEqual(self.confirm_vision().returncode, 0)
+        self.write_release_evidence()
+        self.assertEqual(self.run_verify().returncode, 0)
+        result = self.gate(
+            "release", "create", "--version", "1", "--approved-by", "owner",
+            "--security-report", "evidence/missing.json",
+            "--migration-plan", "evidence/migration.txt",
+            "--backup-evidence", "evidence/backup.txt",
+            "--restore-evidence", "evidence/restore.txt",
+            "--rollback-command", "rollback",
+            "--smoke-test-evidence", "evidence/smoke.txt",
+            "--health-check-evidence", "evidence/health.txt",
+        )
+        self.assertNotEqual(result.returncode, 0)
+        self.assertIn("GATE BLOCKED", result.stderr)
+        self.assertNotIn("Traceback", result.stderr)
+
     def test_release_rejects_evidence_outside_project(self) -> None:
         self.assertEqual(self.confirm_vision().returncode, 0)
         self.write_release_evidence()

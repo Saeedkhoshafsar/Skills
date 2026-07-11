@@ -5,6 +5,33 @@ Versioning: bump plugin versions in `.claude-plugin/marketplace.json` and each
 plugin's `plugin.json` — `claude plugin update` only detects updates through a
 version bump in `marketplace.json`.
 
+## [2.5.1] - 2026-07-11
+
+### Fixed (findings from the first cold-start field test)
+
+A full cold-start field test (empty repo → discovery → mind network → Vision Lock →
+plan → execution → interrupt/resume → release) plus 13 adversarial probes confirmed the
+gate chain end to end and exposed three real gaps, all closed here:
+
+- **Gate artifacts are now content-sealed.** Every `vision-lock.json`, `verify.json`,
+  and `release.json` carries a domain-separated SHA-256 seal over its own payload.
+  Hand-editing any field (flipping a RED verify to GREEN, swapping the task ID or
+  command, changing the approver) now fails `check` with a clear seal-mismatch error
+  instead of passing silently. Legitimate changes require re-running the producing
+  command, exactly as the contract already demanded.
+- **`vision confirm` fails closed on explicit not-ready signals.** Confirming is
+  machine-blocked while the Project Brief's Vision Lock status is `NOT READY` or STATE
+  records open `Mind coverage` gaps (`GAPS: …` / `NOT BUILT`) — an impatient agent can
+  no longer produce a lock artifact around an incomplete Project Mind.
+- **Missing evidence files fail closed cleanly.** A nonexistent evidence path now
+  reports `GATE BLOCKED: required file does not exist` instead of a raw traceback.
+
+### Changed
+- SMART contract documents the seal and the readiness precondition of `vision confirm`.
+- `SKILLS_CATALOG.md` local-skills table now reflects the Project Mind network in the
+  `project-planner` and `project-memory` descriptions.
+- 8 new gate regression tests (72 total). SMART and marketplace version `2.5.1`.
+
 ## [2.5.0] - 2026-07-11
 
 ### Added
