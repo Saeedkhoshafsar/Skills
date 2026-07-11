@@ -1,8 +1,9 @@
 #!/usr/bin/env python3
 """Run SMART behavioral scenarios against an OpenAI-compatible chat endpoint.
 
-The harness intentionally separates response generation from rubric judging so saved
-responses can be re-judged after a rubric change. It uses only Python's standard library.
+Response generation is the default. Optional rubric judging can be enabled explicitly,
+and saved responses can be re-judged after a rubric change. The harness uses only
+Python's standard library.
 """
 
 from __future__ import annotations
@@ -210,6 +211,28 @@ ASSISTANT RESPONSE:
     return extract_json_object(raw)
 
 
+def deterministic_result(scenario: dict[str, Any], assistant_response: str) -> dict[str, Any]:
+    """Record checks that do not require a semantic judge call."""
+    pattern_failures = [
+        pattern
+        for pattern in scenario.get("forbidden_patterns", [])
+        if re.search(pattern, assistant_response, re.IGNORECASE | re.MULTILINE)
+    ]
+    return {
+        "scenario_id": scenario["id"],
+        "title": scenario["title"],
+        "critical": scenario.get("critical", False),
+        "status": "deterministic_failure" if pattern_failures else "review_required",
+        "passed": False if pattern_failures else None,
+        "score": None,
+        "critical_failures": [],
+        "forbidden_pattern_matches": pattern_failures,
+        "criteria": [],
+        "judge_summary": "",
+        "response": assistant_response,
+    }
+
+
 def score_result(
     scenario: dict[str, Any], assistant_response: str, judge: dict[str, Any]
 ) -> dict[str, Any]:
@@ -250,6 +273,7 @@ def score_result(
         "scenario_id": scenario["id"],
         "title": scenario["title"],
         "critical": scenario.get("critical", False),
+        "status": "passed" if passed else "failed",
         "passed": passed,
         "score": round(score, 4),
         "critical_failures": critical_failures,
@@ -261,17 +285,29 @@ def score_result(
 
 
 def write_report(path: Path, args: argparse.Namespace, results: list[dict[str, Any]]) -> dict[str, Any]:
-    passed = sum(result["passed"] for result in results)
-    critical_failed = [result["scenario_id"] for result in results if result["critical"] and not result["passed"]]
+    use_judge = getattr(args, "use_judge", True)
+    judged_results = [result for result in results if result["passed"] is not None]
+    passed = sum(result["passed"] is True for result in judged_results)
+    critical_failed = [
+        result["scenario_id"]
+        for result in results
+        if result["critical"] and result["passed"] is False
+    ]
+    pass_rate = round(passed / len(judged_results), 4) if use_judge else None
     report = {
         "schema_version": "1.0",
         "generated_at": dt.datetime.now(dt.timezone.utc).isoformat(),
+        "evaluation_mode": "semantic_judge" if use_judge else "generation_only",
         "model": args.model,
-        "judge_model": args.judge_model or args.model,
+        "judge_model": (args.judge_model or args.model) if use_judge else None,
         "summary": {
-            "passed": passed,
+            "passed": passed if use_judge else None,
             "total": len(results),
-            "pass_rate": round(passed / len(results), 4),
+            "pass_rate": pass_rate,
+            "review_required": sum(result["status"] == "review_required" for result in results),
+            "deterministic_failures": sum(
+                result["status"] == "deterministic_failure" for result in results
+            ),
             "critical_failures": critical_failed,
         },
         "results": results,
@@ -292,7 +328,17 @@ def parse_args(argv: list[str]) -> argparse.Namespace:
     parser.add_argument("--responses", type=Path, help="JSON object mapping scenario ids to saved responses")
     parser.add_argument("--output", type=Path, default=Path(".smart/evidence/behavioral-eval.json"))
     parser.add_argument("--model", default=os.environ.get("SMART_EVAL_MODEL", "gpt-5-mini"))
-    parser.add_argument("--judge-model", default=os.environ.get("SMART_EVAL_JUDGE_MODEL"))
+    parser.add_argument(
+        "--judge",
+        dest="use_judge",
+        action="store_true",
+        help="Enable semantic rubric judging (adds one API call per scenario)",
+    )
+    parser.add_argument(
+        "--judge-model",
+        default=os.environ.get("SMART_EVAL_JUDGE_MODEL"),
+        help="Optional model for --judge; otherwise the generation model is reused",
+    )
     parser.add_argument(
         "--base-url",
         default=os.environ.get("SMART_EVAL_BASE_URL")
@@ -304,6 +350,8 @@ def parse_args(argv: list[str]) -> argparse.Namespace:
     args = parser.parse_args(argv)
     if not 0 <= args.fail_under <= 1:
         parser.error("--fail-under must be between 0 and 1")
+    if args.judge_model and not args.use_judge:
+        parser.error("--judge-model requires --judge")
     return args
 
 
@@ -319,7 +367,7 @@ def main(argv: list[str] | None = None) -> int:
             print(f"Valid behavioral suite: {len(scenarios)} scenario(s)")
             return 0
         if not args.api_key:
-            raise EvalError("Set SMART_EVAL_API_KEY (or OPENAI_API_KEY) to run generation/judging")
+            raise EvalError("Set SMART_EVAL_API_KEY (or OPENAI_API_KEY) to run generation")
         saved = load_json(args.responses) if args.responses else {}
         if not isinstance(saved, dict):
             raise EvalError("--responses must contain a JSON object mapping ids to responses")
@@ -332,13 +380,26 @@ def main(argv: list[str] | None = None) -> int:
                 response = generate_response(scenario, skill_text, args)
             if not isinstance(response, str) or not response.strip():
                 raise EvalError(f"{scenario_id}: saved/generated response is empty")
-            result = score_result(scenario, response, judge_response(scenario, response, args))
+            if args.use_judge:
+                result = score_result(scenario, response, judge_response(scenario, response, args))
+                print(f"{'PASS' if result['passed'] else 'FAIL'} {scenario_id}: {result['score']:.0%}")
+            else:
+                result = deterministic_result(scenario, response)
+                print(f"{result['status'].upper()} {scenario_id}")
             results.append(result)
-            print(f"{'PASS' if result['passed'] else 'FAIL'} {scenario_id}: {result['score']:.0%}")
         report = write_report(args.output, args, results)
         summary = report["summary"]
-        print(f"Result: {summary['passed']}/{summary['total']} ({summary['pass_rate']:.0%}) -> {args.output}")
-        return 1 if summary["pass_rate"] < args.fail_under or summary["critical_failures"] else 0
+        if args.use_judge:
+            print(
+                f"Result: {summary['passed']}/{summary['total']} "
+                f"({summary['pass_rate']:.0%}) -> {args.output}"
+            )
+            return 1 if summary["pass_rate"] < args.fail_under or summary["critical_failures"] else 0
+        print(
+            f"Generated: {summary['total']}; review required: {summary['review_required']}; "
+            f"deterministic failures: {summary['deterministic_failures']} -> {args.output}"
+        )
+        return 1 if summary["deterministic_failures"] else 0
     except (EvalError, OSError) as exc:
         print(f"ERROR: {exc}", file=sys.stderr)
         return 2
