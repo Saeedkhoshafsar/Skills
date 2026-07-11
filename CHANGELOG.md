@@ -5,6 +5,16 @@ Versioning: bump plugin versions in `.claude-plugin/marketplace.json` and each
 plugin's `plugin.json` — `claude plugin update` only detects updates through a
 version bump in `marketplace.json`.
 
+## [2.3.0] - 2026-07-11
+
+### Added
+- Model-level behavioral evaluation harness with separate generation and semantic judging calls, weighted fail-closed rubrics, saved-response re-judging, and atomic JSON reports.
+- Eight adversarial SMART scenarios covering Vision Lock, durable resume, conflict recovery, capability restraint, supply-chain safety, release evidence, and fresh verification.
+- Deterministic tests for scenario validation, critical-rubric enforcement, forbidden-output guards, judge-result validation, filtering, endpoint handling, and report aggregation.
+
+### Changed
+- GitHub Actions now runs the complete unit and behavioral test suite on pushes and pull requests, closing the CI-enforcement gap recorded in `2.2.0`.
+
 ## [2.2.0] - 2026-07-11
 
 ### Added

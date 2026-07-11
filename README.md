@@ -173,3 +173,33 @@ python3 "$GATES" release check
 ```
 
 For projects where migration, backup, or restore is genuinely not applicable, provide a reviewed evidence file that states `NOT_APPLICABLE`, the reason, owner, and date; omitting the evidence is intentionally not allowed.
+
+## Behavioral evaluation of SMART
+
+Contract tests prove that required instructions exist; the model-behavior suite checks whether SMART follows them under adversarial pressure. The initial suite covers premature implementation, unconfirmed Vision Lock, durable-state resume, conflicting evidence, speculative capability installation, unsafe skill candidates, incomplete release evidence, and stale task verification.
+
+Suite validation is dependency-free and runs in normal CI:
+
+```bash
+EVALS=skills/smart/skills/smart/evals
+python3 "$EVALS/run_behavioral_evals.py" --validate-only
+```
+
+A live run needs an OpenAI-compatible endpoint. Configure `SMART_EVAL_API_KEY` and, when needed, `SMART_EVAL_BASE_URL`; `OPENAI_API_KEY` and `OPENAI_BASE_URL` are accepted as fallbacks. Responses and semantic rubric judgments are separate model calls. Critical rubric failures and deterministic forbidden-output matches fail closed.
+
+```bash
+export SMART_EVAL_API_KEY='<secret>'
+export SMART_EVAL_BASE_URL='https://api.openai.com/v1'
+export SMART_EVAL_MODEL='gpt-5-mini'
+
+python3 "$EVALS/run_behavioral_evals.py" \
+  --output .smart/evidence/behavioral-eval.json
+
+# Run or re-judge selected scenarios; saved responses are {"scenario-id":"response"}.
+python3 "$EVALS/run_behavioral_evals.py" \
+  --scenario vague-idea-no-code \
+  --scenario release-with-missing-evidence \
+  --responses saved-responses.json
+```
+
+The live suite is intentionally not a required pull-request check: external model behavior, credentials, latency, and cost are nondeterministic. CI validates the scenario schema, scoring logic, critical-failure behavior, and all existing unit tests; scheduled or release evaluation runs can preserve the JSON report as evidence.
