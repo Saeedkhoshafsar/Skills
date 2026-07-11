@@ -10,6 +10,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 SMART = ROOT / "skills/smart/skills/smart/SKILL.md"
+CLAUDE = ROOT / "CLAUDE.md"
 PLANNER = ROOT / "skills/project-planner/skills/project-planner/SKILL.md"
 MEMORY = ROOT / "skills/project-memory/skills/project-memory/SKILL.md"
 PILOT = ROOT / "skills/step-pilot/skills/step-pilot/SKILL.md"
@@ -101,6 +102,19 @@ class SmartCognitionContractTests(unittest.TestCase):
         self.assertIn("project-memory", self.smart)
         self.assertIn("next 1–3 actions", self.smart)
 
+    def test_healthy_projects_use_a_progress_first_fast_path(self) -> None:
+        normalized = " ".join(self.smart.split())
+        for requirement in (
+            "Fast path — default for a healthy, known project",
+            "do not rebuild the Project Model",
+            "Activate at most one additional capability",
+            "advance project work in the same invocation",
+            "write only the memory delta",
+            "Never spend more report space on SMART's mechanics than on the project result",
+        ):
+            with self.subTest(requirement=requirement):
+                self.assertIn(requirement, normalized)
+
     def test_bundled_companions_are_zero_configuration_for_user(self) -> None:
         normalized = " ".join(self.smart.split())
         self.assertIn("bundled first-party capabilities", normalized)
@@ -113,6 +127,13 @@ class SmartCognitionContractTests(unittest.TestCase):
             normalized,
         )
         self.assertIn("no user setup step", normalized)
+
+    def test_restricted_workflows_are_staged_instead_of_blocking_progress(self) -> None:
+        agent_contract = " ".join(text(CLAUDE).split())
+        self.assertIn("Restricted automation staging", agent_contract)
+        self.assertIn("cannot modify `.github/workflows/*`", agent_contract)
+        self.assertIn("Create the exact ready-to-copy workflow under `ci/`", agent_contract)
+        self.assertIn("manual replacement after the PR", agent_contract)
 
     def test_third_party_approval_is_plain_language_and_smart_owned(self) -> None:
         normalized = " ".join(self.smart.split())
@@ -206,6 +227,18 @@ class ContinuityAndExecutionContractTests(unittest.TestCase):
         self.assertIn("Vision Lock is not explicitly `CONFIRMED`", self.pilot)
         self.assertIn("task has no measurable acceptance", self.pilot)
         self.assertIn("fresh Verify is GREEN", self.pilot)
+
+    def test_healthy_execution_advances_in_one_internal_pass(self) -> None:
+        normalized = " ".join(self.pilot.split())
+        for requirement in (
+            "Healthy-task fast path",
+            "one internal execution checklist",
+            "write the memory delta in the same invocation",
+            "Do not stop after restating the task",
+            "Escalate back to SMART only when",
+        ):
+            with self.subTest(requirement=requirement):
+                self.assertIn(requirement, normalized)
 
     def test_repeated_failure_enters_recovery(self) -> None:
         self.assertIn("same symptom RED 3 times", self.pilot)

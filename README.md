@@ -83,6 +83,14 @@ cp -r /tmp/sk/skills/smart/skills/smart .claude/skills/ && rm -rf /tmp/sk
 | Ready to release | `security-check` (GATE) + `github-release-management` + `hooks-automation` | security gate is mandatory |
 | Maintenance | `github-project-management` | issues, boards |
 
+### Progress-first fast path
+
+For a healthy project with current STATE, confirmed gates, and an approved task, SMART does
+not rerun the full discovery/orchestration ceremony. It reads the compact resume packet and
+current task, reuses active capabilities, performs one approved action, verifies it, and
+records only the changed memory. The deeper loop activates only for missing/stale state,
+conflict, material risk, phase change, blocked verification, or a real capability gap.
+
 **Capability triggers (any mode):** the current decision/action can demand a skill regardless of lifecycle phase — PDF/Word/Excel/PowerPoint output → `pdf`/`docx`/`xlsx`/`pptx`, full design system → `ui-ux-pro-max`, web-app testing → `webapp-testing`, building a skill → `skill-creator`, building an MCP server → `mcp-builder`, Claude Code hooks/commands/plugins → the `plugin-dev` suite. Full index in [`SKILLS_CATALOG.md`](SKILLS_CATALOG.md).
 
 ## Skill Sources (what fetch-skill.sh pulls from)
