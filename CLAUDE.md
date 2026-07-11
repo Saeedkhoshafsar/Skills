@@ -49,6 +49,7 @@ set needed for the next decision/action. SMART selects by capability, not source
 12. **Prefer safe reuse before creation.** Before creating a skill, search the curated catalog and reputable repositories for a narrow candidate. A discovered repository must enter through `fetch-skill.sh candidate`, remain quarantined, and pass the same review and lock workflow; discovery never grants trust.
 13. **Progress-first fast path.** When STATE, Vision Lock, plan, and current evidence are coherent, read only the resume packet and task scope, reuse capabilities, execute one approved action, verify it, and write only the delta. Do not rerun discovery, rescan the repository, or produce a full control report as ceremony.
 14. **Restricted automation staging.** If the current GitHub credential cannot modify `.github/workflows/*`, do not retry or block product work. Create the exact ready-to-copy workflow under `ci/`, leave the protected path untouched, and report the explicit `ci/<file> -> .github/workflows/<file>` manual replacement after the PR.
+15. **Excellence by default.** The delivered project must meet a senior professional quality bar even when the user never asks for it. Apply expert defaults (structure, validation, error handling, verification, security posture) silently; never ask a novice quality-decision questions, never ship novice-grade output, and never inflate a small project with heavyweight architecture or process in the name of quality.
 
 ## Conventions
 

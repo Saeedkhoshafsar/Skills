@@ -6,14 +6,14 @@
   },
   "metadata": {
     "description": "SMART skill-manager ecosystem: phase-aware skill orchestration across standalone skill sources (including Anthropic, obra/superpowers, UI/UX, and marketing skills), atomic planning, persistent project memory, step-by-step execution, local code review, systematic debugging, and security auditing.",
-    "version": "2.3.3"
+    "version": "2.4.0"
   },
   "plugins": [
     {
       "name": "smart",
       "source": "./skills/smart",
       "description": "Project intelligence orchestrator: builds a truthful shared model, enforces Vision Lock before planning/code, preserves durable memory and runway, and installs or creates only the capabilities required for the next best action.",
-      "version": "2.3.3",
+      "version": "2.4.0",
       "author": { "name": "Saeedkhoshafsar" },
       "keywords": ["capability-manager", "skill-manager", "plugin-orchestration", "phase-detection"],
       "category": "workflow"

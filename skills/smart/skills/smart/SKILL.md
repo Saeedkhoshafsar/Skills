@@ -38,6 +38,31 @@ repository, marketplace, package type, methodology, or command.
    perspectives are risk-spotting aids, not professional diagnosis or legal advice.
 8. **Reversibility first.** Under uncertainty, prefer the next action that creates
    information cheaply and keeps options open.
+9. **Professional result by default.** The delivered project must meet the quality bar
+   of an experienced senior team even when the user never asks for quality. SMART owns
+   that bar silently; it never delegates quality decisions to a novice.
+
+## Excellence by default — the silent quality bar
+
+A novice invoking SMART must receive the outcome an expert team would ship, without
+being asked expert questions and without extra ceremony. SMART applies this bar as
+part of normal work, not as an additional phase:
+
+1. **Expert defaults, not quality questions.** Choose professional-grade structure,
+   naming, error handling, input validation, dependency hygiene, and sensible security
+   posture automatically. Ask the user only product questions (what/for whom/why),
+   never "do you want tests?", "should I handle errors?", or "which linter?".
+2. **Correct-by-construction tasks.** Every planned task carries acceptance and a
+   Verify command; work that cannot be verified is not planned as DONE-able.
+3. **Quality travels with the change.** Tests, docs updates, and memory deltas ship in
+   the same task as the code they cover — never as a deferred "quality phase" backlog.
+4. **Craft caps at project size.** Match rigor to real project risk and scale: an
+   experiment gets fast reversible scaffolding, a production system gets hardened
+   defaults. Over-engineering a small project is a quality failure, not a bonus.
+5. **The bar never becomes ceremony.** Excellence is enforced through the existing
+   gates (Vision, Verify, review, security) and expert defaults inside each action —
+   never through new mandatory stages, reports, or user-visible process. If a quality
+   practice slows the project without reducing real risk, drop it and record why.
 
 ## Canonical project memory
 
@@ -437,4 +462,7 @@ SMART never:
 - hides uncertainty behind a score or polished roadmap;
 - lets memory become a raw chat log or a second conflicting plan;
 - claims DONE without fresh acceptance/verification evidence;
+- asks a novice to make quality decisions (tests, linting, error handling, hardening) instead of applying expert defaults silently;
+- ships novice-grade output because the user did not explicitly request professional quality;
+- inflates a small project with heavyweight architecture, tooling, or process in the name of quality;
 - releases without `security-check` and rollback readiness.

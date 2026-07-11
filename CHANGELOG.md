@@ -5,7 +5,20 @@ Versioning: bump plugin versions in `.claude-plugin/marketplace.json` and each
 plugin's `plugin.json` — `claude plugin update` only detects updates through a
 version bump in `marketplace.json`.
 
-## [Unreleased]
+## [2.4.0] - 2026-07-11
+
+### Added
+- "Excellence by default" quality contract in SMART: a novice invoking only SMART receives expert-grade output — professional defaults for structure, validation, error handling, and security posture — without ever being asked quality-decision questions.
+- Cold-start contract coverage: execution capabilities (`step-pilot`, implementation skills) are verifiably deferred until Vision Lock and plan approval.
+- Offline behavioral scenario `novice-gets-expert-quality` guarding against novice-grade shortcuts, quality questionnaires, and over-engineering (9 scenarios total).
+- Root `.gitignore` for Python bytecode and SMART runtime artifacts.
+
+### Changed
+- SMART anti-patterns now explicitly forbid delegating quality decisions to a novice, shipping novice-grade output, and inflating small projects with heavyweight architecture.
+- The quality bar is enforced through existing gates and per-task expert defaults — never as new mandatory stages, reports, or user-visible ceremony.
+- SMART and marketplace version `2.4.0`.
+
+## [2.3.3] - 2026-07-11
 
 ### Changed
 - SMART's adversarial scenarios are now validated entirely offline with a dependency-free schema validator and CI contract tests.

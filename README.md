@@ -83,6 +83,17 @@ cp -r /tmp/sk/skills/smart/skills/smart .claude/skills/ && rm -rf /tmp/sk
 | Ready to release | `security-check` (GATE) + `github-release-management` + `hooks-automation` | security gate is mandatory |
 | Maintenance | `github-project-management` | issues, boards |
 
+### Excellence by default
+
+A novice who invokes only SMART receives the result an experienced senior team would
+ship. SMART silently applies professional defaults — clean structure, input validation,
+error handling, dependency hygiene, sensible security posture, and per-task verification —
+without ever asking the user quality questions like "do you want tests?". Rigor is capped
+at real project size: an experiment gets fast reversible scaffolding, a production system
+gets hardened defaults, and over-engineering a small project counts as a quality failure.
+The bar is enforced through existing gates and expert defaults inside each action, never
+through new mandatory stages or user-visible ceremony.
+
 ### Progress-first fast path
 
 For a healthy project with current STATE, confirmed gates, and an approved task, SMART does
