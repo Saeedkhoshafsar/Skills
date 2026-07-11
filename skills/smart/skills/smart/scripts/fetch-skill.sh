@@ -15,6 +15,7 @@ SOURCES=(
   "Saeedkhoshafsar/ruflo|main|.claude/skills"
   "Saeedkhoshafsar/claude-plugins-official|main|plugins/claude-code-setup/skills"
   "nextlevelbuilder/ui-ux-pro-max-skill|main|.claude/skills"
+  "coreyhaines31/marketingskills|main|skills"
 )
 
 # ---------- aliases: skills living at non-standard nested paths ----------
@@ -45,6 +46,8 @@ ALIASES=(
   "build-mcp-server|Saeedkhoshafsar/claude-plugins-official|main|plugins/mcp-server-dev/skills/build-mcp-server"
   "build-mcp-app|Saeedkhoshafsar/claude-plugins-official|main|plugins/mcp-server-dev/skills/build-mcp-app"
   "build-mcpb|Saeedkhoshafsar/claude-plugins-official|main|plugins/mcp-server-dev/skills/build-mcpb"
+  "stop-slop|hardikpandya/stop-slop|main|."
+  "remotion-video|wshuyi/remotion-video-skill|main|."
 )
 
 # skills that must NEVER be installed (see SKILLS_CATALOG.md, BLACK tier)
@@ -131,14 +134,24 @@ sparse_copy() { # sparse_copy <repo> <branch> <path-in-repo> <dest-dir>
     fi
     echo "NOTE: branch '$branch' not found in $repo — used its default branch instead."
   fi
-  git -C "$tmp/repo" sparse-checkout set "$path" --skip-checks 2>/dev/null \
-    || git -C "$tmp/repo" sparse-checkout set "$path" 2>/dev/null || true
-  if [ ! -d "$tmp/repo/$path" ] || [ -z "$(ls -A "$tmp/repo/$path" 2>/dev/null)" ]; then
-    rm -rf "$tmp"; return 1
+  if [ "$path" = "." ]; then
+    git -C "$tmp/repo" sparse-checkout disable 2>/dev/null || true
+  else
+    git -C "$tmp/repo" sparse-checkout set "$path" --skip-checks 2>/dev/null \
+      || git -C "$tmp/repo" sparse-checkout set "$path" 2>/dev/null || true
+    if [ ! -d "$tmp/repo/$path" ] || [ -z "$(ls -A "$tmp/repo/$path" 2>/dev/null)" ]; then
+      rm -rf "$tmp"; return 1
+    fi
   fi
   mkdir -p "$(dirname "$dest")"
   rm -rf "$dest"
-  cp -r "$tmp/repo/$path" "$dest"
+  if [ "$path" = "." ]; then
+    mkdir -p "$dest"
+    cp -r "$tmp/repo"/. "$dest"
+    rm -rf "$dest/.git"
+  else
+    cp -r "$tmp/repo/$path" "$dest"
+  fi
   rm -rf "$tmp"
   return 0
 }

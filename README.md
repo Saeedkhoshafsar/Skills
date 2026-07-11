@@ -2,7 +2,7 @@
 
 > The user activates only **SMART**; SMART selects the other skills by project phase **and by capability need** and installs them **on-demand from GitHub** — no skill wastes project space.
 >
-> **86 installable skills** across **6 sources**: 7 local + Anthropic's official skills (pdf/docx/xlsx/pptx, frontend-design, webapp-testing, skill-creator, mcp-builder…) + obra/superpowers engineering-process skills (TDD, brainstorming…) + ruflo + claude-plugins-official plugin-dev skills + nextlevelbuilder/ui-ux-pro-max UI/UX design intelligence (67+ styles, 161 palettes, 57 font pairings…).
+> A curated set of installable skills across multiple standalone sources: 7 local + Anthropic's official skills (pdf/docx/xlsx/pptx, frontend-design, webapp-testing, skill-creator, mcp-builder…) + obra/superpowers engineering-process skills (TDD, brainstorming…) + ruflo + claude-plugins-official plugin-dev skills + nextlevelbuilder/ui-ux-pro-max UI/UX design intelligence (67+ styles, 161 palettes, 57 font pairings…).
 
 ## Repo Map
 
@@ -98,8 +98,11 @@ cp -r /tmp/sk/skills/smart/skills/smart .claude/skills/ && rm -rf /tmp/sk
 | 4 | `Saeedkhoshafsar/ruflo` → `.claude/skills` | 39 | memory, GitHub, swarm, quality, … (14 BLACK-tier internals are blocked) |
 | 5 | `Saeedkhoshafsar/claude-plugins-official` → `plugins/*/skills` | 17 | claude-automation-recommender, playground, claude-md-improver, plugin-dev suite, mcp-server-dev suite, … |
 | 6 | `nextlevelbuilder/ui-ux-pro-max-skill` → `.claude/skills` | 7 | ui-ux-pro-max (67+ styles / 161 palettes / 57 font pairings / design-system generator), ui-styling, design-system, brand, banner-design, slides, design |
+| 7 | `coreyhaines31/marketingskills` → `skills/` | many | marketing strategy, copy, SEO, CRO, analytics, growth, and RevOps |
 
 Priority: first source that has the skill wins — duplicates (skill-creator vs skill-builder, TDD variants, …) are resolved in the catalog's duplicate-resolution table.
+
+Two root-folder skills are also available: `stop-slop` for prose quality and `remotion-video` for programmatic React videos. `NeoLabHQ/context-engineering-kit` is a separate plugin marketplace; install its selected plugins directly so its agents, commands, and hooks are preserved.
 
 Details and tiers for all skills → [`SKILLS_CATALOG.md`](SKILLS_CATALOG.md)
 
