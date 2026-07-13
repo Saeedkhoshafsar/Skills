@@ -42,6 +42,19 @@ class TrustedInstallerTests(unittest.TestCase):
         self.env = os.environ.copy()
         self.env["SMART_GIT_BASE_URL"] = f"file://{self.remotes}"
         self.env["SMART_GITHUB_API_BASE_URL"] = "http://127.0.0.1:9"
+        # Keep bundled-capability detection deterministic: never read the
+        # test machine's real ~/.claude plugin cache.
+        self.plugin_cache = self.temp / "plugin-cache"
+        self.env["SMART_CLAUDE_PLUGIN_CACHE"] = str(self.plugin_cache)
+
+    def seed_plugin_cache(self, capability: str, version: str = "1.3.0") -> Path:
+        cached = self.plugin_cache / "saeed-skills" / capability / version
+        (cached / ".claude-plugin").mkdir(parents=True)
+        (cached / ".claude-plugin" / "plugin.json").write_text(
+            json.dumps({"name": capability, "version": version}) + "\n",
+            encoding="utf-8",
+        )
+        return cached
 
     def tearDown(self) -> None:
         shutil.rmtree(self.temp, ignore_errors=True)
@@ -305,6 +318,56 @@ esac
             ["plugin marketplace list --json", "plugin list --json"],
             command_log.read_text(encoding="utf-8").splitlines(),
         )
+
+    def test_bundled_capability_in_plugin_cache_is_recognized_without_cli(self) -> None:
+        """Manual UI installs must count as installed even when `claude` is not on PATH."""
+        cached = self.seed_plugin_cache("project-planner")
+        env = self.env.copy()
+        env["PATH"] = "/usr/bin:/bin"  # no claude CLI
+        result = self.run_installer("install", "project-planner", env=env)
+        self.assertIn("already installed", result.stdout)
+        self.assertIn(str(cached), result.stdout)
+
+    def test_bundled_capability_without_cache_or_cli_fails_with_actionable_error(self) -> None:
+        env = self.env.copy()
+        env["PATH"] = "/usr/bin:/bin"  # no claude CLI, no cache seeded
+        result = self.run_installer("install", "project-planner", env=env, expected=1)
+        self.assertIn("requires Claude Code CLI", result.stderr)
+        self.assertIn("no cached plugin was found", result.stderr)
+
+    def test_installed_listing_reports_cached_bundled_capabilities(self) -> None:
+        self.seed_plugin_cache("project-memory")
+        env = self.env.copy()
+        env["PATH"] = "/usr/bin:/bin"  # no claude CLI
+        result = self.run_installer("--installed", env=env)
+        self.assertIn("bundled:project-memory INSTALLED", result.stdout)
+
+    def test_bundled_update_with_cache_but_no_cli_is_non_blocking(self) -> None:
+        self.seed_plugin_cache("project-planner")
+        env = self.env.copy()
+        env["PATH"] = "/usr/bin:/bin"  # no claude CLI
+        result = self.run_installer("--update", "project-planner", env=env)
+        self.assertIn("claude plugin update project-planner@saeed-skills", result.stderr)
+
+    def test_cached_capability_short_circuits_before_cli_calls(self) -> None:
+        """With the CLI available AND the cache present, no plugin commands should run."""
+        self.seed_plugin_cache("project-planner")
+        fake_bin = self.temp / "bin"
+        fake_bin.mkdir()
+        command_log = self.temp / "claude-commands.log"
+        command_log.write_text("", encoding="utf-8")
+        fake_claude = fake_bin / "claude"
+        fake_claude.write_text(
+            "#!/usr/bin/env bash\nset -eu\nprintf '%s\\n' \"$*\" >> \"$SMART_TEST_CLAUDE_LOG\"\n",
+            encoding="utf-8",
+        )
+        fake_claude.chmod(0o755)
+        env = self.env.copy()
+        env["PATH"] = f"{fake_bin}:{env['PATH']}"
+        env["SMART_TEST_CLAUDE_LOG"] = str(command_log)
+        result = self.run_installer("install", "project-planner", env=env)
+        self.assertIn("already installed", result.stdout)
+        self.assertEqual("", command_log.read_text(encoding="utf-8"))
 
     def test_internal_sources_use_main(self) -> None:
         installer = INSTALLER.read_text(encoding="utf-8")

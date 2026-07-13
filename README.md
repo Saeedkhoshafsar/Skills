@@ -58,6 +58,23 @@ claude plugin marketplace update saeed-skills && claude plugin update smart@saee
 > ```
 > This repo now has `.claude-plugin/marketplace.json` at the root — the error is fixed.
 
+### After installing
+
+- **Start SMART with `/smart`** (the plugin ships a `/smart` command; older
+  installs expose it as `/smart:smart` — both activate the same skill). If the
+  command does not appear in autocomplete right after installing, **restart the
+  Claude Code session** — commands and skills are indexed at session start.
+- Typing plain `smart` or `اسمارت` in a message also triggers the skill by
+  description once the session has loaded the plugin.
+
+### Troubleshooting
+
+| Symptom | Cause | Fix |
+|---|---|---|
+| `/smart` not suggested in autocomplete | plugin was installed mid-session | restart the session; then use `/smart` (or `/smart:smart`) |
+| `ERROR: bundled capability '<x>' requires Claude Code CLI` | the `claude` binary is not on the Bash subshell's PATH (common in Codespaces/containers) | since `2.5.2` the installer first checks the plugin cache (`~/.claude/plugins/cache`) and recognizes manually/UI-installed companions without the CLI; if truly absent, install the companion once via `/plugin install <x>@saeed-skills` |
+| `fetch-skill.sh --installed` shows nothing despite installed plugins | pre-`2.5.2` versions only listed project-local skills and CLI-visible plugins | update SMART; it now reports `bundled:<name> INSTALLED (plugin cache: …)` |
+
 ## Use Without the Marketplace (manual — any agent)
 
 ```bash
