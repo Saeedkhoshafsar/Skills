@@ -5,6 +5,33 @@ Versioning: bump plugin versions in `.claude-plugin/marketplace.json` and each
 plugin's `plugin.json` — `claude plugin update` only detects updates through a
 version bump in `marketplace.json`.
 
+## [2.5.2] - 2026-07-13
+
+First real-world usage feedback (Codespaces cold start) — exactly the
+usage-driven maintenance loop the Runway prescribed. Two friction points fixed:
+
+### Fixed
+- **Bundled companion detection no longer depends on the `claude` CLI being on
+  the Bash subshell's PATH.** In Codespaces/containers the CLI is often absent
+  from subshells, so `fetch-skill.sh install project-planner` failed with
+  `requires Claude Code CLI` even though the user had installed all companions
+  manually through the plugin UI. The installer now checks the Claude plugin
+  cache (`~/.claude/plugins/cache`, overridable via `SMART_CLAUDE_PLUGIN_CACHE`)
+  first: a cached companion counts as installed (short-circuits before any CLI
+  call), `--installed` reports `bundled:<name> INSTALLED (plugin cache: …)`,
+  `--update` without the CLI degrades to a non-blocking pointer instead of an
+  error, and the truly-missing case fails with an actionable message.
+
+### Added
+- **`/smart` slash command** shipped with the plugin (`commands/smart.md`), so
+  activation is one short, discoverable command instead of relying on skill
+  auto-triggering. README documents the post-install step (restart the session
+  for autocomplete) and a troubleshooting table for both reported symptoms.
+- 5 installer regression tests covering cache detection with/without the CLI,
+  `--installed` reporting, non-blocking update, and CLI short-circuit
+  (77 tests total). Installer tests now pin `SMART_CLAUDE_PLUGIN_CACHE` to a
+  temp directory so the host's real plugin cache can never leak into results.
+
 ## [2.5.1] - 2026-07-11
 
 ### Fixed (findings from the first cold-start field test)

@@ -371,12 +371,33 @@ is_first_party_capability() {
   return 1
 }
 
+first_party_cache_dir() { # capability -> prints newest cached plugin dir, if present
+  local capability="$1" cache_root="${SMART_CLAUDE_PLUGIN_CACHE:-$HOME/.claude/plugins/cache}"
+  local base version
+  base="$cache_root/$FIRST_PARTY_MARKETPLACE_NAME/$capability"
+  [ -d "$base" ] || return 1
+  version="$(find "$base" -mindepth 1 -maxdepth 1 -type d -printf '%f\n' 2>/dev/null | sort -V | tail -n 1)"
+  [ -n "$version" ] && [ -f "$base/$version/.claude-plugin/plugin.json" ] || return 1
+  printf '%s\n' "$base/$version"
+}
+
 install_first_party_plugin() {
-  local capability="$1" mode="${2:-}" qualified installed marketplaces
+  local capability="$1" mode="${2:-}" qualified installed marketplaces cached
   qualified="$capability@$FIRST_PARTY_MARKETPLACE_NAME"
   case "$PLUGIN_SCOPE" in user|project|local) ;; *) echo "ERROR: invalid SMART_PLUGIN_SCOPE." >&2; return 1 ;; esac
+  # A companion already present in the Claude plugin cache (e.g. installed
+  # manually through the plugin UI) is installed — recognize it even when the
+  # `claude` CLI is not on this shell's PATH (common in Codespaces/containers).
+  if [ "$mode" != update ] && cached="$(first_party_cache_dir "$capability")"; then
+    echo "OK: bundled capability '$capability' already installed (plugin cache: $cached)."
+    return 0
+  fi
   command -v claude >/dev/null 2>&1 || {
-    echo "ERROR: bundled capability '$capability' requires Claude Code CLI." >&2
+    if [ "$mode" = update ] && cached="$(first_party_cache_dir "$capability")"; then
+      echo "OK: '$capability' present in plugin cache ($cached); update requires the Claude Code CLI — run 'claude plugin update $qualified' from a shell where 'claude' is available." >&2
+      return 0
+    fi
+    echo "ERROR: bundled capability '$capability' requires Claude Code CLI, and no cached plugin was found under \${SMART_CLAUDE_PLUGIN_CACHE:-\$HOME/.claude/plugins/cache}." >&2
     return 1
   }
   marketplaces="$(claude plugin marketplace list --json 2>/dev/null || printf '[]')"
@@ -420,9 +441,14 @@ list_available() {
 }
 
 list_installed() {
-  local target="${1:-$TARGET_DIR_DEFAULT}"
+  local target="${1:-$TARGET_DIR_DEFAULT}" capability cached
   [ -d "$target" ] && find "$target" -mindepth 1 -maxdepth 1 -type d ! -name '.smart-*' -printf '%f\n' | sort || true
   [ -f "$target/.smart-install-state.json" ] && cat "$target/.smart-install-state.json" || true
+  for capability in "${FIRST_PARTY_CAPABILITIES[@]}"; do
+    if cached="$(first_party_cache_dir "$capability")"; then
+      echo "bundled:$capability INSTALLED (plugin cache: $cached)"
+    fi
+  done
   command -v claude >/dev/null 2>&1 && claude plugin list --json 2>/dev/null || true
 }
 
