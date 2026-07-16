@@ -50,8 +50,8 @@ claude plugin install smart@saeed-skills
 claude plugin marketplace update saeed-skills && claude plugin update smart@saeed-skills
 ```
 
-**Current stable SMART:** `2.5.4` (GitHub Release `v2.5.4`). After install or
-update, confirm the plugin version shows `2.5.4` in `/plugin` manage.
+**Current stable SMART:** `2.5.5` (GitHub Release `v2.5.5`). After install or
+update, confirm the plugin version shows `2.5.5` in `/plugin` manage.
 
 > If you previously got `Marketplace file not found at ...\.claude-plugin\marketplace.json`,
 > remove the broken marketplace and re-add it:
@@ -78,7 +78,7 @@ update, confirm the plugin version shows `2.5.4` in `/plugin` manage.
 | Symptom | Cause | Fix |
 |---|---|---|
 | `/smart` not suggested in autocomplete | plugin was installed mid-session | restart the session; then use `/smart` (or `/smart:smart`) |
-| Installed SMART version is older than `2.5.4` | marketplace/plugin pin not refreshed | `claude plugin marketplace update saeed-skills && claude plugin update smart@saeed-skills`, then restart the session |
+| Installed SMART version is older than `2.5.5` | marketplace/plugin pin not refreshed | `claude plugin marketplace update saeed-skills && claude plugin update smart@saeed-skills`, then restart the session |
 | `ERROR: bundled capability '<x>' requires Claude Code CLI` | the `claude` binary is not on the Bash subshell's PATH (common in Codespaces/containers) | since `2.5.2` the installer first checks the plugin cache (`~/.claude/plugins/cache`) and recognizes manually/UI-installed companions without the CLI; if truly absent, install the companion once via `/plugin install <x>@saeed-skills` |
 | `fetch-skill.sh --installed` shows nothing despite installed plugins | pre-`2.5.2` versions only listed project-local skills and CLI-visible plugins | update SMART; it now reports `bundled:<name> INSTALLED (plugin cache: …)` |
 
@@ -138,7 +138,7 @@ current task, reuses active capabilities, performs one approved action, verifies
 records only the changed memory. The deeper loop activates only for missing/stale state,
 conflict, material risk, phase change, blocked verification, or a real capability gap.
 
-**Capability triggers (any mode):** the current decision/action can demand a skill regardless of lifecycle phase — PDF/Word/Excel/PowerPoint output → `pdf`/`docx`/`xlsx`/`pptx`, full design system → `ui-ux-pro-max`, web-app testing → `webapp-testing`, building a skill → `skill-creator`, building an MCP server → `mcp-builder`, Claude Code hooks/commands/plugins → the `plugin-dev` suite. Full index in [`SKILLS_CATALOG.md`](SKILLS_CATALOG.md).
+**Capability triggers (any mode):** the current decision/action can demand a skill **or a Claude Code host command** (`/compact`, `/model`, `/loop`, … — supervised by SMART) regardless of lifecycle phase — PDF/Word/Excel/PowerPoint output → `pdf`/`docx`/`xlsx`/`pptx`, full design system → `ui-ux-pro-max`, web-app testing → `webapp-testing`, building a skill → `skill-creator`, building an MCP server → `mcp-builder`, Claude Code hooks/commands/plugins → the `plugin-dev` suite. Full index in [`SKILLS_CATALOG.md`](SKILLS_CATALOG.md).
 
 ## Skill Sources (what fetch-skill.sh pulls from)
 
@@ -218,7 +218,7 @@ For projects where migration, backup, or restore is genuinely not applicable, pr
 
 ## Offline behavioral contracts for SMART
 
-SMART ships **13** offline adversarial scenario contracts covering premature implementation, unconfirmed Vision Lock, durable-state resume, mid-mission cutover resume, context-budget hard handoff, pre-existing project no-rebureaucracy, conflicting evidence, speculative capability installation, unsafe skill candidates, incomplete release evidence, stale task verification, excellence-by-default, and figure-it-out-later pressure. They preserve expected behavior as reviewable repository data without introducing a runtime observer.
+SMART ships **15** offline adversarial scenario contracts covering premature implementation, unconfirmed Vision Lock, durable-state resume, mid-mission cutover resume, context-budget hard handoff, pre-existing project no-rebureaucracy, conflicting evidence, speculative capability installation, unsafe skill candidates, incomplete release evidence, stale task verification, excellence-by-default, and figure-it-out-later pressure. They preserve expected behavior as reviewable repository data without introducing a runtime observer.
 
 Validation is deterministic, dependency-free, and part of normal CI:
 

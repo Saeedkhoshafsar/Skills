@@ -5,6 +5,29 @@ Versioning: bump plugin versions in `.claude-plugin/marketplace.json` and each
 plugin's `plugin.json` — `claude plugin update` only detects updates through a
 version bump in `marketplace.json`.
 
+## [2.5.5] - 2026-07-16
+
+SMART becomes the supervisor of **Claude Code host commands** as well as
+installable skills — one brain over the whole slash menu.
+
+### Added
+- **Category 0 — Native Claude Code host commands** in `SKILLS_CATALOG.md`
+  (GREEN observational, YELLOW session/config, RED autonomy) covering the
+  built-in slash surface: `/context`, `/compact`, `/clear`, `/model`, `/effort`,
+  `/fast`, `/loop`, `/goal`, `/doctor`, `/mcp`, `/agents`, `/verify`, and related
+  host tools. These are supervised, not fetched.
+- **Native host-command supervision** contract in SMART: memory-before-amnesia
+  for `/compact`/`/clear`, Vision-before-autonomy for `/loop`/`/goal`, rate-limit
+  model fallbacks, install `/doctor` path, and CREATE-when-missing.
+- Offline scenarios `native-command-unsafe-compact` and
+  `native-command-premature-loop` (15 scenarios total).
+- Agent hard rule 21 + `/smart` command host-supervision step.
+
+### Changed
+- SELECT/ACT lifecycle defaults include host playbooks; anti-patterns forbid
+  amnesiac compact and premature autonomous loops.
+- SMART version `2.5.5`; marketplace metadata `2.5.5`.
+
 ## [2.5.4] - 2026-07-16
 
 Continuity under real session pressure — context fill, archive bloat, and

@@ -22,4 +22,7 @@ Rules for this invocation:
 3. Never ask the user to choose a skill, source, marketplace, package type, or
    command. Bundled companions are installed by SMART itself.
 4. No plan and no code before a machine-confirmed Vision Lock.
-5. End with the progress-first SMART report in the user's language.
+5. Supervise Claude Code host commands when useful (`/context`, `/compact` after
+   resume-check, `/model` on limits, never `/loop` without Vision Lock). Do not ask
+   the user to manage the slash menu.
+6. End with the progress-first SMART report in the user's language.

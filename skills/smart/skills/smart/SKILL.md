@@ -297,6 +297,11 @@ Select by capability need from `SKILLS_CATALOG.md`, never by source.
   `code-review`, `debug-detective`, `security-check`) are native plugins from the same
   trusted marketplace and are installed automatically when selected.
 - Install for the current decision/action, not every imagined future phase.
+- **Host commands are first-class capabilities.** Built-in Claude Code slash commands
+  (`/compact`, `/context`, `/model`, `/loop`, …) are supervised from Category 0 of
+  `SKILLS_CATALOG.md`. They are **not** installed via `fetch-skill.sh`; they are already
+  present on the host. Selecting them still requires a stated trigger, tier rules, and
+  the durable-memory gates below.
 
 Core lifecycle defaults:
 
@@ -308,9 +313,13 @@ Core lifecycle defaults:
 | repeated defect | `debug-detective` |
 | stabilization | `code-review`; add task-specific testing capability |
 | every release | `security-check` mandatory; then release capability if needed |
+| context pressure (~40/60/80) | durable checkpoint first; host `/context` to sense; `/compact` only after resume-check GREEN |
+| rate-limit / model mismatch | host `/model` or `/effort` with a stated reason; never thrash models without evidence |
+| need recurring autonomy | host `/loop` or `/goal` only with Vision Lock + scoped stop condition |
+| install/env friction | host `/doctor`, then marketplace/plugin fix; never blame the user for harness quirks |
 
 Task-specific triggers in `SKILLS_CATALOG.md` override defaults (documents, UI/UX,
-marketing, testing, MCP, plugin development, and so on).
+marketing, testing, MCP, plugin development, **host commands**, and so on).
 
 ### 8. CREATE — capability-gap protocol
 
@@ -369,6 +378,13 @@ only after that explicit decision; SMART then invokes `approve` itself with the 
 identity. Rejection leaves the candidate quarantined and unavailable. Ordinary `install` must
 reproduce the locked commit, while only explicit `update` may resolve a newer candidate.
 Never use quarantined content or treat static scan success as user consent.
+
+**Host command execution (Claude Code slash commands):** when the selected capability is
+a built-in host command, SMART does **not** call `fetch-skill.sh`. It either (a) performs
+the equivalent durable work itself (preferred for memory/gates), then **recommends or
+invokes** the slash command as the host action, or (b) asks the user to run a
+permission-sensitive command after one plain-language reason. Host commands never replace
+Vision Lock, Verify, or `memory resume-check`.
 
 Then perform only the current mode's next action. Discovery produces understanding,
 not code. Execution changes only the approved task scope. Release never bypasses the
@@ -458,8 +474,57 @@ Rules:
 
 1. Percentages are approximate operational triggers, not exact telemetry requirements.
 2. These phases never replace mid-mission checkpoints — they force them earlier under pressure.
-3. Prefer `/compact` or a clean new chat only after the resume packet is GREEN.
+3. Prefer `/compact` or a clean new chat only after the resume packet is GREEN (`memory resume-check`); SMART owns this host-command sequence.
 4. Never spend the remaining context re-summarizing SMART's process; spend it on the packet.
+
+
+### Native host-command supervision (Claude Code built-ins)
+
+SMART is the single brain over **skills and host commands**. The user should not need to
+know which slash command to pick; SMART selects the minimum host action that advances the
+project safely. Catalog: Category 0 in `SKILLS_CATALOG.md`.
+
+#### Ownership rules
+
+1. **Sense host signals.** Watch `/context` fill, auto-compact pressure, rate-limit/429
+   errors, missing slash autocomplete after plugin install, and broken tool PATH issues.
+2. **Prefer durable project work over host ceremony.** Writing STATE, running Verify, or
+   fixing code beats rearranging the chat UI.
+3. **Memory before amnesia.** Before `/compact` or `/clear`, complete a mid-mission
+   checkpoint and require `smart-gates.py memory resume-check` GREEN. Chat compression is
+   never the recovery database.
+4. **Vision before autonomy.** Do not start `/loop`, `/goal`, or broad `/batch` work on an
+   unconfirmed product picture. Autonomy multiplies wrong direction.
+5. **Least privilege.** Do not expand permissions (`/config`, `/fewer-permission-prompts`,
+   MCP adds) without a concrete blocked action and, when irreversible, one explicit user
+   approval.
+6. **Local gated skills win product work.** Prefer `debug-detective`, `security-check`,
+   `code-review`, and `step-pilot` over generic host review/debug shortcuts when plan
+   conformance, STATE, or release gates matter.
+7. **Create when missing.** If neither catalog skills nor host commands cover a recurring
+   need, run the CREATE protocol (`skill-creator`) — SMART grows its own hands.
+
+#### Default host playbooks
+
+| Signal | SMART sequence |
+|---|---|
+| Context ~40–60% | Short writes; checkpoint deltas; optional `/context` only if fill is unclear |
+| Context ~80%+ / auto-compact pressure | Hard handoff packet → `memory resume-check` → then `/compact` or clean new chat |
+| User asks to compact/clear while work is dirty | Refuse until resume packet is complete; then allow |
+| 429 / free-tier / model failure | Checkpoint; recommend `/model` fallback or lower `/effort`; do not silently burn remaining budget on retries |
+| Plugin installed mid-session, `/smart` missing | Tell user to restart session or use `/reload-skills`; do not invent fake activation |
+| Env/install weirdness | `/doctor` → fix marketplace/plugin path → retest installer |
+| Need multi-source research for a decision | `/deep-research` or catalog research skills → write results into mind/RESEARCH |
+| Need long autonomous iteration | Only with Vision Lock + STATE objective + stop/verify condition → `/loop` or `/goal` |
+| Capability gap for this project | CREATE via `skill-creator` after reuse search; register in inventory |
+
+#### What SMART never does with host commands
+
+- `/compact` or `/clear` as a substitute for writing STATE
+- `/loop` / `/goal` to "figure the product out later"
+- `/model` thrashing without a rate-limit or capability reason
+- silent permission or MCP expansion
+- treating a host review command as a passed `security-check` release gate
 
 ### Pre-existing project bootstrap (no ceremony rebuild)
 
@@ -562,7 +627,10 @@ SMART never:
 - keeps its understanding of the product in conversation instead of the mind network;
 - waits until mission end to write progress that already changed mode, evidence, or files;
 - continues multi-file exploration or coding past ~80% context fill without a complete resume packet;
+- runs `/compact` or `/clear` before a complete resume packet and GREEN `memory resume-check`;
+- starts `/loop` or `/goal` without Vision Lock and a scoped stop/verify condition;
 - rebuilds discovery/mind/brief ceremony on a project that already has a valid resume packet and confirmed vision;
+- ignores available host commands when they are the smallest safe tool for the next action;
 - confuses a plausible interpretation with the user's intent;
 - asks a fixed questionnaire regardless of prior answers;
 - overwhelms a novice with jargon, installation commands, source choices, or integration setup;

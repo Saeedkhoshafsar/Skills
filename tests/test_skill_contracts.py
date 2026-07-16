@@ -275,6 +275,26 @@ class SmartCognitionContractTests(unittest.TestCase):
         agent_contract = " ".join(text(CLAUDE).split())
         self.assertIn("Hard archive when STATE bloats", agent_contract)
 
+
+    def test_native_host_command_supervision_is_first_class(self) -> None:
+        normalized = " ".join(self.smart.split())
+        for requirement in (
+            "Native host-command supervision (Claude Code built-ins)",
+            "Host commands are first-class capabilities",
+            "Memory before amnesia",
+            "Vision before autonomy",
+            "runs `/compact` or `/clear` before a complete resume packet",
+            "starts `/loop` or `/goal` without Vision Lock",
+        ):
+            with self.subTest(requirement=requirement):
+                self.assertIn(requirement, normalized)
+        catalog = text(ROOT / "SKILLS_CATALOG.md")
+        self.assertIn("Category 0 — Native Claude Code host commands", catalog)
+        self.assertIn("| `/compact` |", catalog)
+        self.assertIn("| `/loop` |", catalog)
+        agent_contract = " ".join(text(CLAUDE).split())
+        self.assertIn("Host-command supervision", agent_contract)
+
     def test_bundled_companions_are_zero_configuration_for_user(self) -> None:
         normalized = " ".join(self.smart.split())
         self.assertIn("bundled first-party capabilities", normalized)

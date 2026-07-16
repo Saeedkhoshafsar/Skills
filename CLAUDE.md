@@ -56,6 +56,8 @@ set needed for the next decision/action. SMART selects by capability, not source
 19. **Pre-existing projects resume, they do not re-bootstrap.** Prefer `docs/STATE2.md` over `docs/STATE.md` when both exist. If vision/STATE already confirm the product, extend the existing records; do not rebuild empty mind/brief ceremony.
 20. **Hard archive when STATE bloats.** Archive older history around ~200 lines or when settled ledger noise hides the resume packet; keep the active packet scannable and resume-check GREEN.
 
+21. **Host-command supervision.** Built-in Claude Code slash commands (`/compact`, `/context`, `/model`, `/loop`, `/doctor`, `/mcp`, …) are SMART-managed host capabilities (catalog Category 0). Prefer the smallest safe host action; never `/compact` or `/clear` before a GREEN mid-mission resume packet; never `/loop`/`/goal` without Vision Lock and a stop condition; prefer local gated companions over generic host review for product gates. When a capability is missing, CREATE or install — do not leave the user to juggle slash menus.
+
 ## Conventions
 
 - Task IDs: `P<phase>-T<number>` (e.g. `P1-T3`), defined in PLAN.md, tracked in STATE.md.

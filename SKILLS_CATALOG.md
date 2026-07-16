@@ -1,7 +1,7 @@
 # SKILLS_CATALOG — Verified Skill Catalog (SMART's decision source)
 
 > Input for the **SMART** mother skill. Each skill: name + one-line purpose + tier.
-> Verified on 2026-07-11: standalone skill sources and native plugin capabilities are listed below; duplicate resolution and the supply-chain gate apply to external installs. Context Engineering Kit remains a plugin marketplace rather than a flat skill source, and the unified installer handles it automatically.
+> Verified on 2026-07-16: includes **native Claude Code host commands** (Category 0) plus standalone skill sources and native plugin capabilities. Duplicate resolution and the supply-chain gate apply to external installs; host commands are supervised, not fetched. Context Engineering Kit remains a plugin marketplace rather than a flat skill source, and the unified installer handles it automatically.
 
 **Sources (priority order — first source that has a skill wins):**
 | # | Source | Count | Path | Content |
@@ -37,6 +37,79 @@
 | BLACK | Internal/foreign-infrastructure skills (ruflo internals + obra's `using-superpowers`) | NEVER install — fetch-skill.sh refuses them |
 
 ---
+
+## Category 0 — Native Claude Code host commands (built-in)
+
+> These are **not** installed via `fetch-skill.sh`. They ship with Claude Code (and
+> with plugins already loaded in the session). SMART **supervises** them as host
+> capabilities: select, recommend, sequence, and gate them so the user never has to
+> juggle slash-command mechanics. When a host command can alter memory, model,
+> permissions, or autonomy, SMART applies the same evidence and Vision rules as for
+> skills.
+
+### Observational / GREEN (safe defaults)
+
+| Command | Purpose (one line) | SMART trigger |
+|---|---|---|
+| `/context` | Show context-window usage | context pressure, budget phases 40/60/80, handoff prep |
+| `/usage` | Usage / quota signal | rate-limit or free-tier exhaustion signals |
+| `/doctor` | Environment / install health check | install friction, broken tools, marketplace issues |
+| `/recap` | Summarize recent session work | resume assist only after durable STATE is current |
+| `/insights` | Session/project insight surfaces | optional after major milestones |
+| `/verify` | End-to-end verify a change | after material code changes when a project verify skill exists |
+| `/code-review` | Review current diff | stabilization / before merge (prefer local `code-review` skill when deeper plan conformance is needed) |
+| `/simplify` | Simplify recent changes | after green verify when cleanup is the next best action |
+| `/security-review` | Security-focused review | release prep; still does not replace local `security-check` gate |
+
+### Session & config / YELLOW (stated reason required)
+
+| Command | Purpose (one line) | SMART trigger / guard |
+|---|---|---|
+| `/compact` | Compress conversation context | only **after** mid-mission checkpoint + `memory resume-check` GREEN |
+| `/clear` | Clear conversation | only after complete resume packet; never as a substitute for STATE |
+| `/model` | Switch model | rate limits, capability mismatch, owner-requested model change |
+| `/effort` | Adjust reasoning effort | task complexity change; prefer lower effort for mechanical work |
+| `/fast` | Faster Opus-style output mode | latency-sensitive healthy fast-path work |
+| `/config` / `/update-config` | Harness / settings changes | only when settings truly block progress; never silent permission expansion |
+| `/mcp` | MCP server management | when an approved integration is required for the current action |
+| `/agents` | Subagent configuration | multi-agent need with stated scope |
+| `/init` | Create/update project CLAUDE.md | new repo bootstrap only when no durable agent contract exists |
+| `/reload-skills` | Reload skill index | after installing plugins mid-session if commands missing |
+| `/run` | Launch/drive the project app | post-change behavioral verification |
+| `/review` | Review a GitHub PR | PR review requests (diff review → local `code-review`) |
+| `/keybindings-help` | Keyboard shortcut help | only when the user is blocked on bindings |
+| `/fewer-permission-prompts` | Allowlist common read-only tools | only with explicit user consent for permission changes |
+| `/dataviz` | Chart/visualization design system | when producing charts/dashboards |
+| `/claude-api` | Claude API / SDK reference | when building against Anthropic APIs |
+| `/claude-code-compat` | Claude Code compatibility guidance | harness/compat questions |
+
+### Autonomy / RED (heavy — evidence + Vision gates)
+
+| Command | Purpose (one line) | SMART guard |
+|---|---|---|
+| `/loop` | Recurring autonomous prompt | Vision Lock + clear stop condition; never on vague ideas |
+| `/goal` | Goal-oriented autonomous work | confirmed objective in STATE; not a substitute for discovery |
+| `/batch` | Batch multi-item work | scoped list + verify plan; max blast radius |
+| `/deep-research` | Multi-source research harness | only for decision-changing unknowns; record into RESEARCH/mind |
+| `/remote-control` | Remote session control | explicit user request only |
+| `/_remote-workflow` | Remote workflow harness | explicit user request; not default project path |
+
+### Plugin-exposed companions already under SMART (still host-visible)
+
+| Command | Maps to SMART capability |
+|---|---|
+| `/smart`, `/smart:smart` | SMART orchestrator (this skill) |
+| `/project-planner` | `project-planner` |
+| `/project-memory` | `project-memory` |
+| `/step-pilot` | `step-pilot` |
+| `/debug-detective` | `debug-detective` |
+| `/security-check` | `security-check` |
+| `/code-review:code-review` | local `code-review` (prefer over generic etiquette skills) |
+
+**Duplicate resolution for host vs skill:** when a host slash command and a catalog
+skill overlap, SMART prefers the **local SMART companion / gated skill** for product
+work (`debug-detective`, `security-check`, `code-review`, `step-pilot`) and uses the
+host command only when it is the lighter correct tool for the immediate action.
 
 ## Category 1 — Memory & Learning (7)
 

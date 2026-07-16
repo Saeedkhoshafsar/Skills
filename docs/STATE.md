@@ -9,14 +9,14 @@
 | Field | Current value |
 |---|---|
 | SMART mode / lifecycle phase | MAINTENANCE / 5 |
-| Current objective | Deliver a stable, installable SMART marketplace on GitHub with no functional or install gaps on Claude Code. |
-| Active task | STABLE-SHIP — publish releases + close install/docs drift (DONE). |
-| Exact progress | Continuity package on `main` at `6befc8a` (PR #20 M-T2 + PR #21 M-T3). Stabilization polish: marketplace metadata `2.5.4`, `/smart` SENSE prefers STATE2, README install path + 13 scenarios, gitignore for installer temp dirs. Tests **85 GREEN**, scenarios **13 valid**. Releases `v2.5.2` / `v2.5.3` / `v2.5.4` published from the matching main commits. |
-| Last evidence | `python3 -m unittest discover -s tests -q` → OK (85); `validate_behavioral_scenarios.py` → 13 valid; plugin/marketplace versions aligned on SMART `2.5.4` / project-memory `1.3.2`. |
+| Current objective | Make SMART the single brain over installable skills **and** Claude Code host commands. |
+| Active task | M-T4 — native host-command supervision (2.5.5) — DONE. |
+| Exact progress | Category 0 host commands + SMART supervision policy + anti-patterns + rule 21 + 2 scenarios; **86 tests GREEN**, **15 scenarios valid**; SMART `2.5.5`. |
+| Last evidence | `python3 -m unittest discover -s tests -q` → OK (86); scenarios 15 valid. |
 | Blocker / waiting on | none |
 | Vision Lock | CONFIRMED by repository owner on 2026-07-11 (reaffirmed and extended twice): SMART must be the complete project control brain for professional development teams first, capture the user's intended product inch by inch in an atomic Project Mind network before any planning/code, never accept "start and figure it out later", deliver expert-grade quality by default, and remain lean enough that orchestration never stalls or slows project progress. |
 | Machine gates | Vision: owner-confirmed product direction; Verify: full local deterministic test suite GREEN; Release: GitHub Releases published through `v2.5.4`. |
-| Branch / head | `main` @ post-stabilization commit (SMART `2.5.4`). |
+| Branch / head | `main` SMART `2.5.5` host-command supervision. |
 | Mind coverage | Applied to this repo implicitly via STATE/BRIEF equivalents; the formal PROJECT-MIND protocol targets user projects. |
 
 ## Epistemic delta
@@ -64,6 +64,7 @@
 ## Meaningful change ledger (newest first)
 | Date / commit | What changed | Why | Evidence | Records affected |
 |---|---|---|---|---|
+| 2026-07-16 / 2.5.5 | Native Claude Code host-command supervision: catalog Category 0, SMART playbooks, anti-patterns, 2 scenarios, rule 21. | User wants SMART to master the whole slash surface, not only fetchable skills. | contract tests + 15 scenarios. | catalog, SMART, CLAUDE, command, tests, scenarios, changelog, STATE. |
 | 2026-07-16 / stable ship | Marketplace metadata → `2.5.4`; `/smart` SENSE prefers STATE2; README install pin + 13 scenarios; gitignore installer temp; STATE handoff; GitHub Releases `v2.5.2`–`v2.5.4`. | Final stable delivery: no install/version/docs drift after continuity merges. | 85 tests GREEN; 13 scenarios valid; versions aligned. | marketplace, command, README, gitignore, STATE, releases. |
 | 2026-07-16 / PR #21 | M-T3: context-budget phases 40/60/80, hard archive (~200 lines / STATE2), pre-existing project bootstrap; SMART `2.5.4` / project-memory `1.3.2`. | Late checkpoints, STATE bloat, rediscovery on pre-existing projects. | 85 tests GREEN; 13 scenarios valid; PR merged. | SMART, project-memory, CLAUDE, scenarios, tests, manifests, changelog, prior STATE. |
 | 2026-07-16 / PR #20 | M-T2 mid-mission checkpoint protocol + `memory resume-check`; SMART `2.5.3` / project-memory `1.3.1`. | Context/daily cutovers must not erase mid-mission progress. | 82 tests + PR checks GREEN. | SMART, project-memory, gates, tests, scenarios, manifests, changelog. |
@@ -71,7 +72,7 @@
 | 2026-07-11 / PR #17 + tag `v2.5.1` | Gate seals, premature Vision Lock block, fail-closed missing evidence; first field-validated release. | Cold-start field test findings. | 72 tests GREEN; release published. | smart-gates.py, SMART, catalog, tests, manifests, changelog. |
 
 ## Runway
-1. **NEXT — field-validate zero-context cutover on a real user project:** start a fresh chat mid-task and confirm SMART resumes from STATE2/STATE alone. Completion evidence: user confirmation or new friction report.
+1. **NEXT — field-validate host supervision:** under context pressure, confirm SMART checkpoints then recommends `/compact`; refuse premature `/loop`.
 2. **THEN — periodic catalog refresh:** re-verify external skill sources when drift evidence appears.
 3. **LATER — only proven install/usage bottlenecks:** no speculative ceremony; fix only evidence-backed friction.
 
