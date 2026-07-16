@@ -2,3 +2,5 @@ __pycache__/
 *.pyc
 .smart-quarantine/
 .smart/
+smart-installer-*/
+.claude/skills/

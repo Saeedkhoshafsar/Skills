@@ -9,35 +9,25 @@
 | Field | Current value |
 |---|---|
 | SMART mode / lifecycle phase | MAINTENANCE / 5 |
-| Current objective | Make SMART the "super brain": one activation gives a novice expert-team output quality, while orchestration stays lean enough never to slow the real project. |
-| Active task | M-T3 — context-budget phases + hard archive + pre-existing project bootstrap (post M-T2). |
-| Exact progress | M-T2 mid-mission checkpoint protocol merged as PR #20 on `main` (`f1820c0`, SMART `2.5.3`, project-memory `1.3.1`). M-T3 implemented and opened as **PR #21** (`4bdaa98`): context-budget 40/60/80, hard archive rule (~200 lines / STATE2 split), pre-existing project bootstrap (prefer STATE2, no re-bureaucracy), two offline scenarios, contract tests, versions SMART `2.5.4` / project-memory `1.3.2`. No further implementation remaining for this continuity package. Public GitHub Release tags `v2.5.3` / `v2.5.4` still need explicit owner publish approval. |
-| Last evidence | `python3 -m unittest discover -s tests -v` → **85 passed**; scenarios **13** valid; PR #21 opened. |
-| Blocker / waiting on | Owner merge of PR #21; optional explicit publish of public releases `v2.5.3` (main) and `v2.5.4` (after merge). |
+| Current objective | Deliver a stable, installable SMART marketplace on GitHub with no functional or install gaps on Claude Code. |
+| Active task | STABLE-SHIP — publish releases + close install/docs drift (DONE). |
+| Exact progress | Continuity package on `main` at `6befc8a` (PR #20 M-T2 + PR #21 M-T3). Stabilization polish: marketplace metadata `2.5.4`, `/smart` SENSE prefers STATE2, README install path + 13 scenarios, gitignore for installer temp dirs. Tests **85 GREEN**, scenarios **13 valid**. Releases `v2.5.2` / `v2.5.3` / `v2.5.4` published from the matching main commits. |
+| Last evidence | `python3 -m unittest discover -s tests -q` → OK (85); `validate_behavioral_scenarios.py` → 13 valid; plugin/marketplace versions aligned on SMART `2.5.4` / project-memory `1.3.2`. |
+| Blocker / waiting on | none |
 | Vision Lock | CONFIRMED by repository owner on 2026-07-11 (reaffirmed and extended twice): SMART must be the complete project control brain for professional development teams first, capture the user's intended product inch by inch in an atomic Project Mind network before any planning/code, never accept "start and figure it out later", deliver expert-grade quality by default, and remain lean enough that orchestration never stalls or slows project progress. |
-| Machine gates | Vision: owner-confirmed product direction; Verify: full local deterministic test suite plus required PR checks; Release: N/A for internal orchestration improvement. |
-| Branch / head | `feat/context-budget-continuity-v254` on top of `main` (`f1820c0` / `2.5.3`); targeting `2.5.4`. |
+| Machine gates | Vision: owner-confirmed product direction; Verify: full local deterministic test suite GREEN; Release: GitHub Releases published through `v2.5.4`. |
+| Branch / head | `main` @ post-stabilization commit (SMART `2.5.4`). |
 | Mind coverage | Applied to this repo implicitly via STATE/BRIEF equivalents; the formal PROJECT-MIND protocol targets user projects. |
 
 ## Epistemic delta
 ### Newly confirmed
-- The repository owner does not want any paid live observer, second model, evaluator API, or related beginner-facing setup — source: explicit owner decision, 2026-07-11.
-- Live evaluation was internal QA infrastructure, not part of SMART's product value, and it displaced the core roadmap — source: owner feedback and repository-state review, 2026-07-11.
-- PR #11 merged the complete observer/API cleanup at `7c7c27b` — source: Git history, 2026-07-11.
-- SMART's six bundled companions are native plugins in the same trusted `saeed-skills` marketplace, so routing them through third-party quarantine was unnecessary friction rather than a safety requirement — source: marketplace manifests and installer audit, 2026-07-11.
-- PR #12 merged the bundled companion auto-install path at `6a4c7b2` with both required validation checks GREEN — source: GitHub PR state and Git history, 2026-07-11.
-- Accountable third-party approval does not require exposing installation mechanics: SMART can consume a structured evidence handoff, explain risk, collect one explicit decision, and invoke the locked activation itself — source: P3-T5 implementation and tests, 2026-07-11.
-- PR #13 merged that approval handoff at `118bf75` with both required checks GREEN — source: GitHub PR state and Git history, 2026-07-11.
-- The owner explicitly requires SMART to be highly capable but operationally lean: it must orient quickly, establish control through companion capabilities, and advance real project work rather than consume the session with its own ceremony — source: owner clarification, 2026-07-11.
-- When credentials cannot modify `.github/workflows/*`, ready-to-copy workflow files should be staged elsewhere and reported as an exact manual source-to-destination action after the PR — source: owner instruction, 2026-07-11.
-- PR #14 merged the progress-first fast path at `f455f9a` with required checks GREEN, completing P3-T6 — source: Git history, 2026-07-11.
-- The owner explicitly requires excellence by default: a novice invoking only SMART must receive output at the quality of a top professional team, and that bar must never add complexity that slows the real project — source: owner directive, 2026-07-11.
-- The owner requires a complete, verified picture of the user's mind and the final result before any planning or code: every material question answered, recorded as an engineered atomic mind network inside the project, so resume never hits an unanswered question and the project cannot drift — "start and see" is explicitly forbidden — source: owner directive, 2026-07-11.
-- The primary audience is professional software organizations needing maximum automation with only key questions; novice support means engineering precision, not a simplified product — source: owner clarification, 2026-07-11.
-- The owner considers the project-wide memory structure (atomic, mind-like) the most important part of the product — source: owner statement, 2026-07-11.
+- PR #21 merged to `main` (`6befc8a`) with required checks GREEN — source: GitHub PR state, 2026-07-16.
+- Owner granted full delivery authority for a stable final Skills project on GitHub including public releases and install polish — source: explicit owner directive, 2026-07-16.
+- Marketplace root `metadata.version` must track the current SMART release pin so catalog consumers see `2.5.4` — source: marketplace audit, 2026-07-16.
+- The `/smart` command must prefer `docs/STATE2.md` over `docs/STATE.md` to match the SMART SENSE contract — source: command vs SKILL audit, 2026-07-16.
 
 ### Inferred — confirmation needed
-- None. The cleanup scope and core product direction are explicitly confirmed.
+- None for the ship path.
 
 ### Active assumptions
 | Assumption | Why temporary | Validation test | Owner | Expiry/reversal trigger |
@@ -65,42 +55,36 @@
 | CORE-002 | Bundled SMART companions were routed through the third-party standalone quarantine path. | PR #12 routes six companions through trusted native-plugin installation with idempotency coverage. | Beginners could encounter unnecessary review/setup mechanics for already trusted first-party plugins. | Keep third-party quarantine separate and retain first-party routing regressions. | RESOLVED |
 | CORE-003 | Third-party quarantine exposed approval commands as installer output. | PR #13 merged the structured handoff, explicit-consent contract, and no-command runtime behavior. | SMART could relay mechanics instead of presenting one plain-language evidence/approval decision. | Preserve fail-closed quarantine and accountable activation regressions. | RESOLVED |
 | CORE-004 | SMART's full ten-stage loop and large report were framed as mandatory on every invocation. | PR #14 merged the progress-first fast path and one-pass Step Pilot at `f455f9a`. | The control layer could consume the session, repeatedly re-orient, and slow or prevent actual project progress. | Fast path is now the default; retain explicit escalation triggers and fast-path regressions. | RESOLVED |
-| CORE-006 | Output quality for novices depended on the user knowing what to ask for. | P3-T7 on this branch: excellence-by-default contract, anti-patterns, tests, scenario. | The core product promise (expert-grade result from one activation) was not contractually guaranteed. | PR #15 merged; keep quality-bar regressions. | RESOLVED |
-| CORE-007 | SMART's product understanding lived in prose records and conversation; interruption could leave unanswered product questions and let the project drift. | SKILL contracts before P3-T8: no atomic node protocol, no coverage gate, no explicit ban on "figure it out later". | Resume-time gaps could send a project down the wrong path — the exact failure the owner flagged as most critical. | Merge the Project Mind protocol, coverage-gated Vision Lock, planner node integration, tests, and scenario. | IN PROGRESS |
+| CORE-006 | Output quality for novices depended on the user knowing what to ask for. | P3-T7: excellence-by-default contract, anti-patterns, tests, scenario. | The core product promise (expert-grade result from one activation) was not contractually guaranteed. | PR #15 merged; keep quality-bar regressions. | RESOLVED |
+| CORE-007 | SMART's product understanding lived in prose records and conversation; interruption could leave unanswered product questions and let the project drift. | Project Mind protocol + coverage-gated Vision Lock. | Resume-time gaps could send a project down the wrong path. | PR #16 merged; keep mind-coverage regressions. | RESOLVED |
+| CORE-008 | Mid-mission progress and late-session context pressure could vanish without chat history. | M-T2 + M-T3 on main (`2.5.3`/`2.5.4`). | Zero-context resume could rebuild ceremony or lose progress. | Keep mid-mission, budget, archive, and pre-existing bootstrap contracts. | RESOLVED |
 | CORE-005 | Workflow updates may be rejected when the GitHub credential lacks `workflows` permission. | Prior push rejection and owner instruction. | Repeated retries can block unrelated product progress. | Stage exact workflow files under `ci/` and report the manual `ci/<file> -> .github/workflows/<file>` action after the PR. | MITIGATED |
+| SHIP-001 | GitHub Releases lagged code on main (`v2.5.1` only while code was `2.5.4`). | Release list audit 2026-07-16. | Marketplace consumers could stay on older pins and miss install/continuity fixes. | Publish `v2.5.2`–`v2.5.4` and document the two-step update path. | RESOLVED |
 
 ## Meaningful change ledger (newest first)
 | Date / commit | What changed | Why | Evidence | Records affected |
 |---|---|---|---|---|
-| 2026-07-16 / current branch | M-T3: context-budget phases 40/60/80, hard archive (~200 lines / STATE2), pre-existing project bootstrap (no re-bureaucracy), 2 offline scenarios, contract tests; SMART `2.5.4` / project-memory `1.3.2`. | Real multi-session pressure: late checkpoints, STATE bloat, and rediscovery on pre-existing projects. | 85 tests GREEN; 13 scenarios valid. | SMART, project-memory, CLAUDE, scenarios, tests, manifests, changelog, this STATE. |
-| 2026-07-16 / PR #20 | M-T2 mid-mission checkpoint protocol + `memory resume-check`; SMART `2.5.3` / project-memory `1.3.1` merged to main. | Context/daily cutovers must not erase mid-mission progress. | 82 tests + PR checks GREEN. | SMART, project-memory, gates, tests, scenarios, manifests, changelog, prior STATE. |
-| 2026-07-13 / current branch | First real-world usage report (Codespaces): bundled installer failed without `claude` on the subshell PATH despite manual UI installs, and `/smart` was not discoverable. Installer now recognizes companions from the Claude plugin cache without the CLI; added the `/smart` command and README troubleshooting; version `2.5.2`. | The MAINTENANCE runway requires fixing only proven real-usage bottlenecks — this was the first one. | 77 tests + 127 subtests GREEN; live reproduction of the exact Codespaces scenario now returns OK instead of ERROR. | fetch-skill.sh, commands/smart.md, installer tests, README, manifests, changelog, this STATE. |
-| 2026-07-11 / PR #17 + tag `v2.5.1` | Executed the cold-start field test (full lifecycle + 13 adversarial probes), sealed all gate artifacts against hand edits, blocked `vision confirm` on explicit NOT READY / Mind-coverage GAPS signals, made missing-evidence paths fail closed cleanly, synced the catalog, and published `v2.5.1` as the first field-validated GitHub Release. | The Runway required proving real behavior before release; the test found three fail-open gaps that had to close first. | 72 tests + 127 subtests GREEN; both required PR checks GREEN; live retest of every probe BLOCKED/GREEN as required; release published. | smart-gates.py, SMART contract, catalog, tests, manifests, changelog, this STATE. |
-| 2026-07-11 / current branch | Added the atomic Project Mind network protocol, coverage-gated Vision Lock, planner node integration, the "figure it out later" ban, and the professional-teams-first audience contract; released `2.5.0`. | Guarantee SMART's picture equals the user's picture inch by inch, durably recorded, so resume never hits an unanswered question and drift is impossible. | Full test suite GREEN; 10 scenarios valid; JSON and Bash checks GREEN. | SMART, planner, memory, agent contract, tests, scenarios, README, manifests, changelog, this STATE. |
-| 2026-07-11 / current branch | Added the excellence-by-default quality contract (invariant, section, anti-patterns, agent rule), cold-start deferral test, quality-bar contract tests, and offline scenario `novice-gets-expert-quality`; released `2.4.0`. | Guarantee that one SMART activation gives a novice expert-team output quality without adding orchestration weight. | Full test suite GREEN including new contracts; 9 scenarios valid; JSON and Bash checks GREEN. | SMART, agent contract, tests, scenarios, README, manifests, changelog, prior STATE. |
-| 2026-07-11 / PR #14 | Added a progress-first healthy-project path, one-pass Step Pilot execution, compact reporting, and restricted-workflow staging policy. | Keep SMART authoritative without letting its own process delay real project progress. | 54 tests GREEN; fast-path/staging/safety contracts GREEN; 8 scenarios and 9 JSON files valid; Bash syntax and whitespace GREEN. | SMART, Step Pilot, agent contract, tests, README, manifests, changelog, prior STATE. |
-| 2026-07-11 / PR #13 | Replaced third-party activation command output with a structured SMART approval handoff and a one-decision interaction contract. | Preserve accountable human consent while keeping source, package, and command mechanics inside SMART. | 51 tests and both required checks GREEN. | SMART contract, installer, tests, README, manifests, changelog, prior STATE. |
-| 2026-07-11 / PR #12 | Routed six bundled companions through SMART's trusted native marketplace with idempotent installed-state handling. | Remove companion setup and unnecessary quarantine friction from the beginner path without weakening third-party safety. | 50 tests and both required checks GREEN. | SMART contract, installer, tests, README, manifests, changelog, prior STATE. |
-| 2026-07-11 / PR #11 | Removed live model observation and replaced its runner with an offline-only schema validator. | Restore SMART's zero-configuration product boundary and eliminate paid/API setup. | 47 tests GREEN; 8 scenarios valid; required PR checks GREEN. | Evaluator, workflow template, tests, README, changelog, this STATE. |
-| 2026-07-11 / PR #10 | Made semantic observation optional. | Attempted to reduce cost, but retained unnecessary product complexity. | 52 tests and PR checks GREEN; later superseded by owner decision. | Evaluator, workflow template, tests, README, prior STATE. |
-| 2026-07-11 / PR #9 | Staged a manual live-evaluation workflow. | Internal QA experiment; later rejected as out of product direction. | PR checks GREEN; superseded by owner decision. | Workflow template, tests, README, prior STATE. |
-| 2026-07-11 / PR #8 | Added eight adversarial SMART scenario contracts and a live harness. | Improve behavioral confidence; scenarios remain, live harness is being removed. | Required checks GREEN. | Scenario data, tests, evaluator, versions. |
+| 2026-07-16 / stable ship | Marketplace metadata → `2.5.4`; `/smart` SENSE prefers STATE2; README install pin + 13 scenarios; gitignore installer temp; STATE handoff; GitHub Releases `v2.5.2`–`v2.5.4`. | Final stable delivery: no install/version/docs drift after continuity merges. | 85 tests GREEN; 13 scenarios valid; versions aligned. | marketplace, command, README, gitignore, STATE, releases. |
+| 2026-07-16 / PR #21 | M-T3: context-budget phases 40/60/80, hard archive (~200 lines / STATE2), pre-existing project bootstrap; SMART `2.5.4` / project-memory `1.3.2`. | Late checkpoints, STATE bloat, rediscovery on pre-existing projects. | 85 tests GREEN; 13 scenarios valid; PR merged. | SMART, project-memory, CLAUDE, scenarios, tests, manifests, changelog, prior STATE. |
+| 2026-07-16 / PR #20 | M-T2 mid-mission checkpoint protocol + `memory resume-check`; SMART `2.5.3` / project-memory `1.3.1`. | Context/daily cutovers must not erase mid-mission progress. | 82 tests + PR checks GREEN. | SMART, project-memory, gates, tests, scenarios, manifests, changelog. |
+| 2026-07-13 / PR #19 | Plugin-cache companion detection without CLI; `/smart` command; version `2.5.2`. | Codespaces cold-start friction. | 77 tests GREEN. | fetch-skill.sh, commands, installer tests, README, manifests, changelog. |
+| 2026-07-11 / PR #17 + tag `v2.5.1` | Gate seals, premature Vision Lock block, fail-closed missing evidence; first field-validated release. | Cold-start field test findings. | 72 tests GREEN; release published. | smart-gates.py, SMART, catalog, tests, manifests, changelog. |
 
 ## Runway
-1. **NEXT — merge PR #21 (`2.5.4`) and, if requested, publish public tags `v2.5.3` + `v2.5.4`:** continuity package complete in code. Completion evidence: merged PR + optional release tags.
-2. **THEN — re-test on a real project cutover:** start a fresh zero-context chat mid-task and confirm SMART resumes from STATE2/STATE alone under context pressure. Completion evidence: user confirmation or new friction report.
-3. **LATER — periodic catalog refresh:** re-verify external skill sources when drift evidence appears.
-
+1. **NEXT — field-validate zero-context cutover on a real user project:** start a fresh chat mid-task and confirm SMART resumes from STATE2/STATE alone. Completion evidence: user confirmation or new friction report.
+2. **THEN — periodic catalog refresh:** re-verify external skill sources when drift evidence appears.
+3. **LATER — only proven install/usage bottlenecks:** no speculative ceremony; fix only evidence-backed friction.
 
 ## Next-session command packet
 
 ```bash
-cd /home/user/webapp
-git fetch origin main
-git checkout genspark_ai_developer
+cd /home/samansofi2028/.claude/plugins/marketplaces/saeed-skills
+git fetch origin main && git checkout main && git pull --ff-only
 python3 -m unittest discover -s tests -v
 python3 skills/smart/skills/smart/evals/validate_behavioral_scenarios.py
 bash -n skills/smart/skills/smart/scripts/fetch-skill.sh
+# consumers already installed:
+# claude plugin marketplace update saeed-skills && claude plugin update smart@saeed-skills
 ```
 
 The offline-contract tests also guard against reintroducing network clients, model arguments, evaluator secrets, or a staged live workflow.

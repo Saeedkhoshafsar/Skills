@@ -6,7 +6,7 @@
   },
   "metadata": {
     "description": "SMART skill-manager ecosystem: phase-aware skill orchestration across standalone skill sources (including Anthropic, obra/superpowers, UI/UX, and marketing skills), atomic planning, persistent project memory, step-by-step execution, local code review, systematic debugging, and security auditing.",
-    "version": "2.5.3"
+    "version": "2.5.4"
   },
   "plugins": [
     {

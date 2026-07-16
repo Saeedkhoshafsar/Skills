@@ -46,9 +46,12 @@ claude plugin install smart@saeed-skills
 # No companion setup is required. SMART installs project-planner, project-memory,
 # step-pilot, code-review, debug-detective, or security-check itself when needed.
 
-# update later:
+# update later (required after every new release — marketplace installs are pinned):
 claude plugin marketplace update saeed-skills && claude plugin update smart@saeed-skills
 ```
+
+**Current stable SMART:** `2.5.4` (GitHub Release `v2.5.4`). After install or
+update, confirm the plugin version shows `2.5.4` in `/plugin` manage.
 
 > If you previously got `Marketplace file not found at ...\.claude-plugin\marketplace.json`,
 > remove the broken marketplace and re-add it:
@@ -66,12 +69,16 @@ claude plugin marketplace update saeed-skills && claude plugin update smart@saee
   Claude Code session** — commands and skills are indexed at session start.
 - Typing plain `smart` or `اسمارت` in a message also triggers the skill by
   description once the session has loaded the plugin.
+- On an existing project, SMART resumes from `docs/STATE2.md` (preferred) or
+  `docs/STATE.md` — it does not rebuild discovery ceremony when vision/state
+  already exist.
 
 ### Troubleshooting
 
 | Symptom | Cause | Fix |
 |---|---|---|
 | `/smart` not suggested in autocomplete | plugin was installed mid-session | restart the session; then use `/smart` (or `/smart:smart`) |
+| Installed SMART version is older than `2.5.4` | marketplace/plugin pin not refreshed | `claude plugin marketplace update saeed-skills && claude plugin update smart@saeed-skills`, then restart the session |
 | `ERROR: bundled capability '<x>' requires Claude Code CLI` | the `claude` binary is not on the Bash subshell's PATH (common in Codespaces/containers) | since `2.5.2` the installer first checks the plugin cache (`~/.claude/plugins/cache`) and recognizes manually/UI-installed companions without the CLI; if truly absent, install the companion once via `/plugin install <x>@saeed-skills` |
 | `fetch-skill.sh --installed` shows nothing despite installed plugins | pre-`2.5.2` versions only listed project-local skills and CLI-visible plugins | update SMART; it now reports `bundled:<name> INSTALLED (plugin cache: …)` |
 
@@ -211,7 +218,7 @@ For projects where migration, backup, or restore is genuinely not applicable, pr
 
 ## Offline behavioral contracts for SMART
 
-SMART ships eight adversarial scenario contracts covering premature implementation, unconfirmed Vision Lock, durable-state resume, conflicting evidence, speculative capability installation, unsafe skill candidates, incomplete release evidence, and stale task verification. They preserve expected behavior as reviewable repository data without introducing a runtime observer.
+SMART ships **13** offline adversarial scenario contracts covering premature implementation, unconfirmed Vision Lock, durable-state resume, mid-mission cutover resume, context-budget hard handoff, pre-existing project no-rebureaucracy, conflicting evidence, speculative capability installation, unsafe skill candidates, incomplete release evidence, stale task verification, excellence-by-default, and figure-it-out-later pressure. They preserve expected behavior as reviewable repository data without introducing a runtime observer.
 
 Validation is deterministic, dependency-free, and part of normal CI:
 
