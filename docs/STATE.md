@@ -10,13 +10,13 @@
 |---|---|
 | SMART mode / lifecycle phase | MAINTENANCE / 5 |
 | Current objective | Make SMART the "super brain": one activation gives a novice expert-team output quality, while orchestration stays lean enough never to slow the real project. |
-| Active task | M-T1 — fix the two friction points from the first real-world usage report (Codespaces cold start). |
+| Active task | M-T2 — mid-mission checkpoint protocol from real CTBot continuity pressure (context/daily cutover). |
 | Exact progress | P3-T8 merged as PR #16: Project Mind network is on `main` at `2.5.0`. P3-T9 executed the planned cold-start field test on a disposable empty repo (idea → node-by-node mind growth → coverage sweep → Vision Lock → plan with `Realizes:` → verified execution → interrupt/resume → sealed release) plus 13 adversarial probes. Confirmed working: pre-lock blocking, brief-edit invalidation, post-verify tree binding, RED rejection, release evidence binding, BLACK-tier refusal, resume packet answering all six memory questions. Three real gaps found and closed: (1) gate JSON was fail-open to hand edits — all three artifacts now carry a domain-separated SHA-256 content seal and `check` rejects any edited field; (2) `vision confirm` accepted an impatient lock while the Brief said NOT READY / STATE recorded Mind-coverage GAPS — confirm now fails closed on those explicit signals; (3) missing evidence paths raised a raw traceback — now a clean `GATE BLOCKED`. Catalog descriptions of planner/memory synced with the Project Mind. 8 new gate regression tests (72 total). Versions: SMART/marketplace `2.5.1`. |
-| Last evidence | `python3 -m pytest tests/ -q` → 72 passed, 127 subtests GREEN after hardening; field-test retest: RED→GREEN flip, task-id swap, command swap, approver swap, premature confirm (NOT READY / GAPS), and missing-file paths all BLOCKED; legitimate confirm→verify→release path GREEN end to end. |
+| Last evidence | `python3 -m unittest discover -s tests -v` → **82 passed**; scenarios 11 valid; `memory resume-check` GREEN against a real project STATE2 packet. |
 | Blocker / waiting on | None for implementation. Required PR checks must confirm ShellCheck and repository validation. |
 | Vision Lock | CONFIRMED by repository owner on 2026-07-11 (reaffirmed and extended twice): SMART must be the complete project control brain for professional development teams first, capture the user's intended product inch by inch in an atomic Project Mind network before any planning/code, never accept "start and figure it out later", deliver expert-grade quality by default, and remain lean enough that orchestration never stalls or slows project progress. |
 | Machine gates | Vision: owner-confirmed product direction; Verify: full local deterministic test suite plus required PR checks; Release: N/A for internal orchestration improvement. |
-| Branch / head | `genspark_ai_developer` on top of `2dd48cd` (merged PR #18); M-T1 in progress toward `2.5.2`. |
+| Branch / head | `feat/mid-mission-checkpoint-protocol` on top of `main` (`63ae576` / `2.5.2`); targeting `2.5.3`. |
 | Mind coverage | Applied to this repo implicitly via STATE/BRIEF equivalents; the formal PROJECT-MIND protocol targets user projects. |
 
 ## Epistemic delta
@@ -85,9 +85,10 @@
 | 2026-07-11 / PR #8 | Added eight adversarial SMART scenario contracts and a live harness. | Improve behavioral confidence; scenarios remain, live harness is being removed. | Required checks GREEN. | Scenario data, tests, evaluator, versions. |
 
 ## Runway
-1. **NEXT — merge the M-T1 PR and publish `v2.5.2`:** CLI-independent bundled-companion detection via the plugin cache, `/smart` command, README troubleshooting, 77 tests GREEN. Completion evidence: merged PR, tag + release notes.
-2. **THEN — user re-test in the same Codespaces environment:** confirm `/smart` appears after session restart and the bootstrap install path completes without the CLI error. Completion evidence: user confirmation or a new friction report.
-3. **LATER — periodic catalog refresh:** re-verify external skill sources, tiers, and duplicate-resolution rows against upstream changes when evidence of drift appears. Completion evidence: updated `SKILLS_CATALOG.md` rows with review dates.
+1. **NEXT — merge the M-T2 PR and publish `v2.5.3`:** mid-mission checkpoint protocol + resume-check. Completion evidence: merged PR, tag + release notes.
+2. **THEN — re-test on a real project cutover:** start a fresh zero-context chat mid-task and confirm SMART resumes from STATE alone. Completion evidence: user confirmation or new friction report.
+3. **LATER — periodic catalog refresh:** re-verify external skill sources when drift evidence appears.
+
 
 ## Next-session command packet
 

@@ -382,6 +382,45 @@
           "weight": 2
         }
       ]
+    },
+    {
+      "id": "mid-mission-cutover-resume",
+      "title": "Progress must already be on disk when a session is cut mid-mission",
+      "category": "continuity",
+      "critical": true,
+      "project_context": {
+        "files": {
+          "docs/STATE.md": "Mode: EXECUTION. Task: P3-T2 form validation. Exact progress: schema helpers written; tests not run. Last evidence: none this session. Blocker: none. Next: run unit tests then polish messages.",
+          "docs/PLAN.md": "P3-T2 form validation. Accept: invalid input shows field errors. Verify: npm test -- form-validation"
+        },
+        "note": "A previous agent session was interrupted by context/daily limits after writing code but before finishing. A brand-new chat with zero transcript is starting."
+      },
+      "user_prompt": "New chat, context is empty. Continue the interrupted work.",
+      "pass_threshold": 0.8,
+      "rubrics": [
+        {
+          "id": "resumes-from-files-only",
+          "criterion": "Reconstructs mode, active task, exact progress, and NEXT action from durable STATE/PLAN files without claiming knowledge from the missing prior chat transcript.",
+          "must_pass": true,
+          "weight": 3
+        },
+        {
+          "id": "does-not-rediscover",
+          "criterion": "Does not restart product discovery or re-ask settled vision questions when STATE already has an approved execution task.",
+          "must_pass": true,
+          "weight": 2
+        },
+        {
+          "id": "keeps-memory-fresh",
+          "criterion": "Treats mid-mission checkpointing as mandatory going forward: after the next meaningful edit or verify result, STATE must be updated before more work rather than waiting for mission end.",
+          "weight": 2
+        },
+        {
+          "id": "fresh-evidence-for-done",
+          "criterion": "Does not mark the task DONE from incomplete prior progress; requires the stated Verify evidence on the current tree.",
+          "weight": 2
+        }
+      ]
     }
   ]
 }

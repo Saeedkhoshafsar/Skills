@@ -191,6 +191,7 @@ Do not modify memory merely because a session started.
 | material decision | append decision record; link concise consequence from STATE |
 | task starts | current objective/task, exact starting point, expected evidence |
 | meaningful checkpoint | exact progress and changed runway; no premature DONE |
+| mid-mission continuity trigger | write STATE immediately when files, evidence, mode/task, blocker, decision, capability, or runway changed — before more work |
 | error/failing check | exact command/input/output summary, attempt count, next diagnostic |
 | task completion | GREEN `.smart/evidence/verify.json`, command/result/time, completed ledger entry, next task |
 | scope/plan change | brief/plan/decision first, then STATE pointer and impact |
@@ -198,9 +199,24 @@ Do not modify memory merely because a session started.
 | before risky/long operation | checkpoint exact progress and rollback/recovery instruction |
 | phase/mode change | reason/evidence, new objective, refreshed runway |
 | release readiness | READY `.smart/evidence/release.json`, evidence paths/checksums, approver, rollback |
+| intentional handoff / context pressure | complete resume packet + single NEXT action; conversation history is not recovery media |
 
 “Meaningful” means the event changes understanding, decisions, progress, risk, or what
 the next agent should do. Do not record formatting-only edits as product events.
+
+### Mid-mission checkpoint rule
+
+Do not wait for task completion to write continuity. As soon as a meaningful delta
+exists, update the resume packet fields that changed:
+
+1. mode / active task;
+2. exact progress (what is done vs not done);
+3. last evidence command and GREEN/RED result;
+4. blocker or waiting-on item;
+5. single NEXT action.
+
+A later session with no chat history must be able to continue from STATE alone.
+If `smart-gates.py memory resume-check` fails, repair the packet before coding.
 
 ## Decision record protocol
 

@@ -276,6 +276,54 @@ class SmartGateTests(unittest.TestCase):
         self.assertNotEqual(result.returncode, 0)
         self.assertIn("escapes project root", result.stderr)
 
+    def test_memory_resume_check_requires_state_file(self) -> None:
+        result = self.gate("memory", "resume-check")
+        self.assertNotEqual(result.returncode, 0)
+        self.assertIn("no durable STATE resume file", result.stderr)
+        self.assertIn("GATE BLOCKED", result.stderr)
+
+    def test_memory_resume_check_rejects_incomplete_packet(self) -> None:
+        (self.project / "docs/STATE.md").write_text(
+            "# STATE\n\n## Resume packet\n\n```\nMode: EXECUTION\n```\n",
+            encoding="utf-8",
+        )
+        result = self.gate("memory", "resume-check")
+        self.assertNotEqual(result.returncode, 0)
+        self.assertIn("resume packet is incomplete", result.stderr)
+
+    def test_memory_resume_check_accepts_complete_packet(self) -> None:
+        (self.project / "docs/STATE.md").write_text(
+            "# STATE\n\n## Resume packet\n\n```\n"
+            "Mode      : EXECUTION\n"
+            "Task      : P2-T4 CSV export\n"
+            "Exact progress : exporter helper written; tests pending\n"
+            "Last evidence : python3 -m unittest tests.test_export -v -> RED\n"
+            "Blocker  : none\n"
+            "Next     : finish export tests and re-run verify\n"
+            "```\n",
+            encoding="utf-8",
+        )
+        result = self.gate("memory", "resume-check")
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertIn("MEMORY GATE: RESUME READY", result.stdout)
+
+    def test_memory_resume_check_prefers_state2_when_present(self) -> None:
+        (self.project / "docs/STATE.md").write_text("stale archive\n", encoding="utf-8")
+        (self.project / "docs/STATE2.md").write_text(
+            "## Resume packet\n\n```\n"
+            "Mode: SURFACE TRACK\n"
+            "Task: U2-T2 onboarding\n"
+            "Progress: U2-T1 done\n"
+            "Evidence: npm run verify GREEN\n"
+            "Blockers: none\n"
+            "Next: consolidate empty-product path\n"
+            "```\n",
+            encoding="utf-8",
+        )
+        result = self.gate("memory", "resume-check")
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertIn("docs/STATE2.md", result.stdout)
+
 
 if __name__ == "__main__":
     unittest.main()
