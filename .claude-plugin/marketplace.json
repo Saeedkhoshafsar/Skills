@@ -13,7 +13,7 @@
       "name": "smart",
       "source": "./skills/smart",
       "description": "Project intelligence orchestrator: builds a truthful shared model, enforces Vision Lock before planning/code, preserves durable memory and runway, and installs or creates only the capabilities required for the next best action.",
-      "version": "2.5.3",
+      "version": "2.5.4",
       "author": {
         "name": "Saeedkhoshafsar"
       },
@@ -44,7 +44,7 @@
       "name": "project-memory",
       "source": "./skills/project-memory",
       "description": "Durable project intelligence: compact resume state plus canonical brief, plan, decisions, research, assumptions, capability inventory, change ledger, and future runway.",
-      "version": "1.3.1",
+      "version": "1.3.2",
       "author": {
         "name": "Saeedkhoshafsar"
       },

@@ -231,6 +231,50 @@ class SmartCognitionContractTests(unittest.TestCase):
         self.assertIn("Mid-mission checkpoint rule", memory)
         self.assertIn("mid-mission continuity trigger", memory)
 
+    def test_context_budget_phases_force_earlier_handoff(self) -> None:
+        normalized = " ".join(self.smart.split())
+        for requirement in (
+            "Context-budget phases (40 / 60 / 80)",
+            "~40%",
+            "~60%",
+            "~80%",
+            "Hard handoff mode",
+            "continues multi-file exploration or coding past ~80% context fill without a complete resume packet",
+        ):
+            with self.subTest(requirement=requirement):
+                self.assertIn(requirement, normalized)
+        agent_contract = " ".join(text(CLAUDE).split())
+        self.assertIn("Context-budget phases 40/60/80", agent_contract)
+
+    def test_preexisting_project_bootstrap_skips_rebureaucracy(self) -> None:
+        normalized = " ".join(self.smart.split())
+        for requirement in (
+            "Pre-existing project bootstrap (no ceremony rebuild)",
+            "docs/STATE2.md",
+            "resume and extend",
+            "rebuilds discovery/mind/brief ceremony on a project that already has a valid resume packet and confirmed vision",
+        ):
+            with self.subTest(requirement=requirement):
+                self.assertIn(requirement, normalized)
+        memory = " ".join(text(MEMORY).split())
+        self.assertIn("Pre-existing project continuity", memory)
+        self.assertIn("Prefer STATE2 when present", " ".join(self.smart.split()) + " " + memory)
+        agent_contract = " ".join(text(CLAUDE).split())
+        self.assertIn("Pre-existing projects resume, they do not re-bootstrap", agent_contract)
+
+    def test_hard_archive_rule_keeps_resume_packet_scannable(self) -> None:
+        memory = " ".join(text(MEMORY).split())
+        for requirement in (
+            "Hard archive / compaction rule",
+            "200 lines",
+            "docs/STATE2.md",
+            "`memory resume-check` on the active packet must still pass",
+        ):
+            with self.subTest(requirement=requirement):
+                self.assertIn(requirement, memory)
+        agent_contract = " ".join(text(CLAUDE).split())
+        self.assertIn("Hard archive when STATE bloats", agent_contract)
+
     def test_bundled_companions_are_zero_configuration_for_user(self) -> None:
         normalized = " ".join(self.smart.split())
         self.assertIn("bundled first-party capabilities", normalized)

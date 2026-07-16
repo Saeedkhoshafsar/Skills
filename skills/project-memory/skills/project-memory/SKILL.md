@@ -116,13 +116,26 @@ Planning or code with open critical gaps is forbidden.
 
 Read in this order:
 
-1. `docs/STATE.md` completely.
-2. Only the brief/plan/decision/research sections referenced by the current objective.
-3. `git status`, recent relevant commits, and the current task's files/tests.
-4. If STATE conflicts with repository evidence, mark a `CONFLICT` and enter recovery;
+1. Newest resume file completely: `docs/STATE2.md` if present, else `docs/STATE.md`,
+   else root `STATE.md`. STATE2 is the active packet when both exist.
+2. Only the brief/plan/decision/research/mind sections referenced by the current objective.
+3. Machine gates under `.smart/evidence/` when present.
+4. `git status`, recent relevant commits, and the current task's files/tests.
+5. If STATE conflicts with repository evidence, mark a `CONFLICT` and enter recovery;
    repository evidence does not automatically reveal user intent.
 
 Do not modify memory merely because a session started.
+
+### Pre-existing project continuity
+
+When durable product truth already exists (STATE/STATE2, brief, mind, UI vision notes,
+or a passing vision-lock artifact):
+
+- resume from the packet; do not rebuild empty parallel records;
+- do not re-run discovery questionnaires for settled facts;
+- if Vision is confirmed in prose but the machine artifact is missing, rebuild only the
+  artifact from the existing confirmed picture;
+- if `smart-gates.py memory resume-check` fails, repair the packet before coding.
 
 ## `docs/STATE.md` template
 
@@ -274,10 +287,30 @@ Before ending a meaningful invocation:
 3. Move settled inferences to confirmed, or rejected ones to the change ledger.
 4. Mark expired assumptions and force their resolution before dependent irreversible work.
 5. Keep latest 10 meaningful changes and completed tasks in STATE.
-6. When STATE exceeds about 300 lines, move older history to
-   `docs/archive/STATE-YYYY-MM.md`; preserve links and decision IDs.
-7. Ensure the next agent can act without reconstructing private chain-of-thought.
+6. Ensure the next agent can act without reconstructing private chain-of-thought.
    Store conclusions, evidence, and rationale—not hidden reasoning traces.
+7. Run `smart-gates.py memory resume-check` after material handoff writes.
+
+### Hard archive / compaction rule
+
+STATE must stay a compact resume index. Archive when **any** of these fire:
+
+1. active STATE exceeds about **200 lines**, or
+2. the resume packet is hard to scan because settled ledger/history dominates the top, or
+3. a surface-track / multi-phase project needs a thin active packet (`docs/STATE2.md`)
+   while older narrative stays in `docs/STATE.md` or `docs/archive/`.
+
+Archive procedure:
+
+1. Move older history, settled ledger rows, and completed-phase narrative to
+   `docs/archive/STATE-YYYY-MM.md` (or keep a clearly labeled archive section in
+   `docs/STATE.md` when STATE2 is the active packet).
+2. Preserve decision IDs, mind node IDs, and links to brief/plan/evidence.
+3. Keep in the active packet only: mode, objective, active task, exact progress,
+   last evidence, blocker, vision/mind/gate pointers, branch/head, short runway,
+   and the newest few meaningful deltas.
+4. Never archive away the only copy of an incomplete task's progress.
+5. After archive, `memory resume-check` on the active packet must still pass.
 
 ## Commit rule
 
