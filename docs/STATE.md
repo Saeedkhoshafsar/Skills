@@ -11,9 +11,9 @@
 | SMART mode / lifecycle phase | MAINTENANCE / 5 |
 | Current objective | Make SMART the "super brain": one activation gives a novice expert-team output quality, while orchestration stays lean enough never to slow the real project. |
 | Active task | M-T3 — context-budget phases + hard archive + pre-existing project bootstrap (post M-T2). |
-| Exact progress | M-T2 mid-mission checkpoint protocol merged as PR #20 on `main` (`f1820c0`, SMART `2.5.3`, project-memory `1.3.1`). This branch implements M-T3: context-budget 40/60/80, hard archive rule (~200 lines / STATE2 split), pre-existing project bootstrap (prefer STATE2, no re-bureaucracy), two offline scenarios, contract tests, versions SMART `2.5.4` / project-memory `1.3.2`. Public GitHub Release tag `v2.5.3` still needs explicit owner publish approval. |
-| Last evidence | `python3 -m unittest discover -s tests -v` → **85 passed**; scenarios **13** valid; versions SMART `2.5.4` / project-memory `1.3.2`. |
-| Blocker / waiting on | Owner must explicitly approve publishing public release `v2.5.3` on GitHub; implementation of M-T3 does not block. |
+| Exact progress | M-T2 mid-mission checkpoint protocol merged as PR #20 on `main` (`f1820c0`, SMART `2.5.3`, project-memory `1.3.1`). M-T3 implemented and opened as **PR #21** (`4bdaa98`): context-budget 40/60/80, hard archive rule (~200 lines / STATE2 split), pre-existing project bootstrap (prefer STATE2, no re-bureaucracy), two offline scenarios, contract tests, versions SMART `2.5.4` / project-memory `1.3.2`. No further implementation remaining for this continuity package. Public GitHub Release tags `v2.5.3` / `v2.5.4` still need explicit owner publish approval. |
+| Last evidence | `python3 -m unittest discover -s tests -v` → **85 passed**; scenarios **13** valid; PR #21 opened. |
+| Blocker / waiting on | Owner merge of PR #21; optional explicit publish of public releases `v2.5.3` (main) and `v2.5.4` (after merge). |
 | Vision Lock | CONFIRMED by repository owner on 2026-07-11 (reaffirmed and extended twice): SMART must be the complete project control brain for professional development teams first, capture the user's intended product inch by inch in an atomic Project Mind network before any planning/code, never accept "start and figure it out later", deliver expert-grade quality by default, and remain lean enough that orchestration never stalls or slows project progress. |
 | Machine gates | Vision: owner-confirmed product direction; Verify: full local deterministic test suite plus required PR checks; Release: N/A for internal orchestration improvement. |
 | Branch / head | `feat/context-budget-continuity-v254` on top of `main` (`f1820c0` / `2.5.3`); targeting `2.5.4`. |
@@ -87,7 +87,7 @@
 | 2026-07-11 / PR #8 | Added eight adversarial SMART scenario contracts and a live harness. | Improve behavioral confidence; scenarios remain, live harness is being removed. | Required checks GREEN. | Scenario data, tests, evaluator, versions. |
 
 ## Runway
-1. **NEXT — merge M-T3 PR (`2.5.4`) and publish missing `v2.5.3` + `v2.5.4` releases when owner approves public tags:** context-budget, hard archive, pre-existing bootstrap. Completion evidence: merged PR + optional release tags.
+1. **NEXT — merge PR #21 (`2.5.4`) and, if requested, publish public tags `v2.5.3` + `v2.5.4`:** continuity package complete in code. Completion evidence: merged PR + optional release tags.
 2. **THEN — re-test on a real project cutover:** start a fresh zero-context chat mid-task and confirm SMART resumes from STATE2/STATE alone under context pressure. Completion evidence: user confirmation or new friction report.
 3. **LATER — periodic catalog refresh:** re-verify external skill sources when drift evidence appears.
 
