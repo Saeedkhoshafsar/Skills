@@ -5,6 +5,26 @@ Versioning: bump plugin versions in `.claude-plugin/marketplace.json` and each
 plugin's `plugin.json` — `claude plugin update` only detects updates through a
 version bump in `marketplace.json`.
 
+## [2.5.3] - 2026-07-16
+
+Real-project continuity gap (mid-mission cutover) — progress must survive
+context/daily limits without relying on chat history.
+
+### Added
+- **Mid-mission checkpoint protocol** in SMART: checkpoint triggers fire during
+  the work (file change, verify result, mode/task change, decision, capability
+  change, risky op, ~8 tool turns, handoff/context pressure), not only at the end.
+- **`smart-gates.py memory resume-check`**: fail-closed machine check that the
+  durable resume packet can restart a zero-context session (mode/task, progress,
+  evidence, blocker, next).
+- Offline scenario `mid-mission-cutover-resume` and contract tests for the
+  checkpoint mandate.
+
+### Changed
+- `project-memory` event protocol now treats mid-mission continuity triggers and
+  intentional handoffs as first-class write events.
+- Fast path requires repairing an incomplete resume packet before coding.
+
 ## [2.5.2] - 2026-07-13
 
 First real-world usage feedback (Codespaces cold start) — exactly the

@@ -214,6 +214,23 @@ class SmartCognitionContractTests(unittest.TestCase):
             with self.subTest(requirement=requirement):
                 self.assertIn(requirement, normalized)
 
+    def test_mid_mission_checkpoint_is_mandatory(self) -> None:
+        normalized = " ".join(self.smart.split())
+        for requirement in (
+            "Mid-mission memory is mandatory",
+            "Mid-mission checkpoint protocol",
+            "Checkpoint immediately when any of these fire",
+            "never postpone memory until the mission ends",
+            "never treat the conversation transcript as the recovery database",
+            "waits until mission end to write progress that already changed mode, evidence, or files",
+            "smart-gates.py memory resume-check",
+        ):
+            with self.subTest(requirement=requirement):
+                self.assertIn(requirement, normalized)
+        memory = text(MEMORY)
+        self.assertIn("Mid-mission checkpoint rule", memory)
+        self.assertIn("mid-mission continuity trigger", memory)
+
     def test_bundled_companions_are_zero_configuration_for_user(self) -> None:
         normalized = " ".join(self.smart.split())
         self.assertIn("bundled first-party capabilities", normalized)

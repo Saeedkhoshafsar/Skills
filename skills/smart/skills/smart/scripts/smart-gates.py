@@ -398,6 +398,78 @@ def release_check(args: argparse.Namespace) -> None:
     print("RELEASE GATE: GREEN")
 
 
+def state_candidates(root: Path) -> list[Path]:
+    """Prefer active project truth files without inventing product structure."""
+    ordered = [
+        root / "docs" / "STATE2.md",
+        root / "docs" / "STATE.md",
+        root / "STATE.md",
+    ]
+    return [path for path in ordered if path.is_file()]
+
+
+def extract_resume_packet(text: str) -> str:
+    """Return the first fenced resume packet body, else the whole document."""
+    marker = "resume packet"
+    lower = text.lower()
+    idx = lower.find(marker)
+    if idx == -1:
+        return text
+    after = text[idx:]
+    fence = after.find("```")
+    if fence == -1:
+        return after
+    body_start = fence + 3
+    # skip optional language tag / newline after opening fence
+    newline = after.find("\n", fence)
+    if newline != -1 and newline < after.find("```", fence + 3):
+        body_start = newline + 1
+    body_end = after.find("```", body_start)
+    if body_end == -1:
+        return after[body_start:]
+    return after[body_start:body_end]
+
+
+def resume_packet_has(field_aliases: tuple[str, ...], packet: str) -> bool:
+    lower = packet.lower()
+    for alias in field_aliases:
+        if alias.lower() in lower:
+            return True
+    return False
+
+
+def memory_resume_check(args: argparse.Namespace) -> None:
+    """Fail closed when the durable resume packet cannot restart a zero-context session."""
+    root = project_root(args.project)
+    candidates = state_candidates(root)
+    if not candidates:
+        fail(
+            "no durable STATE resume file found "
+            "(expected docs/STATE2.md, docs/STATE.md, or STATE.md)"
+        )
+    text = candidates[0].read_text(encoding="utf-8", errors="replace")
+    packet = extract_resume_packet(text)
+    required = {
+        "mode/task": ("mode", "task", "active task", "current objective"),
+        "exact progress": ("exact progress", "progress", "task"),
+        "last evidence": ("last evidence", "evidence", "verify"),
+        "blocker": ("blocker", "waiting on", "blockers"),
+        "next action": ("next", "runway", "next action"),
+    }
+    missing = [
+        label
+        for label, aliases in required.items()
+        if not resume_packet_has(aliases, packet)
+    ]
+    if missing:
+        fail(
+            "resume packet is incomplete for zero-context recovery — missing: "
+            + ", ".join(missing)
+        )
+    rel = candidates[0].relative_to(root).as_posix()
+    print(f"MEMORY GATE: RESUME READY ({rel})")
+
+
 def parser() -> argparse.ArgumentParser:
     result = argparse.ArgumentParser(description=__doc__)
     result.add_argument("--project", default=".", help="path inside the target Git project")
@@ -448,6 +520,11 @@ def parser() -> argparse.ArgumentParser:
     check = release_commands.add_parser("check")
     check.add_argument("--artifact")
     check.set_defaults(function=release_check)
+
+    memory = commands.add_parser("memory")
+    memory_commands = memory.add_subparsers(dest="action", required=True)
+    resume = memory_commands.add_parser("resume-check")
+    resume.set_defaults(function=memory_resume_check)
     return result
 
 
