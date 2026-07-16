@@ -421,6 +421,93 @@
           "weight": 2
         }
       ]
+    },
+    {
+      "id": "context-budget-hard-handoff",
+      "title": "Near-full context must force a durable handoff packet, not more exploration",
+      "category": "continuity",
+      "critical": true,
+      "project_context": {
+        "files": {
+          "docs/STATE.md": "Mode: EXECUTION. Task: P4-T1 export polish. Exact progress: helper drafted; tests not run. Last evidence: typecheck GREEN earlier. Blocker: none. Next: finish tests."
+        },
+        "note": "Host reports context ~85% full / auto-compact pressure. Several large files were already read this session."
+      },
+      "user_prompt": "We're almost out of context. Keep going—read the whole services/ tree and finish everything before the chat dies.",
+      "pass_threshold": 0.8,
+      "forbidden_patterns": [
+        "(?i)let'?s (?:read|scan) the whole",
+        "(?i)i(?:'| a)ll re-read the entire repository"
+      ],
+      "rubrics": [
+        {
+          "id": "enters-hard-handoff",
+          "criterion": "Recognizes ~80%+ context pressure and enters hard-handoff behavior instead of starting a broad multi-file reread.",
+          "must_pass": true,
+          "weight": 3
+        },
+        {
+          "id": "writes-complete-packet",
+          "criterion": "Updates or confirms a complete resume packet (mode, task, exact progress, last evidence, blocker, single NEXT) suitable for a zero-context new chat.",
+          "must_pass": true,
+          "weight": 3
+        },
+        {
+          "id": "no-exploratory-bloat",
+          "criterion": "Does not launch non-essential whole-tree exploration or specialist ceremony under context pressure.",
+          "weight": 2
+        },
+        {
+          "id": "resume-check-awareness",
+          "criterion": "Treats smart-gates.py memory resume-check / durable files as the recovery media before relying on compact or a new chat.",
+          "weight": 2
+        }
+      ]
+    },
+    {
+      "id": "preexisting-project-no-rebureaucracy",
+      "title": "A project with STATE2 and confirmed vision must resume, not rebuild discovery",
+      "category": "continuity",
+      "critical": true,
+      "project_context": {
+        "files": {
+          "docs/STATE2.md": "Mode: SURFACE TRACK. Task: U2-T2 onboarding. Progress: U2-T1 done. Evidence: npm run verify GREEN. Blockers: none. Next: consolidate empty-product path.",
+          "docs/STATE.md": "Older archive narrative from previous phases.",
+          "docs/PROJECT-BRIEF.md": "Vision Lock: CONFIRMED. Product is an n8n-habit bot studio.",
+          ".smart/evidence/vision-lock.json": "status CONFIRMED; vision check would pass"
+        },
+        "note": "Brand-new chat on an existing product track with STATE2 as the active packet."
+      },
+      "user_prompt": "smart",
+      "pass_threshold": 0.8,
+      "forbidden_patterns": [
+        "(?i)let'?s start discovery from scratch",
+        "(?i)i need to rebuild the (?:project )?mind (?:network )?before we can continue"
+      ],
+      "rubrics": [
+        {
+          "id": "prefers-state2",
+          "criterion": "Uses docs/STATE2.md as the active resume packet rather than treating archive STATE as current truth.",
+          "must_pass": true,
+          "weight": 3
+        },
+        {
+          "id": "skips-rebureaucracy",
+          "criterion": "Does not rebuild discovery questionnaires, empty parallel records, or a second brief when vision is already confirmed.",
+          "must_pass": true,
+          "weight": 3
+        },
+        {
+          "id": "advances-active-task",
+          "criterion": "Enters the healthy fast path toward U2-T2 / the stated NEXT action instead of re-orienting the whole product.",
+          "weight": 2
+        },
+        {
+          "id": "respects-machine-vision",
+          "criterion": "Treats the existing confirmed vision / vision-lock evidence as binding unless a real conflict appears.",
+          "weight": 2
+        }
+      ]
     }
   ]
 }

@@ -150,16 +150,21 @@ one next action, and one concise memory delta.
 
 Read the minimum evidence needed in this order:
 
-1. `docs/STATE.md` if it exists.
-2. `docs/PROJECT-BRIEF.md`, then `docs/PLAN.md`, `docs/DECISIONS.md`, and
-   `docs/RESEARCH.md` only where STATE or the current request points.
-3. Relevant repository manifests, source tree, tests, git status/log, and CI signals.
-4. Installed capabilities:
+1. Newest durable resume file if it exists: `docs/STATE2.md`, else `docs/STATE.md`,
+   else root `STATE.md`. Prefer STATE2 when present (active packet; older STATE may be archive).
+2. `docs/PROJECT-BRIEF.md` / confirmed UI vision notes, then `docs/PLAN.md` (or PLAN6 /
+   surface-track plan), `docs/DECISIONS.md`, and `docs/RESEARCH.md` only where STATE or
+   the current request points.
+3. Machine gates under `.smart/evidence/` when present (`vision-lock.json`, verify/release).
+4. Relevant repository manifests, source tree, tests, git status/log, and CI signals —
+   only as needed for the active task.
+5. Installed capabilities:
    `bash "${CLAUDE_PLUGIN_ROOT}/skills/smart/scripts/fetch-skill.sh" --installed`.
 
 If `${CLAUDE_PLUGIN_ROOT}` is unavailable, locate SMART's own directory and use its
 `scripts/fetch-skill.sh`. Never scan the whole repository when the resume index and
-focused search can answer the question.
+focused search can answer the question. For pre-existing projects with a GREEN
+`memory resume-check` and confirmed vision, skip bootstrap ceremony and use the fast path.
 
 Produce an internal fact map:
 
@@ -436,6 +441,44 @@ Checkpoint rules:
 - when preparing an intentional handoff, make the resume packet answer: mode, task,
   exact progress, last evidence, blocker, and the single NEXT action.
 
+### Context-budget phases (40 / 60 / 80)
+
+Chat context is finite. SMART treats approximate context fill as an operational signal,
+not a user-facing process. When the session nears capacity (from `/context`, host
+warnings, auto-compact pressure, long tool output, or known daily/context cut risk),
+escalate silently:
+
+| Fill (approx.) | Behavior |
+|---|---|
+| **~40%** | Prefer short writes and delta-only STATE updates. Stop exploratory re-reads of settled files. Prefer focused reads over whole-repo scans. |
+| **~60%** | Stop non-essential exploration and specialist ceremony. Checkpoint now if any meaningful delta is still only in chat. Prefer one scoped action over parallel rereads. |
+| **~80%** | **Hard handoff mode:** finish the current micro-step only if already nearly done; otherwise stop coding, write a complete resume packet (mode, task, exact progress, last evidence, blocker, single NEXT), run `smart-gates.py memory resume-check`, and end with that packet as the recovery media. Do not start a new multi-file rewrite. |
+
+Rules:
+
+1. Percentages are approximate operational triggers, not exact telemetry requirements.
+2. These phases never replace mid-mission checkpoints — they force them earlier under pressure.
+3. Prefer `/compact` or a clean new chat only after the resume packet is GREEN.
+4. Never spend the remaining context re-summarizing SMART's process; spend it on the packet.
+
+### Pre-existing project bootstrap (no ceremony rebuild)
+
+When the repository already has durable product truth (any of `docs/STATE.md`,
+`docs/STATE2.md`, `docs/PROJECT-BRIEF.md`, `docs/PROJECT-MIND.md`,
+`docs/UI-VISION.md` / vision notes, or a passing `.smart/evidence/vision-lock.json`),
+SMART must **resume and extend**, not rebuild bureaucracy:
+
+1. Prefer the newest resume file among `docs/STATE2.md` → `docs/STATE.md` → `STATE.md`.
+2. If Vision is already user-confirmed in brief/UI-vision and a machine vision artifact
+   exists and passes `vision check`, do **not** re-open discovery or invent a second brief.
+3. If Vision is confirmed in prose but the machine artifact is missing or stale, rebuild
+   only the artifact from the existing confirmed picture — do not re-interview settled facts.
+4. If Mind coverage is already COMPLETE (or the project deliberately uses a compact
+   STATE/PLAN surface track), do not force a full mind rebuild before continuing approved work.
+5. Create missing memory files only when a real gap blocks the next action; never generate
+   empty parallel records for aesthetic completeness.
+6. Enter the fast path as soon as resume-check passes and the active task is clear.
+
 ## Vision Lock — mandatory gate before planning or code
 
 Vision Lock certifies that SMART's picture of the product and the user's picture are
@@ -518,6 +561,8 @@ SMART never:
 - plans or codes while a material product question has no recorded node, answer, or owned assumption;
 - keeps its understanding of the product in conversation instead of the mind network;
 - waits until mission end to write progress that already changed mode, evidence, or files;
+- continues multi-file exploration or coding past ~80% context fill without a complete resume packet;
+- rebuilds discovery/mind/brief ceremony on a project that already has a valid resume packet and confirmed vision;
 - confuses a plausible interpretation with the user's intent;
 - asks a fixed questionnaire regardless of prior answers;
 - overwhelms a novice with jargon, installation commands, source choices, or integration setup;

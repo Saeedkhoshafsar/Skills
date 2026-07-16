@@ -5,6 +5,30 @@ Versioning: bump plugin versions in `.claude-plugin/marketplace.json` and each
 plugin's `plugin.json` — `claude plugin update` only detects updates through a
 version bump in `marketplace.json`.
 
+## [2.5.4] - 2026-07-16
+
+Continuity under real session pressure — context fill, archive bloat, and
+pre-existing projects must not force rediscovery or lost progress.
+
+### Added
+- **Context-budget phases 40/60/80** in SMART: short writes → stop exploration →
+  hard handoff with complete resume packet + `memory resume-check`.
+- **Pre-existing project bootstrap**: prefer `STATE2` → resume confirmed vision;
+  never rebuild empty mind/brief ceremony when durable truth already exists.
+- **Hard archive / compaction rule** in project-memory (~200 lines / noise /
+  surface-track STATE2 split) with post-archive resume-check still GREEN.
+- Offline scenarios `context-budget-hard-handoff` and
+  `preexisting-project-no-rebureaucracy`.
+
+### Changed
+- SENSE / session-start read order prefers `docs/STATE2.md` over `docs/STATE.md`.
+- Agent contract (`CLAUDE.md`) adds rules 18–20 for budget, resume-not-rebuild,
+  and hard archive.
+
+### Versions
+- SMART `2.5.4`
+- project-memory `1.3.2`
+
 ## [2.5.3] - 2026-07-16
 
 Real-project continuity gap (mid-mission cutover) — progress must survive
