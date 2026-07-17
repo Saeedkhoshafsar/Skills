@@ -9,19 +9,21 @@
 | Field | Current value |
 |---|---|
 | SMART mode / lifecycle phase | MAINTENANCE / 5 |
-| Current objective | Keep SMART lean: field-validate host supervision; ship only proven gaps. |
-| Active task | None — **2.5.16** SHIPPED (PR #25 + Release `v2.5.16`): scroll-world catalog + `/smart:smart` honesty. |
-| Exact progress | `scroll-world` aliased + full YELLOW SMART profile; bare `/smart` claims removed; pin **2.5.16**. PR #25 merged (`822947b`); Release `v2.5.16` Latest published. |
-| Last evidence | 2026-07-17: PR #25 MERGED validate GREEN; unittest **223 OK** / scenarios **33 valid**; Release https://github.com/Saeedkhoshafsar/Skills/releases/tag/v2.5.16 |
-| Blocker / waiting on | None. Consumer install: marketplace update → plugin update → confirm pin **2.5.16** → invoke **`/smart:smart`**. |
-| Next | Consumer pin **2.5.16**; continue field-validate only if a new gap appears. |
-| Vision Lock | CONFIRMED by repository owner on 2026-07-11 (reaffirmed and extended twice): SMART must be the complete project control brain for professional development teams first, capture the user's intended product inch by inch in an atomic Project Mind network before any planning/code, never accept "start and figure it out later", deliver expert-grade quality by default, and remain lean enough that orchestration never stalls or slows project progress. |
-| Machine gates | Vision: owner-confirmed product direction; Verify: local deterministic suite; Release: `v2.5.16` Latest published. |
-| Branch / head | `main` @ SMART `2.5.16` shipped (`822947b`). |
+| Current objective | Ship SMART **2.5.17**: Depth Reprocess + evidence-rooted trees (creativity ≠ truth). |
+| Active task | Depth + honesty protocol complete; ship PR/Release `v2.5.17`. |
+| Exact progress | Depth L0–L4 + truth/creative trunks + 3 scenarios + contracts; pins 2.5.17. |
+| Last evidence | 2026-07-18: protocol in SMART/step-pilot/planner; suite run pending ship. |
+| Blocker / waiting on | None — owner authorized push/PR/Release after honesty add. |
+| Next | Full tests GREEN → PR → merge → Release `v2.5.17` Latest. |
+| Vision Lock | CONFIRMED by repository owner on 2026-07-11 (reaffirmed and extended twice): SMART must be the complete project control brain for professional development teams first, capture the user's intended product inch by inch in an atomic Project Mind network before any planning/code, never accept "start and figure it out later", deliver expert-grade quality by default, and remain lean enough that orchestration never stalls or slows project progress. Extended 2026-07-18: depth over first-pass polish when stakes are real. |
+| Machine gates | Vision: owner-confirmed; Verify: unit suite + scenarios; Release: pending `v2.5.17`. |
+| Branch / head | shipping `2.5.17` from `main` @ `546cd74` + local depth protocol. |
 | Mind coverage | Applied to this repo implicitly via STATE/BRIEF equivalents; the formal PROJECT-MIND protocol targets user projects. |
 
 ## Epistemic delta
 ### Newly confirmed
+- Owner: first-pass “max effort” is still shallow; multi-layer reprocess + human-creative partnership required for desirable outcomes — source: owner messages 2026-07-18.
+- Public arena pattern: autonomous music-video agents under-spend self-critique and continuity despite budget (TryAI / music-video-arena) — source: https://www.tryai.dev/blog/ai-music-video-arena-claude-vs-gpt-5.6 , 2026-07-16.
 - PR #25 merged to `main` (`822947b`) with validate GREEN — scroll-world catalog + `/smart:smart` honesty SMART 2.5.16 — source: GitHub PR state, 2026-07-17.
 - Release `v2.5.16` published Latest — source: GitHub Releases, 2026-07-17.
 - Claude Code plugin skills/commands are **always** namespaced `/plugin:name`; bare `/smart` does not resolve — source: code.claude.com plugins docs + field report, 2026-07-17.
@@ -103,8 +105,8 @@
 | 2026-07-16 / 2.5.5 | Native Claude Code host-command supervision. | SMART masters slash surface. | contract tests + scenarios | catalog, SMART, CLAUDE, command, tests, scenarios, changelog, STATE. |
 
 ## Runway
-1. **INSTALL (consumer):** `claude plugin marketplace update saeed-skills && claude plugin update smart@saeed-skills` → confirm **2.5.16** → restart → invoke **`/smart:smart`** (not bare `/smart`).
-2. **NEXT — continue field-validate host supervision** under real context pressure only if a new gap appears (compact only after GREEN resume-check).
+1. **SHIP 2.5.17:** PR → merge → Release `v2.5.17` Latest.
+2. **INSTALL (consumer):** `claude plugin marketplace update saeed-skills && claude plugin update smart@saeed-skills` (+ step-pilot / project-planner if installed) → confirm **2.5.17** → restart → **`/smart:smart`**.
 3. **LATER — optional DB-schema skill** only if product database design keeps recurring as a real gap.
 4. **LATER — Phase 9 product-surface backlog** only with explicit owner request.
 5. **LATER — full multi-home / cloud memory adapters** on demand.

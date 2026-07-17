@@ -127,6 +127,51 @@ class SmartCognitionContractTests(unittest.TestCase):
             with self.subTest(requirement=requirement):
                 self.assertIn(requirement, normalized)
 
+    def test_depth_reprocess_is_contracted(self) -> None:
+        normalized = " ".join(self.smart.split())
+        for requirement in (
+            "Depth over first-pass polish",
+            "Depth Reprocess — multi-layer thinking before commitment",
+            "Draft ≠ done",
+            "Self-review is mandatory on depth work",
+            "Budget is a design input, not a scoreboard",
+            "Literalism check",
+            "Stop conditions (required)",
+            "Generate → stick → never rewatch",
+        ):
+            with self.subTest(requirement=requirement):
+                self.assertIn(requirement, normalized)
+        pilot = text(ROOT / "skills/step-pilot/skills/step-pilot/SKILL.md")
+        self.assertIn("Depth / self-critique", pilot)
+        self.assertIn(
+            "claim DONE on depth-triggered generative work without an L4 self-critique pass",
+            pilot,
+        )
+        planner = text(
+            ROOT / "skills/project-planner/skills/project-planner/SKILL.md"
+        )
+        self.assertIn("Budget is a design lever, not a spend target", planner)
+        self.assertIn("Depth note for creative / paid-gen products", planner)
+
+    def test_evidence_rooted_trees_protect_creativity_without_false_confidence(
+        self,
+    ) -> None:
+        normalized = " ".join(self.smart.split())
+        for requirement in (
+            "No false confidence; evidence-rooted thought trees",
+            "Evidence-rooted thought trees — honesty without killing creativity",
+            "Two trunks (never merge silently)",
+            "Truth trunk",
+            "Creative trunk",
+            "Label at birth",
+            "Promotion requires a root",
+            "Frequency-in-training is never a root",
+            "Creativity stays free",
+            "Root check before commit",
+        ):
+            with self.subTest(requirement=requirement):
+                self.assertIn(requirement, normalized)
+
     def test_project_mind_network_is_the_written_understanding(self) -> None:
         normalized = " ".join(self.smart.split())
         for requirement in (
@@ -613,11 +658,19 @@ class CatalogAndEntryContractTests(unittest.TestCase):
         self.assertIn("bare `/smart`", self.readme)
         self.assertIn("bare `/smart`", self.command)
 
-    def test_marketplace_smart_pin_is_2_5_16(self) -> None:
-        self.assertEqual(self.marketplace["metadata"]["version"], "2.5.16")
+    def test_marketplace_smart_pin_is_current(self) -> None:
+        self.assertEqual(self.marketplace["metadata"]["version"], "2.5.17")
         smart = next(p for p in self.marketplace["plugins"] if p["name"] == "smart")
-        self.assertEqual(smart["version"], "2.5.16")
-        self.assertEqual(self.plugin["version"], "2.5.16")
+        self.assertEqual(smart["version"], "2.5.17")
+        self.assertEqual(self.plugin["version"], "2.5.17")
+        pilot = json.loads(
+            text(ROOT / "skills/step-pilot/.claude-plugin/plugin.json")
+        )
+        planner = json.loads(
+            text(ROOT / "skills/project-planner/.claude-plugin/plugin.json")
+        )
+        self.assertEqual(pilot["version"], "1.3.0")
+        self.assertEqual(planner["version"], "1.5.0")
 
 
 if __name__ == "__main__":
