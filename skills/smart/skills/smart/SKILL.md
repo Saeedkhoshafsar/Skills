@@ -269,6 +269,7 @@ Adopt or install a specialist capability only for a live decision:
 | Landscape researcher | new product, “is this already solved?”, build-vs-buy | competitive/similar-project claims → RESEARCH.md + mind |
 | UX researcher/psychology lens | behavior, trust, onboarding, vulnerable users | user journey, friction/risk hypotheses, ethical tests |
 | Design system specialist | full UI system (palette, type, pattern) needed | industry-fit design system via catalog capability |
+| Scroll-world cinematic landing | scroll-driven continuous camera hero / diorama / industry fly-through | `scroll-world` after brand/story beats known; budget + Higgsfield auth before gens |
 | Architect/data/security | irreversible technical/data choices | options, trade-offs, threat/privacy constraints |
 | Business/marketing / SEO | monetization, positioning, acquisition, discoverability | market hypotheses and measurable experiments |
 | Legal/compliance lens | regulated data, IP, contracts, minors, payments | issue checklist and qualified-counsel escalation |
@@ -329,6 +330,8 @@ Core lifecycle defaults:
 | understandable idea, no durable model | `project-planner` + `project-memory` |
 | new product needs landscape before Vision Lock | keep planner+memory; use host `/deep-research` and/or `gh`/web search for similar products — **do not** spend the 3-cap budget on ceremony agents |
 | full UI system (palette/type/pattern) | `ui-ux-pro-max` (+ `frontend-design` only if creative art direction is the live need) |
+| scroll-scrubbed cinematic world landing / diorama hero / continuous camera flight | `scroll-world` (YELLOW; Higgsfield credits + ffmpeg; quarantine+approve; not `remotion-video`) |
+| programmatic React/Remotion video / timeline / subtitles | `remotion-video` |
 | SEO / marketing / positioning | start `product-marketing` then the focused marketing skill for the live decision |
 | approved vision and plan | `project-memory` + `step-pilot` |
 | repeated defect | `debug-detective` |
@@ -611,7 +614,7 @@ project safely. Catalog: Category 0 in `SKILLS_CATALOG.md`.
 | Context ~80%+ / auto-compact pressure | Hard handoff packet → `memory resume-check` → then `/compact` or clean new chat |
 | User asks to compact/clear while work is dirty | Refuse until resume packet is complete; then allow |
 | 429 / free-tier / model failure | Checkpoint; recommend `/model` fallback or lower `/effort`; do not silently burn remaining budget on retries |
-| Plugin installed mid-session, `/smart` missing | Tell user to restart session or use `/reload-skills`; do not invent fake activation |
+| Plugin installed mid-session, `/smart:smart` missing | Tell user to restart session or use `/reload-plugins` / `/reload-skills`; invoke **`/smart:smart` only** — bare `/smart` is not a valid plugin entry; do not invent fake activation |
 | Env/install weirdness | `/doctor` → fix marketplace/plugin path → retest installer |
 | Need multi-source research for a decision | `/deep-research` or catalog research skills → write results into mind/RESEARCH |
 | New product landscape / competitors / similar GitHub projects | Stage 1.5 in `project-planner`: targeted queries + `/deep-research` and/or `gh` repo search → `docs/RESEARCH.md` + promote decision-changing claims into mind; never skip solely to start coding |

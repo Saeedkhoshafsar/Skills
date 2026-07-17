@@ -558,5 +558,67 @@ class ContinuityAndExecutionContractTests(unittest.TestCase):
         self.assertIn('"verdict": "PASS"', security)
 
 
+class CatalogAndEntryContractTests(unittest.TestCase):
+    """External capability catalog + canonical slash entry contracts."""
+
+    @classmethod
+    def setUpClass(cls) -> None:
+        cls.catalog = text(ROOT / "SKILLS_CATALOG.md")
+        cls.readme = text(ROOT / "README.md")
+        cls.claude = text(ROOT / "CLAUDE.md")
+        cls.smart = text(SMART)
+        cls.installer = text(
+            ROOT / "skills/smart/skills/smart/scripts/fetch-skill.sh"
+        )
+        cls.command = text(ROOT / "skills/smart/commands/smart.md")
+        cls.marketplace = json.loads(
+            text(ROOT / ".claude-plugin/marketplace.json")
+        )
+        cls.plugin = json.loads(
+            text(ROOT / "skills/smart/.claude-plugin/plugin.json")
+        )
+
+    def test_scroll_world_alias_is_curated(self) -> None:
+        alias = "scroll-world|oso95/scroll-world|main|skills/scroll-world"
+        self.assertIn(alias, self.installer)
+        self.assertIn("scroll-world", self.catalog)
+        self.assertIn("oso95/scroll-world", self.catalog)
+        self.assertIn("Higgsfield", self.catalog)
+        # YELLOW situational + paid-gen caution must be explicit for SMART.
+        self.assertRegex(self.catalog, r"scroll-world[\s\S]{0,400}YELLOW")
+        self.assertIn("scroll-world", self.smart)
+        self.assertIn("remotion-video", self.smart)
+        self.assertIn("scroll-world", self.readme)
+        self.assertIn("scroll-world", self.claude)
+
+    def test_scroll_world_not_confused_with_remotion(self) -> None:
+        self.assertIn("not `remotion-video`", self.catalog)
+        self.assertIn("not `remotion-video`", self.smart)
+
+    def test_canonical_slash_entry_is_namespaced(self) -> None:
+        """Plugin skills are always /plugin:name — bare /smart is not claimed."""
+        self.assertIn("/smart:smart", self.readme)
+        self.assertIn("/smart:smart", self.catalog)
+        self.assertIn("/smart:smart", self.command)
+        self.assertIn("/smart:smart", self.smart)
+        # Must not advertise bare /smart as a working entry point.
+        self.assertNotRegex(
+            self.readme,
+            r"Start SMART with `/smart`(?!:)",
+        )
+        self.assertNotRegex(
+            self.catalog,
+            r"\| `/smart`, `/smart:smart`",
+        )
+        self.assertIn("bare `/smart`", self.readme)
+        self.assertIn("bare `/smart`", self.command)
+
+    def test_marketplace_smart_pin_is_2_5_16(self) -> None:
+        self.assertEqual(self.marketplace["metadata"]["version"], "2.5.16")
+        smart = next(p for p in self.marketplace["plugins"] if p["name"] == "smart")
+        self.assertEqual(smart["version"], "2.5.16")
+        self.assertEqual(self.plugin["version"], "2.5.16")
+
+
 if __name__ == "__main__":
     unittest.main()

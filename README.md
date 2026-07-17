@@ -50,9 +50,9 @@ claude plugin install smart@saeed-skills
 claude plugin marketplace update saeed-skills && claude plugin update smart@saeed-skills
 ```
 
-**Current stable SMART:** `2.5.15` (code on `main`; publish Release `v2.5.15` when shipping)
-— learning-memory MVP + discovery elevation + resume-check field fix for real STATE tables.
-After install or update, confirm the plugin version shows `2.5.15` in `/plugin` manage.
+**Current stable SMART:** `2.5.16` (code on `main`; publish Release `v2.5.16` when shipping)
+— catalogs `scroll-world` (oso95) as a YELLOW cinematic landing capability with full SMART profile.
+After install or update, confirm the plugin version shows `2.5.16` in `/plugin` manage.
 
 > If you previously got `Marketplace file not found at ...\.claude-plugin\marketplace.json`,
 > remove the broken marketplace and re-add it:
@@ -64,10 +64,13 @@ After install or update, confirm the plugin version shows `2.5.15` in `/plugin` 
 
 ### After installing
 
-- **Start SMART with `/smart`** (the plugin ships a `/smart` command; older
-  installs expose it as `/smart:smart` — both activate the same skill). If the
-  command does not appear in autocomplete right after installing, **restart the
-  Claude Code session** — commands and skills are indexed at session start.
+- **Start SMART with `/smart:smart`** (Claude Code **always namespaces** plugin
+  skills/commands as `/<plugin>:<name>` — bare `/smart` is **not** a valid entry
+  point and is not claimed). The plugin ships both `commands/smart.md` and the
+  `skills/smart` skill under the `smart` plugin namespace; invoke `/smart:smart`.
+  If the command does not appear in autocomplete right after installing,
+  **restart the Claude Code session** — commands and skills are indexed at
+  session start.
 - Typing plain `smart` or `اسمارت` in a message also triggers the skill by
   description once the session has loaded the plugin.
 - On an existing project, SMART resumes from `docs/STATE2.md` (preferred) or
@@ -78,8 +81,8 @@ After install or update, confirm the plugin version shows `2.5.15` in `/plugin` 
 
 | Symptom | Cause | Fix |
 |---|---|---|
-| `/smart` not suggested in autocomplete | plugin was installed mid-session | restart the session; then use `/smart` (or `/smart:smart`) |
-| Installed SMART version is older than `2.5.15` | marketplace/plugin pin not refreshed | `claude plugin marketplace update saeed-skills && claude plugin update smart@saeed-skills`, then restart the session |
+| `/smart:smart` not suggested in autocomplete | plugin was installed mid-session, or user typed bare `/smart` (not a real host command) | restart the session; invoke **`/smart:smart`** only — bare `/smart` never resolves for this plugin |
+| Installed SMART version is older than `2.5.16` | marketplace/plugin pin not refreshed | `claude plugin marketplace update saeed-skills && claude plugin update smart@saeed-skills`, then restart the session |
 | `ERROR: bundled capability '<x>' requires Claude Code CLI` | the `claude` binary is not on the Bash subshell's PATH (common in Codespaces/containers) | since `2.5.2` the installer first checks the plugin cache (`~/.claude/plugins/cache`) and recognizes manually/UI-installed companions without the CLI; if truly absent, install the companion once via `/plugin install <x>@saeed-skills` |
 | `fetch-skill.sh --installed` shows nothing despite installed plugins | pre-`2.5.2` versions only listed project-local skills and CLI-visible plugins | update SMART; it now reports `bundled:<name> INSTALLED (plugin cache: …)` |
 
@@ -161,7 +164,7 @@ current task, reuses active capabilities, performs one approved action, verifies
 records only the changed memory. The deeper loop activates only for missing/stale state,
 conflict, material risk, phase change, blocked verification, or a real capability gap.
 
-**Capability triggers (any mode):** the current decision/action can demand a skill **or a Claude Code host command** (`/compact`, `/model`, `/loop`, … — supervised by SMART) regardless of lifecycle phase — PDF/Word/Excel/PowerPoint output → `pdf`/`docx`/`xlsx`/`pptx`, full design system → `ui-ux-pro-max`, web-app testing → `webapp-testing`, building a skill → `skill-creator`, building an MCP server → `mcp-builder`, Claude Code hooks/commands/plugins → the `plugin-dev` suite. Full index in [`SKILLS_CATALOG.md`](SKILLS_CATALOG.md).
+**Capability triggers (any mode):** the current decision/action can demand a skill **or a Claude Code host command** (`/compact`, `/model`, `/loop`, … — supervised by SMART) regardless of lifecycle phase — PDF/Word/Excel/PowerPoint output → `pdf`/`docx`/`xlsx`/`pptx`, full design system → `ui-ux-pro-max`, scroll-scrubbed cinematic world landing / diorama hero → `scroll-world`, programmatic Remotion video → `remotion-video`, web-app testing → `webapp-testing`, building a skill → `skill-creator`, building an MCP server → `mcp-builder`, Claude Code hooks/commands/plugins → the `plugin-dev` suite. Full index in [`SKILLS_CATALOG.md`](SKILLS_CATALOG.md).
 
 ## Skill Sources (what fetch-skill.sh pulls from)
 
@@ -177,7 +180,7 @@ conflict, material risk, phase change, blocked verification, or a real capabilit
 
 Priority: first source that has the skill wins — duplicates (skill-creator vs skill-builder, TDD variants, …) are resolved in the catalog's duplicate-resolution table.
 
-Two root-folder skills are also available: `stop-slop` for prose quality and `remotion-video` for programmatic React videos. `NeoLabHQ/context-engineering-kit` stays a native plugin marketplace so its agents, commands, hooks, and skills are preserved, but SMART handles marketplace setup and selective plugin installation automatically through `fetch-skill.sh`. For example, `fetch-skill.sh spec-driven-development` resolves to CEK's `sdd` plugin.
+Root-folder / aliased external skills are also available: `stop-slop` for prose quality, `remotion-video` for programmatic React videos, and `scroll-world` for immersive scroll-scrubbed "fly through the world" landings (Higgsfield + frame-locked camera chain; third-party — quarantine + approve; paid generation credits). `NeoLabHQ/context-engineering-kit` stays a native plugin marketplace so its agents, commands, hooks, and skills are preserved, but SMART handles marketplace setup and selective plugin installation automatically through `fetch-skill.sh`. For example, `fetch-skill.sh spec-driven-development` resolves to CEK's `sdd` plugin.
 
 Details and tiers for all skills → [`SKILLS_CATALOG.md`](SKILLS_CATALOG.md)
 

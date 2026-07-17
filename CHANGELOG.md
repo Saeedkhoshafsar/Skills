@@ -5,6 +5,42 @@ Versioning: bump plugin versions in `.claude-plugin/marketplace.json` and each
 plugin's `plugin.json` — `claude plugin update` only detects updates through a
 version bump in `marketplace.json`.
 
+## [2.5.16] - 2026-07-17
+
+Catalog + installer: `scroll-world` (oso95) as a SMART-managed YELLOW capability;
+slash-entry honesty: only **`/smart:smart`** is the canonical invoke path.
+
+### Added
+- `fetch-skill.sh` alias: `scroll-world|oso95/scroll-world|main|skills/scroll-world`
+  (nested path; not a root-folder skill).
+- Full SMART profile in `SKILLS_CATALOG.md` Category 8: when/not-when, prerequisites
+  (Higgsfield CLI + ffmpeg + optional Codex stills), cost model (≈N stills + 2N−1
+  videos; mobile ≈2×), seam/frame-lock quality rule, architecture A vs B, install
+  quarantine path, complements vs `ui-ux-pro-max` / `remotion-video`.
+- Duplicate-resolution row: scroll-scrubbed cinematic world landing → `scroll-world`
+  (not Remotion, not hand-rolled WebGL).
+- Capability-need quick index + Additional External Sources row for `oso95/scroll-world`.
+- SMART lifecycle defaults + design lens for scroll-world / Remotion triggers.
+- README / CLAUDE.md source list and hard-rule trigger wording.
+- Contract tests: scroll-world alias + catalog profile; canonical `/smart:smart` entry;
+  marketplace pin `2.5.16`.
+
+### Fixed
+- Docs no longer claim bare `/smart` works. Claude Code **always namespaces** plugin
+  skills/commands as `/<plugin>:<name>`, so the real entry is **`/smart:smart`**.
+  README, catalog Category 0, `commands/smart.md`, and SMART host playbook updated;
+  bare `/smart` is explicitly documented as non-resolving.
+
+### Changed
+- SMART `2.5.16`; marketplace metadata `2.5.16`.
+
+### Notes
+- Third-party MIT skill; install remains fail-closed (quarantine → review → approve).
+- Paid generation: SMART must surface budget estimate and get go-ahead before gens.
+- Does not replace design systems or programmatic video timelines.
+- Historical CHANGELOG entries that said `/smart` remain as ship history; current
+  user-facing docs use `/smart:smart` only.
+
 ## [2.5.15] - 2026-07-17
 
 Field-validated host-supervision fix: `memory resume-check` must not confuse a later bash fence with the Resume packet.

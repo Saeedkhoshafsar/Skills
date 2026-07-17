@@ -47,6 +47,7 @@ ALIASES=(
   "build-mcpb|Saeedkhoshafsar/claude-plugins-official|main|plugins/mcp-server-dev/skills/build-mcpb"
   "stop-slop|hardikpandya/stop-slop|main|."
   "remotion-video|wshuyi/remotion-video-skill|main|."
+  "scroll-world|oso95/scroll-world|main|skills/scroll-world"
 )
 
 BLACKLIST_PREFIXES=("v3-" "flow-nexus-")
