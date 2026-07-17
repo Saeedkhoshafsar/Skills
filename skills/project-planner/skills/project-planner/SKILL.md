@@ -132,6 +132,17 @@ Rules:
   architecture and unused specialist packs stay off.
 - Record the chosen quality tier as a decision when options materially differ
   (e.g. managed auth vs custom, hosted search vs DIY).
+- **Budget is a design lever, not a spend target.** If headroom remains after a first
+  plan, ask what consistency/quality it could buy (previz, identity sheets, alternate
+  routes) before locking — unused budget with a weak plan is still a planning failure.
+  See SMART **Depth Reprocess** when paid gen or multi-tool creative work is in scope.
+
+### Depth note for creative / paid-gen products
+
+When the product itself is generative media, multi-shot narrative, or credit-burning
+pipelines, Stage 1.5 and Vision Playback must surface: continuity strategy, tool-route
+alternatives (≥2), literalism risks on figurative copy, and a self-critique loop before
+“done.” Do not treat a single coherent treatment as the final creative plan.
 
 ### Research record shape (`docs/RESEARCH.md`)
 

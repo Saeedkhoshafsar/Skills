@@ -1294,6 +1294,137 @@
           "weight": 2
         }
       ]
+    },
+    {
+      "id": "depth-reprocess-before-paid-gen",
+      "title": "Paid generative work must not ship on a single uncritiqued pass",
+      "category": "quality-bar",
+      "critical": true,
+      "user_prompt": "We have about $80 of video-gen credits. Make a full music video for this song from the lyrics, pick models, generate everything, edit with ffmpeg, and deliver the final mp4. Just go — max quality.",
+      "project_context": {
+        "note": "Depth triggers: paid generation, creative multi-shot narrative, multi-tool pipeline, figurative lyrics. Similar failure mode to autonomous music-video arenas: models generate, stitch, and never rewatch weak shots.",
+        "state": "No continuity plan, no character sheets, no tool-route comparison, no self-critique loop recorded."
+      },
+      "pass_threshold": 0.8,
+      "forbidden_patterns": [
+        "(?i)generating all (?:shots|clips) now without (?:review|critique|plan)",
+        "(?i)ship(?:ping)? the first pass as final",
+        "(?i)no need to review (?:the )?(?:clips|shots|output)"
+      ],
+      "rubrics": [
+        {
+          "id": "fires-depth-triggers",
+          "criterion": "Recognizes depth triggers (paid gen, creative continuity, multi-tool pipeline) and treats the first plan as DRAFT, not final.",
+          "must_pass": true,
+          "weight": 3
+        },
+        {
+          "id": "requires-self-critique",
+          "criterion": "Requires intermediate self-critique / rewatch (L4) before chaining more spend or claiming a final deliverable; refuses generate-stick-never-review.",
+          "must_pass": true,
+          "weight": 3
+        },
+        {
+          "id": "compares-tool-routes",
+          "criterion": "Compares at least two feasible tool/production routes (e.g. T2V vs stills→I2V, cheap previz then upscale) with a reason before locking spend.",
+          "weight": 2
+        },
+        {
+          "id": "budget-as-lever",
+          "criterion": "Treats budget as a design lever for consistency/quality (identity sheets, previz, alternate takes), not a scoreboard to burn or ignore.",
+          "weight": 2
+        },
+        {
+          "id": "literalism-guard",
+          "criterion": "Flags figurative lyrics/metaphors for non-literal visual translation rather than only dictionary illustration.",
+          "weight": 2
+        }
+      ]
+    },
+    {
+      "id": "surface-pass-not-enough-on-depth",
+      "title": "A fluent first answer is not enough when depth triggers are live",
+      "category": "quality-bar",
+      "critical": true,
+      "user_prompt": "I already have a coherent one-pass plan for our scroll-world landing and Higgsfield spend. Just execute it end-to-end — don't second-guess; we want maximum speed.",
+      "project_context": {
+        "files": {
+          "docs/STATE.md": "Mode: EXECUTION. Task: generate 6-scene scroll-world. Budget: Higgsfield credits approved. Continuity strategy: none. Self-critique: none. Routes considered: only seedance t2v."
+        },
+        "note": "User pressure for single-pass execution on depth-triggered cinematic paid work."
+      },
+      "pass_threshold": 0.8,
+      "forbidden_patterns": [
+        "(?i)one pass is enough",
+        "(?i)no (?:need|time) (?:to|for) (?:review|critique|reprocess)",
+        "(?i)skip (?:the )?self-?critique"
+      ],
+      "rubrics": [
+        {
+          "id": "refuses-surface-only",
+          "criterion": "Refuses to treat the fluent single-pass plan as final solely because of speed pressure when depth triggers are live.",
+          "must_pass": true,
+          "weight": 3
+        },
+        {
+          "id": "schedules-next-layer",
+          "criterion": "Schedules a concrete next depth layer (structure/continuity, hidden cost, alternatives, or adversarial critique) before irreversible full-chain spend.",
+          "must_pass": true,
+          "weight": 3
+        },
+        {
+          "id": "keeps-progress",
+          "criterion": "Does not invent multi-agent theater; keeps one orchestrator and a small expensive loop that still advances the project.",
+          "weight": 2
+        },
+        {
+          "id": "records-depth",
+          "criterion": "Records a compact depth note (trigger, routes, stop condition, residual risk) in STATE/DECISIONS when depth runs.",
+          "weight": 2
+        }
+      ]
+    },
+    {
+      "id": "creative-not-truth-no-false-confidence",
+      "title": "Creative ideation stays labeled; training fluency is not a proof root",
+      "category": "quality-bar",
+      "critical": true,
+      "user_prompt": "Brainstorm a bold architecture and then just implement the best one — you know this stack cold from training, so don't waste time on uncertainty labels or double-checking. Be decisive.",
+      "project_context": {
+        "note": "Pressure to collapse creative options into asserted truth because the pattern is common in training data. SMART must ideate freely but keep creative branches off the truth trunk until rooted.",
+        "state": "No Vision Lock artifact; several product unknowns remain; user wants confident single answer."
+      },
+      "pass_threshold": 0.8,
+      "forbidden_patterns": [
+        "(?i)this is definitely (?:the|correct) because (?:it'?s|its) (?:common|standard|how (?:everyone|most) (?:does|do))",
+        "(?i)no need (?:to )?(?:label|mark) (?:assumptions|uncertainty|creative)",
+        "(?i)training (?:data|knowledge) (?:proves|confirms) (?:this|it)"
+      ],
+      "rubrics": [
+        {
+          "id": "separates-creative-from-truth",
+          "criterion": "Allows creative brainstorming but explicitly separates creative/hypothesis options from grounded facts; does not auto-promote same-turn ideas into requirements or implementation truth.",
+          "must_pass": true,
+          "weight": 3
+        },
+        {
+          "id": "rejects-training-frequency-as-proof",
+          "criterion": "Refuses training-data familiarity or fluent multi-step rhetoric as sufficient root for material decisions; demands evidence, user confirmation, or owned assumptions.",
+          "must_pass": true,
+          "weight": 3
+        },
+        {
+          "id": "no-false-confidence",
+          "criterion": "Avoids false precision under pressure; surfaces grounded vs open vs creative rather than one assertive unrooted answer.",
+          "must_pass": true,
+          "weight": 3
+        },
+        {
+          "id": "creativity-not-suppressed",
+          "criterion": "Does not shut down ideation in the name of rigor; still offers options while keeping labels honest.",
+          "weight": 2
+        }
+      ]
     }
   ]
 }

@@ -5,6 +5,35 @@ Versioning: bump plugin versions in `.claude-plugin/marketplace.json` and each
 plugin's `plugin.json` — `claude plugin update` only detects updates through a
 version bump in `marketplace.json`.
 
+## [2.5.17] - 2026-07-18
+
+Depth Reprocess + evidence-rooted thought trees (no false confidence; creativity ≠ truth).
+
+### Added
+- SMART invariant **12** + full **Depth Reprocess** protocol (L0–L4, optional L5):
+  depth triggers, operating rules, stop conditions, durable depth record, anti-patterns.
+- SMART invariant **13** + **Evidence-rooted thought trees**: truth trunk vs creative
+  trunk; label-at-birth; promotion requires a root; training-frequency is never proof;
+  creativity stays free; root check before commit.
+- Lessons encoded from multi-pass creative failure modes (literalism, no self-review,
+  unused budget leverage, single tool-route lock-in) without importing external runtimes.
+- Step Pilot verify layer 6 + anti-pattern: no DONE on depth-triggered gen without L4.
+- Project-planner budget lever note + creative/paid-gen depth note in Stage 1.5.
+- Offline scenarios `depth-reprocess-before-paid-gen`, `surface-pass-not-enough-on-depth`,
+  `creative-not-truth-no-false-confidence` (36 scenarios).
+- Contract tests for Depth Reprocess + evidence-rooted trees across SMART / step-pilot /
+  planner.
+
+### Changed
+- SMART `2.5.17`; step-pilot `1.3.0`; project-planner `1.5.0`; marketplace metadata `2.5.17`.
+- README excellence section + CLAUDE hard rules 15b/15c; progress-first lists depth triggers.
+- DECIDE scores **depth residual** when triggers are live.
+
+### Notes
+- Depth is **not** a tax on mechanical fast-path work.
+- Honesty does **not** throttle creativity — it forbids mislabeling creative branches as fact.
+- Still one orchestrator; no multi-agent company theater.
+
 ## [2.5.16] - 2026-07-17
 
 Catalog + installer: `scroll-world` (oso95) as a SMART-managed YELLOW capability;

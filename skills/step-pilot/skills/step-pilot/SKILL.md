@@ -89,7 +89,11 @@ Run fresh checks in this order where applicable:
 2. regression/integration checks for affected boundaries;
 3. task's exact Verify command;
 4. acceptance check from the user's perspective;
-5. security/privacy/accessibility/performance check when the task risk calls for it.
+5. security/privacy/accessibility/performance check when the task risk calls for it;
+6. **Depth / self-critique** when the task is depth-triggered (paid gen, multi-shot
+   creative, public cinematic, multi-tool pipeline): rewatch/re-read intermediates,
+   kill weak pieces, check continuity and non-literal intent, and only then claim
+   acceptance. Green unit tests do not excuse unreviewed generative artifacts.
 
 A command that was green before the change is not completion evidence unless rerun.
 “Looks good” and model confidence are never verification. Execute the task's final command
@@ -170,5 +174,6 @@ Never:
 - retry the same failing idea without a new diagnostic;
 - edit PLAN to make completed work appear compliant;
 - claim DONE from stale, partial, or subjective evidence;
+- claim DONE on depth-triggered generative work without an L4 self-critique pass;
 - defer security/privacy/operations automatically to the final phase;
 - leave STATE saying something different from git/tests.

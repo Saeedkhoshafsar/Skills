@@ -6,14 +6,14 @@
   },
   "metadata": {
     "description": "SMART skill-manager ecosystem: phase-aware skill orchestration across standalone skill sources (including Anthropic, obra/superpowers, UI/UX, and marketing skills), atomic planning, persistent project memory, step-by-step execution, local code review, systematic debugging, and security auditing, plus bounded learning memory (USER/AGENT-MEMORY) and Vision Lock project intelligence.",
-    "version": "2.5.16"
+    "version": "2.5.17"
   },
   "plugins": [
     {
       "name": "smart",
       "source": "./skills/smart",
       "description": "Project intelligence orchestrator: builds a truthful shared model, enforces Vision Lock before planning/code, preserves Project Mind plus learning memory (USER/AGENT-MEMORY), and installs or creates only the capabilities required for the next best action.",
-      "version": "2.5.16",
+      "version": "2.5.17",
       "author": {
         "name": "Saeedkhoshafsar"
       },
@@ -29,7 +29,7 @@
       "name": "project-planner",
       "source": "./skills/project-planner",
       "description": "Adaptive idea discovery and planning: landscape research, budget\times quality, Project Brief, epistemic/viability review, mandatory Vision Lock, and a risk-ordered atomic execution plan.",
-      "version": "1.4.0",
+      "version": "1.5.0",
       "author": {
         "name": "Saeedkhoshafsar"
       },
@@ -60,7 +60,7 @@
       "name": "step-pilot",
       "source": "./skills/step-pilot",
       "description": "Evidence-gated plan execution: requires confirmed Vision Lock, runs one scoped task through fresh verification and memory consolidation, and enters recovery instead of thrashing.",
-      "version": "1.2.1",
+      "version": "1.3.0",
       "author": {
         "name": "Saeedkhoshafsar"
       },

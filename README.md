@@ -50,9 +50,9 @@ claude plugin install smart@saeed-skills
 claude plugin marketplace update saeed-skills && claude plugin update smart@saeed-skills
 ```
 
-**Current stable SMART:** `2.5.16` (code on `main`; publish Release `v2.5.16` when shipping)
-— catalogs `scroll-world` (oso95) as a YELLOW cinematic landing capability with full SMART profile.
-After install or update, confirm the plugin version shows `2.5.16` in `/plugin` manage.
+**Current stable SMART:** `2.5.17` (code on `main`; publish Release `v2.5.17` when shipping)
+— Depth Reprocess multi-layer protocol + scroll-world catalog + `/smart:smart` honesty.
+After install or update, confirm the plugin version shows `2.5.17` in `/plugin` manage.
 
 > If you previously got `Marketplace file not found at ...\.claude-plugin\marketplace.json`,
 > remove the broken marketplace and re-add it:
@@ -82,7 +82,7 @@ After install or update, confirm the plugin version shows `2.5.16` in `/plugin` 
 | Symptom | Cause | Fix |
 |---|---|---|
 | `/smart:smart` not suggested in autocomplete | plugin was installed mid-session, or user typed bare `/smart` (not a real host command) | restart the session; invoke **`/smart:smart`** only — bare `/smart` never resolves for this plugin |
-| Installed SMART version is older than `2.5.16` | marketplace/plugin pin not refreshed | `claude plugin marketplace update saeed-skills && claude plugin update smart@saeed-skills`, then restart the session |
+| Installed SMART version is older than `2.5.17` | marketplace/plugin pin not refreshed | `claude plugin marketplace update saeed-skills && claude plugin update smart@saeed-skills`, then restart the session |
 | `ERROR: bundled capability '<x>' requires Claude Code CLI` | the `claude` binary is not on the Bash subshell's PATH (common in Codespaces/containers) | since `2.5.2` the installer first checks the plugin cache (`~/.claude/plugins/cache`) and recognizes manually/UI-installed companions without the CLI; if truly absent, install the companion once via `/plugin install <x>@saeed-skills` |
 | `fetch-skill.sh --installed` shows nothing despite installed plugins | pre-`2.5.2` versions only listed project-local skills and CLI-visible plugins | update SMART; it now reports `bundled:<name> INSTALLED (plugin cache: …)` |
 
@@ -156,13 +156,31 @@ gets hardened defaults, and over-engineering a small project counts as a quality
 The bar is enforced through existing gates and expert defaults inside each action, never
 through new mandatory stages or user-visible ceremony.
 
+### Depth Reprocess (multi-layer thinking)
+
+A fluent first pass is a **draft**, not a verdict. When stakes are real — paid generation,
+creative continuity, irreversible choices, multi-tool pipelines, figurative briefs, public
+cinematics — SMART reprocesses L0→L4 (surface → structure → hidden cost → alternatives →
+adversarial self-critique) with stop conditions, instead of “try hard once and ship.”
+Budget is a design lever (consistency sheets, previz, alternate routes), not a scoreboard.
+Mechanical green-path work stays on the fast path; depth is not a tax on every keystroke.
+
+### Evidence-rooted thought trees (creativity ≠ truth)
+
+SMART must not follow a fluent “logic tree” with no proof root. Training-data familiarity
+is not evidence. Creative ideation is encouraged and stays on a **creative trunk**
+(`CREATIVE` / `HYPOTHESIS` / `OPTION`); only evidence, user confirmation, experiment, or
+an owned time-boxed assumption promotes a branch into the **truth trunk**. Rigor is
+labeling + roots — not killing imagination.
+
 ### Progress-first fast path
 
 For a healthy project with current STATE, confirmed gates, and an approved task, SMART does
 not rerun the full discovery/orchestration ceremony. It reads the compact resume packet and
 current task, reuses active capabilities, performs one approved action, verifies it, and
 records only the changed memory. The deeper loop activates only for missing/stale state,
-conflict, material risk, phase change, blocked verification, or a real capability gap.
+conflict, material risk, phase change, blocked verification, a real capability gap, or a
+**depth trigger** (paid gen / creative continuity / irreversible choice).
 
 **Capability triggers (any mode):** the current decision/action can demand a skill **or a Claude Code host command** (`/compact`, `/model`, `/loop`, … — supervised by SMART) regardless of lifecycle phase — PDF/Word/Excel/PowerPoint output → `pdf`/`docx`/`xlsx`/`pptx`, full design system → `ui-ux-pro-max`, scroll-scrubbed cinematic world landing / diorama hero → `scroll-world`, programmatic Remotion video → `remotion-video`, web-app testing → `webapp-testing`, building a skill → `skill-creator`, building an MCP server → `mcp-builder`, Claude Code hooks/commands/plugins → the `plugin-dev` suite. Full index in [`SKILLS_CATALOG.md`](SKILLS_CATALOG.md).
 
