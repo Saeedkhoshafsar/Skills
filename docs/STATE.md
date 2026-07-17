@@ -10,11 +10,11 @@
 |---|---|
 | SMART mode / lifecycle phase | MAINTENANCE / 5 |
 | Current objective | Keep SMART lean: field-validate host supervision; ship only proven gaps. |
-| Active task | M-HOST-1 — resume-check false-fence fix ready to ship as **2.5.15**. |
-| Exact progress | Field-validated host supervision: real STATE table packet + later bash fence was mis-parsed → RED. Extractor fixed; regression test green; suite **219 OK**; pin bumped to **2.5.15**. Awaiting PR/merge + GitHub Release. |
-| Last evidence | 2026-07-17: `memory resume-check` → MEMORY GATE: RESUME READY; 4 resume-check unit tests OK; full unittest **219 OK**; scenarios **33 valid**. |
-| Blocker / waiting on | None for code. Ship path: PR → merge → Release `v2.5.15` → consumer pin update. |
-| Next | Open PR / merge to main, publish Release `v2.5.15`, confirm marketplace pin. |
+| Active task | M-HOST-1 — resume-check false-fence fix on branch `fix/resume-check-table-packet-2.5.15` (`ea5b466`). |
+| Exact progress | Field-validated host supervision: real STATE table packet + later bash fence was mis-parsed → RED. Extractor fixed; regression green; suite **219 OK**; pin **2.5.15**; branch pushed to origin. PR create deferred pending explicit owner confirm. |
+| Last evidence | 2026-07-17: `memory resume-check` READY; unittest **219 OK**; scenarios **33 valid**; commit `ea5b466` on origin branch. |
+| Blocker / waiting on | Explicit owner approval to open PR / merge / publish Release `v2.5.15` (branch already pushed). |
+| Next | Confirm PR open for `fix/resume-check-table-packet-2.5.15` → merge → Release `v2.5.15` → consumer pin. |
 | Vision Lock | CONFIRMED by repository owner on 2026-07-11 (reaffirmed and extended twice): SMART must be the complete project control brain for professional development teams first, capture the user's intended product inch by inch in an atomic Project Mind network before any planning/code, never accept "start and figure it out later", deliver expert-grade quality by default, and remain lean enough that orchestration never stalls or slows project progress. |
 | Machine gates | Vision: owner-confirmed product direction; Verify: local deterministic suite GREEN; Release: prepare `v2.5.15` after merge. |
 | Branch / head | local main worktree @ SMART `2.5.15` patch (pre-merge). |
