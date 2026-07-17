@@ -9,18 +9,19 @@
 | Field | Current value |
 |---|---|
 | SMART mode / lifecycle phase | MAINTENANCE / 5 |
-| Current objective | Elevate discovery with landscape research + budget×quality without becoming MetaGPT; keep lean SMART control brain. |
-| Active task | Discovery elevation **2.5.14** (Stage 1.5 landscape + budget gates + scenarios + contracts). |
-| Exact progress | Hermes memory MVP shipped at 2.5.13. Discovery elevation: Stage 1.5, budget×quality, specialist routing, 2 scenarios, contract test. Pins SMART 2.5.14 / planner 1.4.0. |
-| Last evidence | 2026-07-17: unittest **218 OK** / scenarios **33 valid**; versions SMART 2.5.14 / planner 1.4.0. |
-| Blocker / waiting on | None. |
+| Current objective | Keep SMART lean: field-validate host supervision; ship only proven gaps. |
+| Active task | None — discovery elevation **2.5.14** SHIPPED (PR #23 + Release `v2.5.14`). |
+| Exact progress | Hermes memory MVP at 2.5.13; discovery elevation (Stage 1.5 landscape + budget×quality + specialist routing) merged and released as **2.5.14**. |
+| Last evidence | 2026-07-17: PR #23 MERGED (`22b6642`) validate GREEN; unittest **218 OK** / scenarios **33 valid**; Release `v2.5.14`. |
+| Blocker / waiting on | None. Consumer install: marketplace update → plugin update → confirm pin **2.5.14**. |
 | Vision Lock | CONFIRMED by repository owner on 2026-07-11 (reaffirmed and extended twice): SMART must be the complete project control brain for professional development teams first, capture the user's intended product inch by inch in an atomic Project Mind network before any planning/code, never accept "start and figure it out later", deliver expert-grade quality by default, and remain lean enough that orchestration never stalls or slows project progress. |
-| Machine gates | Vision: owner-confirmed product direction; Verify: local deterministic suite; Release: `v2.5.13` Latest published; next pin `2.5.14`. |
-| Branch / head | `main` working tree SMART `2.5.14` discovery elevation. |
+| Machine gates | Vision: owner-confirmed product direction; Verify: local deterministic suite; Release: `v2.5.14` Latest published. |
+| Branch / head | `main` @ SMART `2.5.14` shipped. |
 | Mind coverage | Applied to this repo implicitly via STATE/BRIEF equivalents; the formal PROJECT-MIND protocol targets user projects. |
 
 ## Epistemic delta
 ### Newly confirmed
+- PR #23 merged to `main` (`22b6642`) with validate GREEN — discovery elevation SMART 2.5.14 / project-planner 1.4.0 — source: GitHub PR state, 2026-07-17.
 - PR #22 merged to `main` (`8b11a8e`) with validate GREEN — Hermes learning-memory MVP SMART 2.5.13 / project-memory 1.11.0 — source: GitHub PR state, 2026-07-17.
 - PR #21 merged to `main` (`6befc8a`) with required checks GREEN — source: GitHub PR state, 2026-07-16.
 - Owner granted full delivery authority for a stable final Skills project on GitHub including public releases and install polish — source: explicit owner directive, 2026-07-16.
@@ -69,10 +70,12 @@
 | CORE-005 | Workflow updates may be rejected when the GitHub credential lacks `workflows` permission. | Prior push rejection and owner instruction. | Repeated retries can block unrelated product progress. | Stage exact workflow files under `ci/` and report the manual replacement after the PR. | MITIGATED |
 | SHIP-001 | GitHub Releases lagged code on main. | Release list audit 2026-07-16. | Marketplace consumers could stay on older pins. | Publish `v2.5.2`–`v2.5.4` and document the two-step update path. | RESOLVED |
 | SHIP-002 | Learning-memory code (2.5.6–2.5.13) lagged releases after v2.5.5. | Main audit 2026-07-17 pre-ship. | Install pin could stay on host-command-only build. | PR #22 + Release `v2.5.13` Latest. | RESOLVED |
+| SHIP-003 | Discovery elevation (2.5.14) code on main before GitHub Release. | PR #23 merge audit 2026-07-17. | Marketplace pin could lag Stage 1.5 landscape/budget gates. | Release `v2.5.14` Latest + STATE ship. | RESOLVED |
 
 ## Meaningful change ledger (newest first)
 | Date / commit | What changed | Why | Evidence | Records affected |
 |---|---|---|---|---|
+| 2026-07-17 / 2.5.14 ship | PR #23 merge + Release v2.5.14 | Pin Claude Code install to discovery elevation | 218 tests / 33 scenarios; `22b6642` | RELEASE notes, STATE, marketplace pin. |
 | 2026-07-17 / 2.5.14 discovery elevation | Stage 1.5 landscape research + budget×quality + specialist routing; anti multi-agent company | Real projects need research and budget-fit quality before code without MetaGPT runtime | contract + 2 scenarios (33 total) | smart, project-planner, scenarios, tests, changelog, STATE, README. |
 | 2026-07-17 / 2.5.13 ship | PR #22 merge + description sync + Release v2.5.13 | Make Claude Code install pin match learning-memory MVP | 217 tests / 31 scenarios; merged commit 8b11a8e | marketplace, plugin.json, STATE, README, RELEASE notes. |
 | 2026-07-17 / 2.5.13 Phase 8 | identity_store SOUL/personality/profiles/dashboard/migrate; SMART step 12; CLAUDE #22; README; tests + 2 scenarios. | Operator UX + identity without breaking product truth. | unit/CLI/contract tests + scenarios; plan P8 checkboxes | project-memory, SMART, marketplace, tests, scenarios, changelog, HERMES-PORT-PLAN, STATE, CLAUDE, README. |
@@ -87,13 +90,12 @@
 | 2026-07-16 / 2.5.5 | Native Claude Code host-command supervision. | SMART masters slash surface. | contract tests + scenarios | catalog, SMART, CLAUDE, command, tests, scenarios, changelog, STATE. |
 
 ## Runway
-1. **NOW — finish/ship discovery elevation 2.5.14** (landscape Stage 1.5 + budget×quality; not MetaGPT runtime).
-2. **INSTALL after ship:** `claude plugin marketplace update saeed-skills && claude plugin update smart@saeed-skills` → confirm **2.5.14**.
-3. **ALSO — field-validate host supervision** under context pressure.
-4. **LATER — optional DB-schema skill** only if product database design keeps recurring as a real gap.
-5. **LATER — Phase 9 product-surface backlog** only with explicit owner request.
-6. **LATER — full multi-home / cloud memory adapters** on demand.
-7. **LATER — periodic catalog refresh + proven bottlenecks only.**
+1. **INSTALL (consumer):** `claude plugin marketplace update saeed-skills && claude plugin update smart@saeed-skills` → confirm **2.5.14**.
+2. **NEXT — field-validate host supervision** under context pressure.
+3. **LATER — optional DB-schema skill** only if product database design keeps recurring as a real gap.
+4. **LATER — Phase 9 product-surface backlog** only with explicit owner request.
+5. **LATER — full multi-home / cloud memory adapters** on demand.
+6. **LATER — periodic catalog refresh + proven bottlenecks only.**
 
 ## Next-session command packet
 
