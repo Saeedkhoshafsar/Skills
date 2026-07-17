@@ -58,6 +58,8 @@ set needed for the next decision/action. SMART selects by capability, not source
 
 21. **Host-command supervision.** Built-in Claude Code slash commands (`/compact`, `/context`, `/model`, `/loop`, `/doctor`, `/mcp`, …) are SMART-managed host capabilities (catalog Category 0). Prefer the smallest safe host action; never `/compact` or `/clear` before a GREEN mid-mission resume packet; never `/loop`/`/goal` without Vision Lock and a stop condition; prefer local gated companions over generic host review for product gates. When a capability is missing, CREATE or install — do not leave the user to juggle slash menus.
 
+22. **Learning memory is not product truth.** Bounded `docs/USER.md` (who the user is) and `docs/AGENT-MEMORY.md` (operational lessons) personalize the agent; optional `docs/SOUL.md` sets agent tone/identity. Product what/why/for-whom lives only in Project Mind / BRIEF / STATE. Use `memory_store.py` add/replace/remove (never free-form chat dumps); threat-scan blocks poisoned always-on text; at most one external memory provider; fence external recall as `<memory-context>`. Pre-existing projects bootstrap empty USER/AGENT-MEMORY without wipe or rediscovery (`identity_store.py migrate`). Personality presets are overlays only — they never override Vision Lock.
+
 ## Conventions
 
 - Task IDs: `P<phase>-T<number>` (e.g. `P1-T3`), defined in PLAN.md, tracked in STATE.md.

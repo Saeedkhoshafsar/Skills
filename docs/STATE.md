@@ -9,21 +9,21 @@
 | Field | Current value |
 |---|---|
 | SMART mode / lifecycle phase | MAINTENANCE / 5 |
-| Current objective | Make SMART the single brain over installable skills **and** Claude Code host commands. |
-| Active task | M-T4 — native host-command supervision (2.5.5) — DONE. |
-| Exact progress | Category 0 host commands + SMART supervision policy + anti-patterns + rule 21 + 2 scenarios; **86 tests GREEN**, **15 scenarios valid**; SMART `2.5.5`. |
-| Last evidence | `python3 -m unittest discover -s tests -q` → OK (86); scenarios 15 valid. |
-| Blocker / waiting on | none |
+| Current objective | Port Hermes closed learning-memory loop into SMART/project-memory without breaking Project Mind / Vision Lock (see `docs/HERMES-PORT-PLAN.md`). |
+| Active task | SHIP Hermes learning-memory MVP as SMART `2.5.13` / project-memory `1.11.0` (PR + GitHub Release). |
+| Exact progress | Phase 0–8 COMPLETE and audited. Plan open checkboxes classified: only Phase 9 backlog remains (owner-deferred). Local worktree holds full port; GitHub still on `v2.5.5` until this ship. Versions SMART 2.5.13 / project-memory 1.11.0. |
+| Last evidence | 2026-07-17: `python3 -m unittest discover -s tests -v` → **216 OK**; scenario validator → **31 valid**. Plan audit: C-25 marked DONE (hook + extract-durable); testing-strategy boxes checked against real coverage. |
+| Blocker / waiting on | None for ship. Phase 9 deferred by owner (local Claude Code; no always-on gateway). |
 | Vision Lock | CONFIRMED by repository owner on 2026-07-11 (reaffirmed and extended twice): SMART must be the complete project control brain for professional development teams first, capture the user's intended product inch by inch in an atomic Project Mind network before any planning/code, never accept "start and figure it out later", deliver expert-grade quality by default, and remain lean enough that orchestration never stalls or slows project progress. |
-| Machine gates | Vision: owner-confirmed product direction; Verify: full local deterministic test suite GREEN; Release: GitHub Releases published through `v2.5.4`. |
-| Branch / head | `main` SMART `2.5.5` host-command supervision. |
+| Machine gates | Vision: owner-confirmed product direction; Verify: full local deterministic test suite GREEN; Release: target GitHub Release `v2.5.13` (was through `v2.5.5`). |
+| Branch / head | ship branch for SMART `2.5.13` learning-memory MVP. |
 | Mind coverage | Applied to this repo implicitly via STATE/BRIEF equivalents; the formal PROJECT-MIND protocol targets user projects. |
 
 ## Epistemic delta
 ### Newly confirmed
 - PR #21 merged to `main` (`6befc8a`) with required checks GREEN — source: GitHub PR state, 2026-07-16.
 - Owner granted full delivery authority for a stable final Skills project on GitHub including public releases and install polish — source: explicit owner directive, 2026-07-16.
-- Marketplace root `metadata.version` must track the current SMART release pin so catalog consumers see `2.5.4` — source: marketplace audit, 2026-07-16.
+- Marketplace root `metadata.version` must track the current SMART release pin — source: marketplace audit, 2026-07-16.
 - The `/smart` command must prefer `docs/STATE2.md` over `docs/STATE.md` to match the SMART SENSE contract — source: command vs SKILL audit, 2026-07-16.
 
 ### Inferred — confirmation needed
@@ -47,6 +47,13 @@
 | Unified capability installer | Local shell/Python tooling | VERIFIED | SMART needs a bundled companion, standalone skill, or native plugin | Bundled companions use idempotent trusted-marketplace routing; third-party capabilities retain quarantine, review, lock, and update tests. |
 | Machine gates | Local Python tooling | VERIFIED | Vision confirmation, task verification, release readiness | Deterministic gate tests are present. |
 | Offline behavioral contracts | JSON + Python stdlib validator | ACTIVE, FREE | Maintainers edit adversarial scenario definitions | No network, model, secret, endpoint, or paid workflow. |
+| Learning-memory dual stores | project-memory + memory_store.py | VERIFIED | Personalization / operational lessons | Phase 1–2: bounded USER/AGENT-MEMORY, threat scan, write_approval. |
+| Self-learning loop | loop-state + consolidate review | VERIFIED | Interval/event nudges | Phase 3: counters, intervals 10/15, memory/skill review protocols, non-blocking. |
+| Skill self-improve | skill_usage.py + CREATE/patch protocol | VERIFIED | How-to corrections / learn | Phase 4: usage sidecar, view-before-patch, authoring standards, protected set. |
+| Skill library curator | skill_curator.py + lifecycle | VERIFIED | Idle / maintenance hygiene | Phase 5: active/stale/archived/pinned, archive path, never auto-delete, protected. |
+| Episodic session search | session_store.py + FTS5/LIKE | VERIFIED | Historical specifics / pre-compact extract | Phase 6: discovery/scroll/browse, redaction, extract-durable. |
+| External memory providers | memory_provider.py + memory_manager.py | VERIFIED | Optional deep personalization | Phase 7: ABC, one-external, fence, builtin/null/local, catalog. |
+| Identity / dashboard | identity_store.py | VERIFIED | SOUL, personality, migrate, status UX | Phase 8: SOUL scan, presets, light profiles, dashboard, migrate. |
 
 ## Open errors and risks
 | ID | Description | Evidence / location | Impact | Next diagnostic/mitigation | Status |
@@ -55,26 +62,34 @@
 | CORE-002 | Bundled SMART companions were routed through the third-party standalone quarantine path. | PR #12 routes six companions through trusted native-plugin installation with idempotency coverage. | Beginners could encounter unnecessary review/setup mechanics for already trusted first-party plugins. | Keep third-party quarantine separate and retain first-party routing regressions. | RESOLVED |
 | CORE-003 | Third-party quarantine exposed approval commands as installer output. | PR #13 merged the structured handoff, explicit-consent contract, and no-command runtime behavior. | SMART could relay mechanics instead of presenting one plain-language evidence/approval decision. | Preserve fail-closed quarantine and accountable activation regressions. | RESOLVED |
 | CORE-004 | SMART's full ten-stage loop and large report were framed as mandatory on every invocation. | PR #14 merged the progress-first fast path and one-pass Step Pilot at `f455f9a`. | The control layer could consume the session, repeatedly re-orient, and slow or prevent actual project progress. | Fast path is now the default; retain explicit escalation triggers and fast-path regressions. | RESOLVED |
-| CORE-006 | Output quality for novices depended on the user knowing what to ask for. | P3-T7: excellence-by-default contract, anti-patterns, tests, scenario. | The core product promise (expert-grade result from one activation) was not contractually guaranteed. | PR #15 merged; keep quality-bar regressions. | RESOLVED |
-| CORE-007 | SMART's product understanding lived in prose records and conversation; interruption could leave unanswered product questions and let the project drift. | Project Mind protocol + coverage-gated Vision Lock. | Resume-time gaps could send a project down the wrong path. | PR #16 merged; keep mind-coverage regressions. | RESOLVED |
+| CORE-006 | Output quality for novices depended on the user knowing what to ask for. | Excellence-by-default contract. | The core product promise was not contractually guaranteed. | PR #15 merged; keep quality-bar regressions. | RESOLVED |
+| CORE-007 | SMART's product understanding lived in prose records and conversation. | Project Mind protocol + coverage-gated Vision Lock. | Resume-time gaps could send a project down the wrong path. | PR #16 merged; keep mind-coverage regressions. | RESOLVED |
 | CORE-008 | Mid-mission progress and late-session context pressure could vanish without chat history. | M-T2 + M-T3 on main (`2.5.3`/`2.5.4`). | Zero-context resume could rebuild ceremony or lose progress. | Keep mid-mission, budget, archive, and pre-existing bootstrap contracts. | RESOLVED |
-| CORE-005 | Workflow updates may be rejected when the GitHub credential lacks `workflows` permission. | Prior push rejection and owner instruction. | Repeated retries can block unrelated product progress. | Stage exact workflow files under `ci/` and report the manual `ci/<file> -> .github/workflows/<file>` action after the PR. | MITIGATED |
-| SHIP-001 | GitHub Releases lagged code on main (`v2.5.1` only while code was `2.5.4`). | Release list audit 2026-07-16. | Marketplace consumers could stay on older pins and miss install/continuity fixes. | Publish `v2.5.2`–`v2.5.4` and document the two-step update path. | RESOLVED |
+| CORE-005 | Workflow updates may be rejected when the GitHub credential lacks `workflows` permission. | Prior push rejection and owner instruction. | Repeated retries can block unrelated product progress. | Stage exact workflow files under `ci/` and report the manual replacement after the PR. | MITIGATED |
+| SHIP-001 | GitHub Releases lagged code on main. | Release list audit 2026-07-16. | Marketplace consumers could stay on older pins. | Publish `v2.5.2`–`v2.5.4` and document the two-step update path. | RESOLVED |
 
 ## Meaningful change ledger (newest first)
 | Date / commit | What changed | Why | Evidence | Records affected |
 |---|---|---|---|---|
-| 2026-07-16 / 2.5.5 | Native Claude Code host-command supervision: catalog Category 0, SMART playbooks, anti-patterns, 2 scenarios, rule 21. | User wants SMART to master the whole slash surface, not only fetchable skills. | contract tests + 15 scenarios. | catalog, SMART, CLAUDE, command, tests, scenarios, changelog, STATE. |
-| 2026-07-16 / stable ship | Marketplace metadata → `2.5.4`; `/smart` SENSE prefers STATE2; README install pin + 13 scenarios; gitignore installer temp; STATE handoff; GitHub Releases `v2.5.2`–`v2.5.4`. | Final stable delivery: no install/version/docs drift after continuity merges. | 85 tests GREEN; 13 scenarios valid; versions aligned. | marketplace, command, README, gitignore, STATE, releases. |
-| 2026-07-16 / PR #21 | M-T3: context-budget phases 40/60/80, hard archive (~200 lines / STATE2), pre-existing project bootstrap; SMART `2.5.4` / project-memory `1.3.2`. | Late checkpoints, STATE bloat, rediscovery on pre-existing projects. | 85 tests GREEN; 13 scenarios valid; PR merged. | SMART, project-memory, CLAUDE, scenarios, tests, manifests, changelog, prior STATE. |
-| 2026-07-16 / PR #20 | M-T2 mid-mission checkpoint protocol + `memory resume-check`; SMART `2.5.3` / project-memory `1.3.1`. | Context/daily cutovers must not erase mid-mission progress. | 82 tests + PR checks GREEN. | SMART, project-memory, gates, tests, scenarios, manifests, changelog. |
-| 2026-07-13 / PR #19 | Plugin-cache companion detection without CLI; `/smart` command; version `2.5.2`. | Codespaces cold-start friction. | 77 tests GREEN. | fetch-skill.sh, commands, installer tests, README, manifests, changelog. |
-| 2026-07-11 / PR #17 + tag `v2.5.1` | Gate seals, premature Vision Lock block, fail-closed missing evidence; first field-validated release. | Cold-start field test findings. | 72 tests GREEN; release published. | smart-gates.py, SMART, catalog, tests, manifests, changelog. |
+| 2026-07-17 / 2.5.13 Phase 8 | identity_store SOUL/personality/profiles/dashboard/migrate; SMART step 12; CLAUDE #22; README; tests + 2 scenarios. | Operator UX + identity without breaking product truth. | unit/CLI/contract tests + scenarios; plan P8 checkboxes | project-memory, SMART, marketplace, tests, scenarios, changelog, HERMES-PORT-PLAN, STATE, CLAUDE, README. |
+| 2026-07-17 / 2.5.12 Phase 7 | memory_provider ABC + fence; memory_manager one-external; builtin/null/local; config memory.provider; catalog; tests + 2 scenarios. | Pluggable deep personalization without core bloat; CI offline. | unit/CLI/contract tests + scenarios; plan P7 checkboxes | project-memory, SMART, marketplace, tests, scenarios, changelog, HERMES-PORT-PLAN, STATE. |
+| 2026-07-17 / 2.5.11 Phase 6 | session_store.py FTS5/LIKE; discovery/scroll/browse; redaction; extract-durable; prefer always-on first; tests + 2 scenarios. | Unlimited episodic recall without bloating USER/AGENT-MEMORY. | unit/CLI/contract tests + scenarios; plan P6 checkboxes | project-memory, SMART, marketplace, tests, scenarios, changelog, HERMES-PORT-PLAN, STATE. |
+| 2026-07-17 / 2.5.10 Phase 5 | skill_curator.py + lifecycle transitions; archive path; pin; protected; idle gate; consolidate OFF; tests + 2 scenarios. | Agent-created skill library must not rot; never auto-delete. | unit/CLI/contract tests + scenarios; plan P5 checkboxes | project-memory, SMART, marketplace, tests, scenarios, changelog, HERMES-PORT-PLAN, STATE. |
+| 2026-07-17 / 2.5.9 Phase 4 | skill_usage.py + skill-usage.json; patch-on-correction; authoring ≤60; support layout; learn protocol; agent-created threat scan; tests + 2 scenarios. | How-to lessons must land in skills, not only USER.md; protected builtins never deleted. | unit/CLI tests + scenarios; plan P4 checkboxes | project-memory, SMART, marketplace, tests, scenarios, changelog, HERMES-PORT-PLAN, STATE. |
+| 2026-07-17 / 2.5.8 Phase 3 | Self-learning loop: loop-state counters, intervals 10/15, memory/skill review protocols, non-blocking consolidate, tests + 2 scenarios. | Multi-turn personalization without explicit “remember this” every time. | unit/CLI tests + scenarios; plan P3 checkboxes | project-memory, SMART, marketplace, tests, scenarios, changelog, HERMES-PORT-PLAN, STATE. |
+| 2026-07-17 / 2.5.7 Phase 2 | Threat scan + write_approval pending queue. | Poisoned always-on memory and unreviewed auto-saves. | unit/CLI tests + scenarios | project-memory, SMART, marketplace, tests, scenarios, changelog, HERMES-PORT-PLAN, STATE. |
+| 2026-07-17 / 2.5.6 Phase 1 | Dual learning-memory stores USER + AGENT-MEMORY. | Hermes closed-loop personalization separate from Project Mind. | unit/CLI tests + scenarios | project-memory, SMART, marketplace, tests, scenarios, changelog, HERMES-PORT-PLAN, STATE. |
+| 2026-07-17 / Phase 0 lock | Hermes port Phase 0 defaults frozen. | Need frozen contracts before dual-store implementation. | HERMES-PORT-PLAN §4 Phase 0 | HERMES-PORT-PLAN, STATE. |
+| 2026-07-16 / 2.5.5 | Native Claude Code host-command supervision. | SMART masters slash surface. | contract tests + scenarios | catalog, SMART, CLAUDE, command, tests, scenarios, changelog, STATE. |
 
 ## Runway
-1. **NEXT — field-validate host supervision:** under context pressure, confirm SMART checkpoints then recommends `/compact`; refuse premature `/loop`.
-2. **THEN — periodic catalog refresh:** re-verify external skill sources when drift evidence appears.
-3. **LATER — only proven install/usage bottlenecks:** no speculative ceremony; fix only evidence-backed friction.
+1. **NOW — SHIP `v2.5.13`:** commit/push learning-memory port, PR if needed, publish GitHub Release so Claude Code install pin matches code.
+2. **AFTER SHIP — install path only:** consumers run marketplace update + plugin update to `2.5.13`.
+3. **ALSO — field-validate host supervision:** under context pressure, confirm SMART checkpoints then recommends `/compact`; refuse premature `/loop`.
+4. **LATER — Phase 9 product-surface backlog** only with explicit owner request (messaging/cron/kanban/etc.; deferred 2026-07-17).
+5. **LATER — full multi-home profile isolation** if multi-project demand appears.
+6. **LATER — cloud memory adapters** (Honcho/Mem0/…) as optional plugins when demanded.
+7. **LATER — periodic catalog refresh + only proven install/usage bottlenecks.**
 
 ## Next-session command packet
 
@@ -94,3 +109,5 @@ The offline-contract tests also guard against reintroducing network clients, mod
 - Paid model observation and external evaluation workflows — deliberately removed; reconsider only after an explicit future owner decision, never as a user requirement.
 - Multi-model evaluation and semantic scoring — deliberately out of scope.
 - Broad end-to-end simulation framework — deliberately avoided unless a concrete transition cannot be covered by a small deterministic contract.
+- Cloud mind-clone adapters (Honcho, Mem0, …) — catalog only until explicit install demand; local SQLite facts cover offline deep recall.
+- Full multi-profile home isolation — light metadata only until multi-project demand.

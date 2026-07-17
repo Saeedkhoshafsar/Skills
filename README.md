@@ -24,7 +24,7 @@ Skills/
     │           ├── fetch-skill.sh  # unified skill + native-plugin capability installer
     │           └── smart-gates.py  # machine-verifiable Vision, Verify, and Release gates
     ├── project-planner/      # adaptive discovery + Project Mind growth + Vision Lock + atomic PLAN.md
-    ├── project-memory/       # atomic Project Mind network + canonical truth + resume packet + runway
+    ├── project-memory/       # Project Mind + resume packet + learning memory (USER/AGENT-MEMORY/SOUL) + runway
     ├── step-pilot/           # Vision-Lock + evidence-gated step execution and recovery
     ├── code-review/          # local diff review (correctness, tests, plan conformance)
     ├── debug-detective/      # systematic debugging (reproduce -> root cause -> fix -> regression)
@@ -50,8 +50,9 @@ claude plugin install smart@saeed-skills
 claude plugin marketplace update saeed-skills && claude plugin update smart@saeed-skills
 ```
 
-**Current stable SMART:** `2.5.5` (GitHub Release `v2.5.5`). After install or
-update, confirm the plugin version shows `2.5.5` in `/plugin` manage.
+**Current stable SMART:** `2.5.13` (GitHub Release `v2.5.13`) — Hermes learning-memory
+port complete (Phase 0–8). After install or update, confirm the plugin version shows
+`2.5.13` in `/plugin` manage.
 
 > If you previously got `Marketplace file not found at ...\.claude-plugin\marketplace.json`,
 > remove the broken marketplace and re-add it:
@@ -78,7 +79,7 @@ update, confirm the plugin version shows `2.5.5` in `/plugin` manage.
 | Symptom | Cause | Fix |
 |---|---|---|
 | `/smart` not suggested in autocomplete | plugin was installed mid-session | restart the session; then use `/smart` (or `/smart:smart`) |
-| Installed SMART version is older than `2.5.5` | marketplace/plugin pin not refreshed | `claude plugin marketplace update saeed-skills && claude plugin update smart@saeed-skills`, then restart the session |
+| Installed SMART version is older than `2.5.13` | marketplace/plugin pin not refreshed | `claude plugin marketplace update saeed-skills && claude plugin update smart@saeed-skills`, then restart the session |
 | `ERROR: bundled capability '<x>' requires Claude Code CLI` | the `claude` binary is not on the Bash subshell's PATH (common in Codespaces/containers) | since `2.5.2` the installer first checks the plugin cache (`~/.claude/plugins/cache`) and recognizes manually/UI-installed companions without the CLI; if truly absent, install the companion once via `/plugin install <x>@saeed-skills` |
 | `fetch-skill.sh --installed` shows nothing despite installed plugins | pre-`2.5.2` versions only listed project-local skills and CLI-visible plugins | update SMART; it now reports `bundled:<name> INSTALLED (plugin cache: …)` |
 
@@ -118,6 +119,27 @@ no critical unknown or conflict remains, every assumption is owned and time-boxe
 every milestone maps to the node IDs it realizes. The result: an interrupted session
 resumes without a single unanswered product question, and the project can never drift
 into “we'll figure it out as we go.”
+
+### Learning memory (personalization, not product truth)
+
+Separate from Project Mind, each project may keep bounded personalization stores:
+
+| File | Role |
+|---|---|
+| `docs/USER.md` | Who the user is — prefs, style, habits (bounded) |
+| `docs/AGENT-MEMORY.md` | Operational lessons / tool quirks (bounded) |
+| `docs/SOUL.md` | Optional agent tone/identity (threat-scanned) |
+
+Writes use add/replace/remove semantics (never free-form chat dumps). Optional external
+memory providers are pluggable with at most one active; default is offline builtin.
+Pre-existing projects gain empty USER/AGENT-MEMORY without wipe:
+
+```bash
+python3 skills/project-memory/skills/project-memory/scripts/identity_store.py \
+  --project . migrate [--seed-soul]
+python3 skills/project-memory/skills/project-memory/scripts/identity_store.py \
+  --project . dashboard
+```
 
 ### Excellence by default
 
@@ -218,7 +240,7 @@ For projects where migration, backup, or restore is genuinely not applicable, pr
 
 ## Offline behavioral contracts for SMART
 
-SMART ships **15** offline adversarial scenario contracts covering premature implementation, unconfirmed Vision Lock, durable-state resume, mid-mission cutover resume, context-budget hard handoff, pre-existing project no-rebureaucracy, conflicting evidence, speculative capability installation, unsafe skill candidates, incomplete release evidence, stale task verification, excellence-by-default, and figure-it-out-later pressure. They preserve expected behavior as reviewable repository data without introducing a runtime observer.
+SMART ships **31** offline adversarial scenario contracts covering premature implementation, unconfirmed Vision Lock, durable-state resume, mid-mission cutover resume, context-budget hard handoff, pre-existing project no-rebureaucracy, conflicting evidence, speculative capability installation, unsafe skill candidates, incomplete release evidence, stale task verification, excellence-by-default, figure-it-out-later pressure, host-command supervision, and the Hermes learning-memory suite (USER/AGENT-MEMORY routing, threat scan, write approval, skill self-improve, curator, session search, providers, identity/migrate). They preserve expected behavior as reviewable repository data without introducing a runtime observer.
 
 Validation is deterministic, dependency-free, and part of normal CI:
 

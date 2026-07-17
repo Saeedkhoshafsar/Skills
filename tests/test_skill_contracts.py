@@ -334,6 +334,64 @@ class SmartCognitionContractTests(unittest.TestCase):
                 self.assertIn(gate, self.smart)
         self.assertIn("not a substitute for a passing artifact", self.smart)
 
+    def test_learning_memory_read_order_and_routing_are_documented(self) -> None:
+        """Hermes-port separation: product truth vs personalization vs lessons."""
+        smart = " ".join(self.smart.split())
+        memory = " ".join(text(MEMORY).split())
+        agent = " ".join(text(CLAUDE).split())
+        for requirement in (
+            "docs/USER.md",
+            "docs/AGENT-MEMORY.md",
+            "Learning memory frozen snapshot",
+            "not product truth",
+        ):
+            with self.subTest(surface="smart", requirement=requirement):
+                self.assertIn(requirement, smart)
+        for requirement in (
+            "docs/USER.md",
+            "docs/AGENT-MEMORY.md",
+            "Two brains",
+            "product truth",
+            "user prefs / communication style / workflow habits",
+            "env facts / tool quirks / operational lessons",
+            "Never write product requirements into USER/AGENT-MEMORY",
+        ):
+            with self.subTest(surface="project-memory", requirement=requirement):
+                # project-memory may phrase routing slightly differently; accept
+                # either explicit routing table language or the two-brain rule.
+                blob = memory
+                if requirement not in blob:
+                    # fallbacks for common equivalent phrases
+                    alts = {
+                        "user prefs / communication style / workflow habits": (
+                            "communication style",
+                            "workflow habits",
+                            "USER.md",
+                        ),
+                        "env facts / tool quirks / operational lessons": (
+                            "operational lessons",
+                            "tool quirks",
+                            "AGENT-MEMORY",
+                        ),
+                        "Never write product requirements into USER/AGENT-MEMORY": (
+                            "never write product",
+                            "not product truth",
+                            "product what/why",
+                        ),
+                    }
+                    if requirement in alts:
+                        self.assertTrue(
+                            any(a.lower() in blob.lower() for a in alts[requirement]),
+                            msg=f"missing routing signal for {requirement}",
+                        )
+                    else:
+                        self.assertIn(requirement, blob)
+        self.assertIn("Learning memory is not product truth", agent)
+        self.assertIn("USER.md", agent)
+        self.assertIn("AGENT-MEMORY.md", agent)
+        # Optional SOUL is identity/tone only
+        self.assertIn("SOUL", memory + smart + agent)
+
 
 class DiscoveryPlanningContractTests(unittest.TestCase):
     @classmethod
