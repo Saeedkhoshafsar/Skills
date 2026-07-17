@@ -10,18 +10,20 @@
 |---|---|
 | SMART mode / lifecycle phase | MAINTENANCE / 5 |
 | Current objective | Keep SMART lean: field-validate host supervision; ship only proven gaps. |
-| Active task | M-HOST-1 — PR **#24** open for SMART **2.5.15** resume-check field fix. |
-| Exact progress | Field-validated host supervision bug fixed + regression; suite **219 OK**; pin **2.5.15**; PR https://github.com/Saeedkhoshafsar/Skills/pull/24 opened from `fix/resume-check-table-packet-2.5.15` (`663dc4e`). Awaiting CI GREEN → merge → Release. |
-| Last evidence | 2026-07-17: local `memory resume-check` READY; unittest **219 OK**; scenarios **33 valid**; PR #24 created. |
-| Blocker / waiting on | CI on PR #24; then merge + GitHub Release `v2.5.15` + consumer pin (owner can say ship). |
-| Next | When CI green: merge PR #24, publish Release `v2.5.15`, marketplace consumer update. |
+| Active task | None — resume-check field fix **2.5.15** SHIPPED (PR #24 + Release `v2.5.15`). |
+| Exact progress | Host-supervision field bug fixed: table Resume packet + later bash fence no longer false-REDs `memory resume-check`. PR #24 merged (`ae96ee6`); Release `v2.5.15` Latest published. |
+| Last evidence | 2026-07-17: PR #24 MERGED validate GREEN; unittest **219 OK** / scenarios **33 valid**; `memory resume-check` READY; Release https://github.com/Saeedkhoshafsar/Skills/releases/tag/v2.5.15 |
+| Blocker / waiting on | None. Consumer install: marketplace update → plugin update → confirm pin **2.5.15**. |
+| Next | Consumer pin **2.5.15**; continue field-validate host supervision under real context pressure only if a new gap appears. |
 | Vision Lock | CONFIRMED by repository owner on 2026-07-11 (reaffirmed and extended twice): SMART must be the complete project control brain for professional development teams first, capture the user's intended product inch by inch in an atomic Project Mind network before any planning/code, never accept "start and figure it out later", deliver expert-grade quality by default, and remain lean enough that orchestration never stalls or slows project progress. |
-| Machine gates | Vision: owner-confirmed product direction; Verify: local deterministic suite GREEN; Release: prepare `v2.5.15` after merge. |
-| Branch / head | local main worktree @ SMART `2.5.15` patch (pre-merge). |
+| Machine gates | Vision: owner-confirmed product direction; Verify: local deterministic suite; Release: `v2.5.15` Latest published. |
+| Branch / head | `main` @ SMART `2.5.15` shipped (`ae96ee6`). |
 | Mind coverage | Applied to this repo implicitly via STATE/BRIEF equivalents; the formal PROJECT-MIND protocol targets user projects. |
 
 ## Epistemic delta
 ### Newly confirmed
+- PR #24 merged to `main` (`ae96ee6`) with validate GREEN — resume-check table/fence fix SMART 2.5.15 — source: GitHub PR state, 2026-07-17.
+- Release `v2.5.15` published Latest — source: GitHub Releases, 2026-07-17.
 - PR #23 merged to `main` (`22b6642`) with validate GREEN — discovery elevation SMART 2.5.14 / project-planner 1.4.0 — source: GitHub PR state, 2026-07-17.
 - PR #22 merged to `main` (`8b11a8e`) with validate GREEN — Hermes learning-memory MVP SMART 2.5.13 / project-memory 1.11.0 — source: GitHub PR state, 2026-07-17.
 - PR #21 merged to `main` (`6befc8a`) with required checks GREEN — source: GitHub PR state, 2026-07-16.
@@ -72,10 +74,12 @@
 | SHIP-001 | GitHub Releases lagged code on main. | Release list audit 2026-07-16. | Marketplace consumers could stay on older pins. | Publish `v2.5.2`–`v2.5.4` and document the two-step update path. | RESOLVED |
 | SHIP-002 | Learning-memory code (2.5.6–2.5.13) lagged releases after v2.5.5. | Main audit 2026-07-17 pre-ship. | Install pin could stay on host-command-only build. | PR #22 + Release `v2.5.13` Latest. | RESOLVED |
 | SHIP-003 | Discovery elevation (2.5.14) code on main before GitHub Release. | PR #23 merge audit 2026-07-17. | Marketplace pin could lag Stage 1.5 landscape/budget gates. | Release `v2.5.14` Latest + STATE ship. | RESOLVED |
+| SHIP-004 | Resume-check false RED on real table STATE (later bash fence). | Field validation 2026-07-17 pre-2.5.15. | Host supervision / handoff could refuse compact wrongly. | PR #24 + Release `v2.5.15`. | RESOLVED |
 
 ## Meaningful change ledger (newest first)
 | Date / commit | What changed | Why | Evidence | Records affected |
 |---|---|---|---|---|
+| 2026-07-17 / 2.5.15 ship | PR #24 merge + Release v2.5.15 | Pin Claude Code install to resume-check field fix | 219 tests / 33 scenarios; `ae96ee6` | RELEASE notes, STATE, marketplace pin. |
 | 2026-07-17 / 2.5.15 field fix | `extract_resume_packet` section-bound + table support; regression test; pin 2.5.15 | Real STATE failed resume-check via later bash fence (host supervision) | 219 tests / 33 scenarios; resume-check READY | smart-gates, tests, changelog, RELEASE, marketplace, STATE. |
 | 2026-07-17 / 2.5.14 ship | PR #23 merge + Release v2.5.14 | Pin Claude Code install to discovery elevation | 218 tests / 33 scenarios; `22b6642` | RELEASE notes, STATE, marketplace pin. |
 | 2026-07-17 / 2.5.14 discovery elevation | Stage 1.5 landscape research + budget×quality + specialist routing; anti multi-agent company | Real projects need research and budget-fit quality before code without MetaGPT runtime | contract + 2 scenarios (33 total) | smart, project-planner, scenarios, tests, changelog, STATE, README. |
@@ -92,13 +96,12 @@
 | 2026-07-16 / 2.5.5 | Native Claude Code host-command supervision. | SMART masters slash surface. | contract tests + scenarios | catalog, SMART, CLAUDE, command, tests, scenarios, changelog, STATE. |
 
 ## Runway
-1. **SHIP:** merge 2.5.15 + publish Release `v2.5.15` + consumer pin update.
-2. **INSTALL (consumer):** `claude plugin marketplace update saeed-skills && claude plugin update smart@saeed-skills` → confirm **2.5.15**.
-3. **NEXT — continue field-validate host supervision** under real context pressure (compact only after GREEN resume-check).
-4. **LATER — optional DB-schema skill** only if product database design keeps recurring as a real gap.
-5. **LATER — Phase 9 product-surface backlog** only with explicit owner request.
-6. **LATER — full multi-home / cloud memory adapters** on demand.
-7. **LATER — periodic catalog refresh + proven bottlenecks only.**
+1. **INSTALL (consumer):** `claude plugin marketplace update saeed-skills && claude plugin update smart@saeed-skills` → confirm **2.5.15**.
+2. **NEXT — continue field-validate host supervision** under real context pressure only if a new gap appears (compact only after GREEN resume-check).
+3. **LATER — optional DB-schema skill** only if product database design keeps recurring as a real gap.
+4. **LATER — Phase 9 product-surface backlog** only with explicit owner request.
+5. **LATER — full multi-home / cloud memory adapters** on demand.
+6. **LATER — periodic catalog refresh + proven bottlenecks only.**
 
 ## Next-session command packet
 
