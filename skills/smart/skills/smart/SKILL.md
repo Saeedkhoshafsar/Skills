@@ -4,9 +4,10 @@ description: >
   Project intelligence and capability orchestrator: an automation brain for
   professional software teams that is engineered precisely enough to also carry a
   complete novice. Builds a verified, inch-by-inch model of the user's intended
-  product before planning, maintains an atomic Project Mind network and durable
-  memory, detects the current lifecycle mode, asks only key questions, and installs
-  or creates only the capabilities needed for the next best action. Use at project
+  product before planning, maintains an atomic Project Mind network plus durable
+  project and learning memory (USER/AGENT-MEMORY), detects the current lifecycle
+  mode, asks only key questions, and installs or creates only the capabilities
+  needed for the next best action. Use at project
   start, session resume, phase changes, uncertainty, or whenever the user says
   "smart" / "اسمارت".
 allowed-tools: Read, Glob, Grep, Bash

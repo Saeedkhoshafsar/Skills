@@ -9,18 +9,19 @@
 | Field | Current value |
 |---|---|
 | SMART mode / lifecycle phase | MAINTENANCE / 5 |
-| Current objective | Port Hermes closed learning-memory loop into SMART/project-memory without breaking Project Mind / Vision Lock (see `docs/HERMES-PORT-PLAN.md`). |
-| Active task | SHIP Hermes learning-memory MVP as SMART `2.5.13` / project-memory `1.11.0` (PR + GitHub Release). |
-| Exact progress | Phase 0–8 COMPLETE and audited. Plan open checkboxes classified: only Phase 9 backlog remains (owner-deferred). Local worktree holds full port; GitHub still on `v2.5.5` until this ship. Versions SMART 2.5.13 / project-memory 1.11.0. |
-| Last evidence | 2026-07-17: `python3 -m unittest discover -s tests -v` → **216 OK**; scenario validator → **31 valid**. Plan audit: C-25 marked DONE (hook + extract-durable); testing-strategy boxes checked against real coverage. |
-| Blocker / waiting on | None for ship. Phase 9 deferred by owner (local Claude Code; no always-on gateway). |
+| Current objective | Keep SMART 2.5.13 learning-memory MVP stable for Claude Code install; field-validate only. |
+| Active task | PR #22 MERGED (`8b11a8e`). Description sync + GitHub Release `v2.5.13`. |
+| Exact progress | Hermes port Phase 0–8 COMPLETE on `main` (PR #22). Pins: SMART 2.5.13 / project-memory 1.11.0. Phase 9 deferred by owner. |
+| Last evidence | 2026-07-17 post-merge: unittest → **217 OK**; scenarios → **31 valid**; local `main` == `origin/main` @ `8b11a8e` + docs polish. |
+| Blocker / waiting on | None. Publishing Release `v2.5.13` is the last ship step. |
 | Vision Lock | CONFIRMED by repository owner on 2026-07-11 (reaffirmed and extended twice): SMART must be the complete project control brain for professional development teams first, capture the user's intended product inch by inch in an atomic Project Mind network before any planning/code, never accept "start and figure it out later", deliver expert-grade quality by default, and remain lean enough that orchestration never stalls or slows project progress. |
-| Machine gates | Vision: owner-confirmed product direction; Verify: full local deterministic test suite GREEN; Release: target GitHub Release `v2.5.13` (was through `v2.5.5`). |
-| Branch / head | ship branch for SMART `2.5.13` learning-memory MVP. |
+| Machine gates | Vision: owner-confirmed product direction; Verify: full local deterministic test suite GREEN; Release: code on main at 2.5.13; tag target `v2.5.13`. |
+| Branch / head | `main` SMART `2.5.13` learning-memory MVP (merged PR #22). |
 | Mind coverage | Applied to this repo implicitly via STATE/BRIEF equivalents; the formal PROJECT-MIND protocol targets user projects. |
 
 ## Epistemic delta
 ### Newly confirmed
+- PR #22 merged to `main` (`8b11a8e`) with validate GREEN — Hermes learning-memory MVP SMART 2.5.13 / project-memory 1.11.0 — source: GitHub PR state, 2026-07-17.
 - PR #21 merged to `main` (`6befc8a`) with required checks GREEN — source: GitHub PR state, 2026-07-16.
 - Owner granted full delivery authority for a stable final Skills project on GitHub including public releases and install polish — source: explicit owner directive, 2026-07-16.
 - Marketplace root `metadata.version` must track the current SMART release pin — source: marketplace audit, 2026-07-16.
@@ -71,6 +72,7 @@
 ## Meaningful change ledger (newest first)
 | Date / commit | What changed | Why | Evidence | Records affected |
 |---|---|---|---|---|
+| 2026-07-17 / 2.5.13 ship | PR #22 merge + description sync + Release v2.5.13 | Make Claude Code install pin match learning-memory MVP | 217 tests / 31 scenarios; merged commit 8b11a8e | marketplace, plugin.json, STATE, README, RELEASE notes. |
 | 2026-07-17 / 2.5.13 Phase 8 | identity_store SOUL/personality/profiles/dashboard/migrate; SMART step 12; CLAUDE #22; README; tests + 2 scenarios. | Operator UX + identity without breaking product truth. | unit/CLI/contract tests + scenarios; plan P8 checkboxes | project-memory, SMART, marketplace, tests, scenarios, changelog, HERMES-PORT-PLAN, STATE, CLAUDE, README. |
 | 2026-07-17 / 2.5.12 Phase 7 | memory_provider ABC + fence; memory_manager one-external; builtin/null/local; config memory.provider; catalog; tests + 2 scenarios. | Pluggable deep personalization without core bloat; CI offline. | unit/CLI/contract tests + scenarios; plan P7 checkboxes | project-memory, SMART, marketplace, tests, scenarios, changelog, HERMES-PORT-PLAN, STATE. |
 | 2026-07-17 / 2.5.11 Phase 6 | session_store.py FTS5/LIKE; discovery/scroll/browse; redaction; extract-durable; prefer always-on first; tests + 2 scenarios. | Unlimited episodic recall without bloating USER/AGENT-MEMORY. | unit/CLI/contract tests + scenarios; plan P6 checkboxes | project-memory, SMART, marketplace, tests, scenarios, changelog, HERMES-PORT-PLAN, STATE. |
@@ -83,8 +85,8 @@
 | 2026-07-16 / 2.5.5 | Native Claude Code host-command supervision. | SMART masters slash surface. | contract tests + scenarios | catalog, SMART, CLAUDE, command, tests, scenarios, changelog, STATE. |
 
 ## Runway
-1. **NOW — SHIP `v2.5.13`:** commit/push learning-memory port, PR if needed, publish GitHub Release so Claude Code install pin matches code.
-2. **AFTER SHIP — install path only:** consumers run marketplace update + plugin update to `2.5.13`.
+1. **NOW — publish GitHub Release `v2.5.13`** (code already on `main` via PR #22).
+2. **THEN — install only:** `claude plugin marketplace update saeed-skills && claude plugin update smart@saeed-skills` → restart session → confirm **2.5.13**.
 3. **ALSO — field-validate host supervision:** under context pressure, confirm SMART checkpoints then recommends `/compact`; refuse premature `/loop`.
 4. **LATER — Phase 9 product-surface backlog** only with explicit owner request (messaging/cron/kanban/etc.; deferred 2026-07-17).
 5. **LATER — full multi-home profile isolation** if multi-project demand appears.

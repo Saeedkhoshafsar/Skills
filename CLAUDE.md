@@ -27,7 +27,7 @@ set needed for the next decision/action. SMART selects by capability, not source
 |---|---|
 | `smart` | Build truthful project model → orient mode → enforce Vision Lock → select/create ≤3 capabilities → act → consolidate/report. |
 | `project-planner` | Adaptive discovery → grow the Project Mind network + Project Brief → epistemic/viability review → explicit Vision Lock (mind coverage COMPLETE) → risk-ordered atomic `docs/PLAN.md` whose tasks cite mind node IDs. |
-| `project-memory` | Own the atomic `docs/PROJECT-MIND.md` network plus canonical brief/plan/decisions/research and the compact `docs/STATE.md` resume packet, capability inventory, ledger, and runway. |
+| `project-memory` | Own the atomic `docs/PROJECT-MIND.md` network plus canonical brief/plan/decisions/research, compact `docs/STATE.md` resume packet, and bounded learning memory (`USER`/`AGENT-MEMORY`/`SOUL` + session search). |
 | `step-pilot` | Refuse unconfirmed execution; run one approved task through scope, fresh evidence, memory, and recovery gates. |
 | `code-review` | Review the diff (not the repo) on 5 axes → verdict APPROVE / REQUEST CHANGES with severity-sorted findings. |
 | `debug-detective` | Reproduce → isolate → hypothesize → minimal fix → regression proof → record root cause. Never shotgun-debug. |

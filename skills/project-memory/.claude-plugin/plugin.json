@@ -1,6 +1,6 @@
 {
   "name": "project-memory",
-  "description": "Durable project intelligence: resume state, canonical truth records, assumptions, decisions, capability inventory, change ledger, and runway.",
+  "description": "Durable project intelligence: Project Mind + resume state, bounded learning memory (USER/AGENT-MEMORY/SOUL), session search, and brief/plan/decisions/research runway.",
   "version": "1.11.0",
   "author": {
     "name": "Saeedkhoshafsar"
@@ -8,7 +8,9 @@
   "keywords": [
     "memory",
     "state",
-    "resume"
+    "resume",
+    "learning-memory",
+    "project-mind"
   ],
   "license": "MIT"
 }

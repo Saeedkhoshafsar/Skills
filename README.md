@@ -132,7 +132,8 @@ Separate from Project Mind, each project may keep bounded personalization stores
 
 Writes use add/replace/remove semantics (never free-form chat dumps). Optional external
 memory providers are pluggable with at most one active; default is offline builtin.
-Pre-existing projects gain empty USER/AGENT-MEMORY without wipe:
+Episodic session search (local SQLite FTS) keeps unlimited history out of always-on
+memory. Pre-existing projects gain empty USER/AGENT-MEMORY without wipe:
 
 ```bash
 python3 skills/project-memory/skills/project-memory/scripts/identity_store.py \

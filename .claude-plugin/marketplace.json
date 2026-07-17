@@ -5,14 +5,14 @@
     "url": "https://github.com/Saeedkhoshafsar"
   },
   "metadata": {
-    "description": "SMART skill-manager ecosystem: phase-aware skill orchestration across standalone skill sources (including Anthropic, obra/superpowers, UI/UX, and marketing skills), atomic planning, persistent project memory, step-by-step execution, local code review, systematic debugging, and security auditing.",
+    "description": "SMART skill-manager ecosystem: phase-aware skill orchestration across standalone skill sources (including Anthropic, obra/superpowers, UI/UX, and marketing skills), atomic planning, persistent project memory, step-by-step execution, local code review, systematic debugging, and security auditing, plus bounded learning memory (USER/AGENT-MEMORY) and Vision Lock project intelligence.",
     "version": "2.5.13"
   },
   "plugins": [
     {
       "name": "smart",
       "source": "./skills/smart",
-      "description": "Project intelligence orchestrator: builds a truthful shared model, enforces Vision Lock before planning/code, preserves durable memory and runway, and installs or creates only the capabilities required for the next best action.",
+      "description": "Project intelligence orchestrator: builds a truthful shared model, enforces Vision Lock before planning/code, preserves Project Mind plus learning memory (USER/AGENT-MEMORY), and installs or creates only the capabilities required for the next best action.",
       "version": "2.5.13",
       "author": {
         "name": "Saeedkhoshafsar"
@@ -43,7 +43,7 @@
     {
       "name": "project-memory",
       "source": "./skills/project-memory",
-      "description": "Durable project intelligence: compact resume state, Project Mind, and bounded learning memory (USER + AGENT-MEMORY) plus brief/plan/decisions/research runway.",
+      "description": "Durable project intelligence: Project Mind + resume state, bounded learning memory (USER/AGENT-MEMORY/SOUL), session search, providers, and brief/plan/decisions/research runway.",
       "version": "1.11.0",
       "author": {
         "name": "Saeedkhoshafsar"

@@ -6,8 +6,9 @@ description: >
   intended product inch by inch, maintains a compact resume index in docs/STATE.md,
   coordinates the canonical Project Brief, Plan, Decisions, and Research records,
   and owns bounded learning-memory stores (docs/USER.md profile + docs/AGENT-MEMORY.md
-  operational notes) so personalization and lessons persist without bloating product
-  truth. Use at session start and every meaningful work event.
+  operational notes + optional docs/SOUL.md identity), episodic session search, and
+  optional memory providers so personalization and lessons persist without bloating
+  product truth. Use at session start and every meaningful work event.
 allowed-tools: Read, Write, Edit, Bash
 ---
 
