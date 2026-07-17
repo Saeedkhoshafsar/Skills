@@ -7,6 +7,7 @@ import argparse
 import hashlib
 import json
 import os
+import re
 import subprocess
 import sys
 import tempfile
@@ -409,25 +410,46 @@ def state_candidates(root: Path) -> list[Path]:
 
 
 def extract_resume_packet(text: str) -> str:
-    """Return the first fenced resume packet body, else the whole document."""
+    """Return the durable resume packet section for zero-context recovery.
+
+    Canonical form is a fenced block immediately under a Resume packet heading.
+    Markdown tables (and other prose) in that same section are also accepted.
+
+    Never treat a later fenced block from a different section (for example a
+    Next-session command packet) as the resume packet — that false match was a
+    field-validated host-supervision failure on real STATE files.
+    """
     marker = "resume packet"
     lower = text.lower()
     idx = lower.find(marker)
     if idx == -1:
         return text
-    after = text[idx:]
-    fence = after.find("```")
-    if fence == -1:
+
+    # Align to the start of the line that contains the marker (usually a heading).
+    line_start = text.rfind("\n", 0, idx) + 1
+    after = text[line_start:]
+    first_nl = after.find("\n")
+    rest = after[first_nl + 1 :] if first_nl != -1 else ""
+
+    # Bound the section at the next markdown heading so later fences cannot leak in.
+    next_heading = re.search(r"(?m)^#{1,6}\s+\S", rest)
+    section = rest[: next_heading.start()] if next_heading else rest
+    section = section.strip()
+    if not section:
         return after
-    body_start = fence + 3
-    # skip optional language tag / newline after opening fence
-    newline = after.find("\n", fence)
-    if newline != -1 and newline < after.find("```", fence + 3):
-        body_start = newline + 1
-    body_end = after.find("```", body_start)
-    if body_end == -1:
-        return after[body_start:]
-    return after[body_start:body_end]
+
+    # Prefer a fence only when it opens near the start of this section.
+    fence = section.find("```")
+    if fence != -1 and fence < 200:
+        body_start = fence + 3
+        newline = section.find("\n", fence)
+        if newline != -1:
+            body_start = newline + 1
+        body_end = section.find("```", body_start)
+        if body_end == -1:
+            return section[body_start:]
+        return section[body_start:body_end]
+    return section
 
 
 def resume_packet_has(field_aliases: tuple[str, ...], packet: str) -> bool:

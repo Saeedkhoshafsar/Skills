@@ -324,6 +324,42 @@ class SmartGateTests(unittest.TestCase):
         self.assertEqual(result.returncode, 0, result.stderr)
         self.assertIn("docs/STATE2.md", result.stdout)
 
+    def test_memory_resume_check_accepts_table_packet_despite_later_command_fence(
+        self,
+    ) -> None:
+        """Field regression: real STATE uses a table packet + later bash fence.
+
+        The later Next-session command fence must not be mistaken for the
+        resume packet (host supervision / memory-before-amnesia path).
+        """
+        (self.project / "docs/STATE.md").write_text(
+            "# STATE\n\n"
+            "## Resume packet\n"
+            "| Field | Current value |\n"
+            "|---|---|\n"
+            "| SMART mode / lifecycle phase | MAINTENANCE / 5 |\n"
+            "| Current objective | Keep SMART lean |\n"
+            "| Active task | None — last ship complete |\n"
+            "| Exact progress | v2.5.14 shipped |\n"
+            "| Last evidence | unittest 218 OK |\n"
+            "| Blocker / waiting on | None |\n"
+            "| Next | field-validate host supervision |\n"
+            "\n"
+            "## Runway\n"
+            "1. Later work.\n"
+            "\n"
+            "## Next-session command packet\n"
+            "\n"
+            "```bash\n"
+            "cd /tmp/example\n"
+            "python3 -m unittest discover -s tests -v\n"
+            "```\n",
+            encoding="utf-8",
+        )
+        result = self.gate("memory", "resume-check")
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertIn("MEMORY GATE: RESUME READY", result.stdout)
+
 
 if __name__ == "__main__":
     unittest.main()
