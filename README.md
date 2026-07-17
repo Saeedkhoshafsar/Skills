@@ -50,9 +50,9 @@ claude plugin install smart@saeed-skills
 claude plugin marketplace update saeed-skills && claude plugin update smart@saeed-skills
 ```
 
-**Current stable SMART:** `2.5.14` (code on `main`; publish Release `v2.5.14` when shipping)
-— learning-memory MVP + discovery elevation (landscape research + budget×quality).
-After install or update, confirm the plugin version shows `2.5.14` in `/plugin` manage.
+**Current stable SMART:** `2.5.15` (code on `main`; publish Release `v2.5.15` when shipping)
+— learning-memory MVP + discovery elevation + resume-check field fix for real STATE tables.
+After install or update, confirm the plugin version shows `2.5.15` in `/plugin` manage.
 
 > If you previously got `Marketplace file not found at ...\.claude-plugin\marketplace.json`,
 > remove the broken marketplace and re-add it:
@@ -79,7 +79,7 @@ After install or update, confirm the plugin version shows `2.5.14` in `/plugin` 
 | Symptom | Cause | Fix |
 |---|---|---|
 | `/smart` not suggested in autocomplete | plugin was installed mid-session | restart the session; then use `/smart` (or `/smart:smart`) |
-| Installed SMART version is older than `2.5.14` | marketplace/plugin pin not refreshed | `claude plugin marketplace update saeed-skills && claude plugin update smart@saeed-skills`, then restart the session |
+| Installed SMART version is older than `2.5.15` | marketplace/plugin pin not refreshed | `claude plugin marketplace update saeed-skills && claude plugin update smart@saeed-skills`, then restart the session |
 | `ERROR: bundled capability '<x>' requires Claude Code CLI` | the `claude` binary is not on the Bash subshell's PATH (common in Codespaces/containers) | since `2.5.2` the installer first checks the plugin cache (`~/.claude/plugins/cache`) and recognizes manually/UI-installed companions without the CLI; if truly absent, install the companion once via `/plugin install <x>@saeed-skills` |
 | `fetch-skill.sh --installed` shows nothing despite installed plugins | pre-`2.5.2` versions only listed project-local skills and CLI-visible plugins | update SMART; it now reports `bundled:<name> INSTALLED (plugin cache: …)` |
 

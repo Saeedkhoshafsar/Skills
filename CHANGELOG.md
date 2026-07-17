@@ -5,6 +5,22 @@ Versioning: bump plugin versions in `.claude-plugin/marketplace.json` and each
 plugin's `plugin.json` — `claude plugin update` only detects updates through a
 version bump in `marketplace.json`.
 
+## [2.5.15] - 2026-07-17
+
+Field-validated host-supervision fix: `memory resume-check` must not confuse a later bash fence with the Resume packet.
+
+### Fixed
+- `smart-gates.py extract_resume_packet`: bound the packet to the Resume section
+  (heading → next heading). Accept table-form packets; only honor a fenced body
+  when the fence opens near the section start. Prevents false RED when
+  `## Next-session command packet` appears later in real STATE files.
+- Regression test:
+  `test_memory_resume_check_accepts_table_packet_despite_later_command_fence`.
+
+### Changed
+- SMART `2.5.15`; marketplace metadata `2.5.15`.
+- Unittest suite **219 OK** (was 218).
+
 ## [2.5.14] - 2026-07-17
 
 Discovery elevation: landscape research + budget×quality (SMART-shaped, not MetaGPT).

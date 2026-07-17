@@ -1,7 +1,7 @@
 {
   "name": "smart",
   "description": "Project intelligence orchestrator: Vision Lock, Project Mind, durable project + learning memory, and installs or creates only the next required capabilities.",
-  "version": "2.5.14",
+  "version": "2.5.15",
   "author": {
     "name": "Saeedkhoshafsar"
   },
