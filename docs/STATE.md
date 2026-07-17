@@ -9,14 +9,14 @@
 | Field | Current value |
 |---|---|
 | SMART mode / lifecycle phase | MAINTENANCE / 5 |
-| Current objective | Keep SMART 2.5.13 learning-memory MVP stable for Claude Code install; field-validate only. |
-| Active task | SHIPPED. GitHub Release `v2.5.13` published (Latest). Install path only remains for consumers. |
-| Exact progress | Hermes port Phase 0–8 COMPLETE. PR #22 merged; docs polish `7c1b8c8`; Release `v2.5.13` Latest. Pins SMART 2.5.13 / project-memory 1.11.0. |
-| Last evidence | 2026-07-17: unittest **217 OK** / scenarios **31**; PR #22 MERGED; tag+Release `v2.5.13` published as Latest on `7c1b8c8`. |
-| Blocker / waiting on | None. Consumers update marketplace pin to 2.5.13. |
+| Current objective | Elevate discovery with landscape research + budget×quality without becoming MetaGPT; keep lean SMART control brain. |
+| Active task | Discovery elevation **2.5.14** (Stage 1.5 landscape + budget gates + scenarios + contracts). |
+| Exact progress | Hermes memory MVP shipped at 2.5.13. Discovery elevation: Stage 1.5, budget×quality, specialist routing, 2 scenarios, contract test. Pins SMART 2.5.14 / planner 1.4.0. |
+| Last evidence | 2026-07-17: unittest **218 OK** / scenarios **33 valid**; versions SMART 2.5.14 / planner 1.4.0. |
+| Blocker / waiting on | None. |
 | Vision Lock | CONFIRMED by repository owner on 2026-07-11 (reaffirmed and extended twice): SMART must be the complete project control brain for professional development teams first, capture the user's intended product inch by inch in an atomic Project Mind network before any planning/code, never accept "start and figure it out later", deliver expert-grade quality by default, and remain lean enough that orchestration never stalls or slows project progress. |
-| Machine gates | Vision: owner-confirmed product direction; Verify: full local deterministic test suite GREEN; Release: GitHub Releases through `v2.5.13` (Latest). |
-| Branch / head | `main` SMART `2.5.13` learning-memory MVP (merged PR #22). |
+| Machine gates | Vision: owner-confirmed product direction; Verify: local deterministic suite; Release: `v2.5.13` Latest published; next pin `2.5.14`. |
+| Branch / head | `main` working tree SMART `2.5.14` discovery elevation. |
 | Mind coverage | Applied to this repo implicitly via STATE/BRIEF equivalents; the formal PROJECT-MIND protocol targets user projects. |
 
 ## Epistemic delta
@@ -73,6 +73,7 @@
 ## Meaningful change ledger (newest first)
 | Date / commit | What changed | Why | Evidence | Records affected |
 |---|---|---|---|---|
+| 2026-07-17 / 2.5.14 discovery elevation | Stage 1.5 landscape research + budget×quality + specialist routing; anti multi-agent company | Real projects need research and budget-fit quality before code without MetaGPT runtime | contract + 2 scenarios (33 total) | smart, project-planner, scenarios, tests, changelog, STATE, README. |
 | 2026-07-17 / 2.5.13 ship | PR #22 merge + description sync + Release v2.5.13 | Make Claude Code install pin match learning-memory MVP | 217 tests / 31 scenarios; merged commit 8b11a8e | marketplace, plugin.json, STATE, README, RELEASE notes. |
 | 2026-07-17 / 2.5.13 Phase 8 | identity_store SOUL/personality/profiles/dashboard/migrate; SMART step 12; CLAUDE #22; README; tests + 2 scenarios. | Operator UX + identity without breaking product truth. | unit/CLI/contract tests + scenarios; plan P8 checkboxes | project-memory, SMART, marketplace, tests, scenarios, changelog, HERMES-PORT-PLAN, STATE, CLAUDE, README. |
 | 2026-07-17 / 2.5.12 Phase 7 | memory_provider ABC + fence; memory_manager one-external; builtin/null/local; config memory.provider; catalog; tests + 2 scenarios. | Pluggable deep personalization without core bloat; CI offline. | unit/CLI/contract tests + scenarios; plan P7 checkboxes | project-memory, SMART, marketplace, tests, scenarios, changelog, HERMES-PORT-PLAN, STATE. |
@@ -86,13 +87,13 @@
 | 2026-07-16 / 2.5.5 | Native Claude Code host-command supervision. | SMART masters slash surface. | contract tests + scenarios | catalog, SMART, CLAUDE, command, tests, scenarios, changelog, STATE. |
 
 ## Runway
-1. **DONE — Release `v2.5.13` published (Latest).** Consumers install/update SMART only.
-2. **INSTALL:** `claude plugin marketplace update saeed-skills && claude plugin update smart@saeed-skills` → restart session → confirm **2.5.13**.
-3. **ALSO — field-validate host supervision:** under context pressure, confirm SMART checkpoints then recommends `/compact`; refuse premature `/loop`.
-4. **LATER — Phase 9 product-surface backlog** only with explicit owner request (messaging/cron/kanban/etc.; deferred 2026-07-17).
-5. **LATER — full multi-home profile isolation** if multi-project demand appears.
-6. **LATER — cloud memory adapters** (Honcho/Mem0/…) as optional plugins when demanded.
-7. **LATER — periodic catalog refresh + only proven install/usage bottlenecks.**
+1. **NOW — finish/ship discovery elevation 2.5.14** (landscape Stage 1.5 + budget×quality; not MetaGPT runtime).
+2. **INSTALL after ship:** `claude plugin marketplace update saeed-skills && claude plugin update smart@saeed-skills` → confirm **2.5.14**.
+3. **ALSO — field-validate host supervision** under context pressure.
+4. **LATER — optional DB-schema skill** only if product database design keeps recurring as a real gap.
+5. **LATER — Phase 9 product-surface backlog** only with explicit owner request.
+6. **LATER — full multi-home / cloud memory adapters** on demand.
+7. **LATER — periodic catalog refresh + proven bottlenecks only.**
 
 ## Next-session command packet
 

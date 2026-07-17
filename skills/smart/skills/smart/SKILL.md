@@ -266,14 +266,21 @@ Adopt or install a specialist capability only for a live decision:
 |---|---|---|
 | Product strategist | unclear value, audience, MVP, prioritization | hypotheses, alternatives, smallest validation |
 | Domain expert/researcher | domain claims affect correctness | sourced facts, uncertainty, expert-validation need |
+| Landscape researcher | new product, “is this already solved?”, build-vs-buy | competitive/similar-project claims → RESEARCH.md + mind |
 | UX researcher/psychology lens | behavior, trust, onboarding, vulnerable users | user journey, friction/risk hypotheses, ethical tests |
+| Design system specialist | full UI system (palette, type, pattern) needed | industry-fit design system via catalog capability |
 | Architect/data/security | irreversible technical/data choices | options, trade-offs, threat/privacy constraints |
-| Business/marketing | monetization, positioning, acquisition | market hypotheses and measurable experiments |
+| Business/marketing / SEO | monetization, positioning, acquisition, discoverability | market hypotheses and measurable experiments |
 | Legal/compliance lens | regulated data, IP, contracts, minors, payments | issue checklist and qualified-counsel escalation |
 | Delivery/operator | sequencing, budget, support, reliability | dependencies, operations, rollback and ownership |
 
 Never role-play authority beyond evidence. State jurisdiction and professional-review
 unknowns explicitly.
+
+**Not a multi-agent company.** Lenses are temporary decision aids. SMART stays one
+orchestrator, max 3 new capabilities per invocation, progress-first. Do not hire a
+permanent cast of agents, run multi-round company simulations, or import an external
+multi-agent runtime to “feel more professional.”
 
 ### 6. DECIDE — choose the next best action
 
@@ -320,6 +327,9 @@ Core lifecycle defaults:
 |---|---|
 | vague idea | `brainstorming` then `project-planner` |
 | understandable idea, no durable model | `project-planner` + `project-memory` |
+| new product needs landscape before Vision Lock | keep planner+memory; use host `/deep-research` and/or `gh`/web search for similar products — **do not** spend the 3-cap budget on ceremony agents |
+| full UI system (palette/type/pattern) | `ui-ux-pro-max` (+ `frontend-design` only if creative art direction is the live need) |
+| SEO / marketing / positioning | start `product-marketing` then the focused marketing skill for the live decision |
 | approved vision and plan | `project-memory` + `step-pilot` |
 | repeated defect | `debug-detective` |
 | stabilization | `code-review`; add task-specific testing capability |
@@ -604,6 +614,8 @@ project safely. Catalog: Category 0 in `SKILLS_CATALOG.md`.
 | Plugin installed mid-session, `/smart` missing | Tell user to restart session or use `/reload-skills`; do not invent fake activation |
 | Env/install weirdness | `/doctor` → fix marketplace/plugin path → retest installer |
 | Need multi-source research for a decision | `/deep-research` or catalog research skills → write results into mind/RESEARCH |
+| New product landscape / competitors / similar GitHub projects | Stage 1.5 in `project-planner`: targeted queries + `/deep-research` and/or `gh` repo search → `docs/RESEARCH.md` + promote decision-changing claims into mind; never skip solely to start coding |
+| Budget × quality tradeoff (“best for my budget”) | Capture money/time/skill floor in Brief constraints + mind; choose reversible options; excellence-by-default without enterprise bloat |
 | Need long autonomous iteration | Only with Vision Lock + STATE objective + stop/verify condition → `/loop` or `/goal` |
 | Capability gap for this project | CREATE via `skill-creator` after reuse search; register in inventory |
 
@@ -646,7 +658,8 @@ explicitly accepted as time-boxed assumptions:
 - desired user outcome and concrete final experience;
 - core journey and must-have boundary;
 - non-goals and failure conditions;
-- constraints/assets and important stakeholders;
+- constraints/assets and important stakeholders (including budget × quality floor when relevant);
+- landscape / similar-product evidence for new products (or explicit N/A with reason);
 - sensitive data, safety, legal/compliance, and misuse risks;
 - success evidence and MVP learning objective;
 - unresolved decisions, each with owner and validation trigger.
@@ -712,6 +725,10 @@ SMART never:
 
 - begins coding after one vague prompt;
 - adopts “start building and figure the product out later” under any pressure;
+- skips landscape/similar-product research on a new product when build-vs-reuse or
+  differentiation would change scope, then jumps to code or a heavy stack;
+- pretends “best quality” without recording budget/time/skill constraints, or inflates
+  process to look like a multi-agent software company;
 - plans or codes while a material product question has no recorded node, answer, or owned assumption;
 - keeps its understanding of the product in conversation instead of the mind network;
 - waits until mission end to write progress that already changed mode, evidence, or files;

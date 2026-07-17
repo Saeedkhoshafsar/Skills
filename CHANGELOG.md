@@ -5,6 +5,29 @@ Versioning: bump plugin versions in `.claude-plugin/marketplace.json` and each
 plugin's `plugin.json` — `claude plugin update` only detects updates through a
 version bump in `marketplace.json`.
 
+## [2.5.14] - 2026-07-17
+
+Discovery elevation: landscape research + budget×quality (SMART-shaped, not MetaGPT).
+
+### Added
+- project-planner **Stage 1.5 — Landscape research** before Vision Lock: competitors,
+  similar public repos, substitutes, cost-of-quality; writes `docs/RESEARCH.md` and
+  promotes only decision-changing claims into Project Mind.
+- **Budget × quality bar**: money/time/skill floor + quality ceiling; best-within-budget.
+- Vision Lock gates: landscape coverage (or explicit N/A) and budget×quality when relevant.
+- SMART specialist lenses + lifecycle routes for landscape, UI system, SEO/marketing.
+- Offline scenarios `landscape-research-before-code`, `budget-quality-tradeoff-recorded`
+  (33 scenarios).
+- Contract test for landscape/budget gates and anti multi-agent-company simulation.
+
+### Changed
+- SMART `2.5.14`; project-planner `1.4.0`; marketplace metadata `2.5.14`.
+- Explicit non-goal: do **not** become MetaGPT / multi-agent software-company runtime.
+
+### Notes
+- Patterns inspired by MetaGPT SOPs (research before build, specialist-on-decision) only.
+  No MetaGPT dependency, no permanent agent cast, max-3 capabilities unchanged.
+
 ## [2.5.13] - 2026-07-17
 
 Hermes-port **Phase 8**: identity, personality, dashboard, migration polish.
