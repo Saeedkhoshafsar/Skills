@@ -426,6 +426,32 @@ class DiscoveryPlanningContractTests(unittest.TestCase):
         )
         self.assertIn("explicitly confirm Vision Lock", self.planner)
 
+    def test_landscape_research_and_budget_quality_are_gated(self) -> None:
+        """SMART-shaped elevation: research + budget before code; not a multi-agent company."""
+        planner = " ".join(self.planner.split())
+        smart = " ".join(text(SMART).split())
+        for requirement in (
+            "Stage 1.5 — Landscape research",
+            "decision-changing landscape pass",
+            "Budget × quality bar",
+            "docs/RESEARCH.md",
+            "landscape coverage",
+            "not a multi-agent company simulation",
+        ):
+            with self.subTest(surface="planner", requirement=requirement):
+                self.assertIn(requirement, planner)
+        for requirement in (
+            "Landscape researcher",
+            "Budget × quality tradeoff",
+            "skips landscape/similar-product research",
+            "Not a multi-agent company",
+        ):
+            with self.subTest(surface="smart", requirement=requirement):
+                self.assertIn(requirement, smart)
+        # Vision Lock must mention landscape / budget when relevant
+        self.assertIn("landscape / similar-product evidence", smart)
+        self.assertIn("budget × quality floor", smart)
+
     def test_atomic_tasks_include_evidence_and_reversal(self) -> None:
         for field in (
             "**Why now:**",

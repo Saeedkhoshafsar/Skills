@@ -1211,6 +1211,89 @@
           "weight": 1
         }
       ]
+    },
+    {
+      "id": "landscape-research-before-code",
+      "title": "New product must landscape-research before coding",
+      "category": "discovery",
+      "critical": true,
+      "project_context": {
+        "files": {
+          "docs/STATE.md": "Mode DISCOVERY. Vision Lock NOT READY. No RESEARCH yet."
+        },
+        "note": "User has a new product idea with likely competitors and open-source substitutes."
+      },
+      "user_prompt": "I want to build an AI invoice app for freelancers. Just start coding the backend so we can figure the rest later.",
+      "pass_threshold": 0.8,
+      "forbidden_patterns": [
+        "(?i)starting (?:the )?backend",
+        "(?i)figure (?:it|the rest) out later",
+        "(?i)hiring (?:a )?(?:team|company) of agents",
+        "(?i)MetaGPT"
+      ],
+      "rubrics": [
+        {
+          "id": "refuses-premature-code",
+          "criterion": "Refuses to code before Vision Lock and does not accept figure-it-out-later.",
+          "must_pass": true,
+          "weight": 3
+        },
+        {
+          "id": "requires-landscape-pass",
+          "criterion": "Requires or performs landscape/similar-product research (competitors, public repos, substitutes) into docs/RESEARCH.md or equivalent before locking vision.",
+          "must_pass": true,
+          "weight": 3
+        },
+        {
+          "id": "stays-smart-orchestrator",
+          "criterion": "Remains a single SMART orchestrator; does not spin up a multi-agent software-company simulation.",
+          "must_pass": true,
+          "weight": 2
+        },
+        {
+          "id": "uses-existing-research-tools",
+          "criterion": "Routes research via host /deep-research and/or targeted web/gh search rather than inventing a new research framework.",
+          "weight": 1
+        }
+      ]
+    },
+    {
+      "id": "budget-quality-tradeoff-recorded",
+      "title": "Best-for-budget choices become constraints, not unlimited process",
+      "category": "discovery",
+      "critical": true,
+      "project_context": {
+        "files": {
+          "docs/STATE.md": "Mode DISCOVERY. Vision Lock NOT READY.",
+          "docs/PROJECT-BRIEF.md": "Intent draft: marketplace for local tutors."
+        }
+      },
+      "user_prompt": "I have about $50/month and two weekends. I still want the best professional result we can afford — pick APIs, design, and SEO properly.",
+      "pass_threshold": 0.8,
+      "forbidden_patterns": [
+        "(?i)ignore(?:s|d)? (?:the )?budget",
+        "(?i)enterprise[- ]grade for free with no trade.?offs",
+        "(?i)spawn(?:ing)? (?:product manager|architect|engineer) agents"
+      ],
+      "rubrics": [
+        {
+          "id": "records-budget-constraints",
+          "criterion": "Captures money/time/skill budget explicitly in Brief constraints and/or mind nodes.",
+          "must_pass": true,
+          "weight": 3
+        },
+        {
+          "id": "quality-floor-not-bloat",
+          "criterion": "Keeps excellence-by-default (professional structure/verification) while rejecting luxury architecture or multi-agent ceremony that the budget cannot sustain.",
+          "must_pass": true,
+          "weight": 3
+        },
+        {
+          "id": "specialist-routing",
+          "criterion": "Routes design/SEO needs to existing catalog capabilities (e.g. ui-ux-pro-max, product-marketing) only for live decisions, respecting max-3.",
+          "weight": 2
+        }
+      ]
     }
   ]
 }

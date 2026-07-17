@@ -69,6 +69,85 @@ only 1–3 questions with the highest decision impact and uncertainty.
 Use research or a relevant specialist capability when a domain fact cannot be learned
 from the user. Record sourced claims, date, and confidence in `docs/RESEARCH.md`.
 
+## Stage 1.5 — Landscape research (before Vision Lock)
+
+Humans rarely know the full landscape at the start. After the idea is understandable
+(Intent / Problem / People / Outcome are at least `INFERRED`), and **before** Vision
+Lock, run a **decision-changing landscape pass**. This is a SMART protocol, not a
+multi-agent company simulation and not a MetaGPT runtime.
+
+### When it is mandatory
+
+Run Stage 1.5 when **any** of these hold:
+
+- the product is new (no existing competitors already documented in RESEARCH/mind);
+- the user asks for “best quality for my budget”, market fit, or “is this already solved?”;
+- stack/API/vendor choices would be expensive or hard to reverse;
+- a public similar project (GitHub / SaaS / open-source) could replace most of the build.
+
+Skip or keep tiny only for pure internal scripts, one-off personal tools, or when STATE
+already has a fresh landscape section with sources.
+
+### What to research (minimum useful set)
+
+| Lens | Question | Where it lands |
+|---|---|---|
+| Similar products / competitors | Who already solves this? Pros, cons, pricing signal | `docs/RESEARCH.md` + mind `M-INT` / `M-SCP` / Value |
+| Public repos / open source | Is there a maintained project that is “our product already”? | `docs/RESEARCH.md` + decision: reuse / fork / build |
+| Substitutes | What do users do today if we never ship? | Brief Value + mind |
+| Cost of quality | API, infra, compliance, and time cost of “best” options | Constraints + DECISIONS |
+| Differentiation | Why would someone switch to us? | Brief Value; never invent without evidence |
+
+### Method (evidence over ceremony)
+
+1. Form 2–4 search queries from the problem + audience + category (not from a fantasy brand).
+2. Prefer multi-source host research (`/deep-research` when decision-changing) and/or
+   targeted web/`gh` repository search for similar public projects.
+3. Read sources enough to extract **claims with URL + date + confidence**; do not dump
+   raw pages into the mind.
+4. Promote only decision-changing findings into Project Mind nodes (`KNOWN`/`INFERRED`)
+   and leave bulk notes in `docs/RESEARCH.md`.
+5. Stop when further browsing no longer changes scope, build-vs-buy, budget, or success
+   criteria. Landscape research is not infinite market theater.
+
+### Budget × quality bar (same stage)
+
+“Best” means **best within real constraints**, not maximum spend or maximum process.
+
+Capture in Brief **Constraints and assets** and mind `M-QLT-*` / `M-SCP-*`:
+
+| Input | Must become explicit |
+|---|---|
+| Money budget | monthly/one-time cap; paid APIs allowed or not |
+| Time budget | calendar deadline or hours available |
+| Skill budget | what the team can operate after ship |
+| Quality floor | what must never be amateur (security, data loss, core journey) |
+| Quality ceiling | what is overkill for this size (enterprise process on a weekend MVP) |
+
+Rules:
+
+- A free project can still use expensive **your** time/API quota — count that cost.
+- Prefer reversible, cheaper validation before irreversible paid commitments.
+- Excellence-by-default still applies: expert structure and verification stay on; luxury
+  architecture and unused specialist packs stay off.
+- Record the chosen quality tier as a decision when options materially differ
+  (e.g. managed auth vs custom, hosted search vs DIY).
+
+### Research record shape (`docs/RESEARCH.md`)
+
+```markdown
+## <topic> — <date>
+- Claim:
+- Source URL(s):
+- Confidence: HIGH / MEDIUM / LOW
+- Applies to decision:
+- Implication for us:
+- Open verification:
+```
+
+Also keep a short **Landscape snapshot** in the Brief (5–7 bullets max): top alternatives,
+reuse candidates, and the differentiation hypothesis.
+
 ## Stage 2 — Build the Project Brief incrementally
 
 Create or update `docs/PROJECT-BRIEF.md` after reliable facts emerge:
@@ -133,6 +212,10 @@ Before proposing a build, inspect the idea through only the relevant lenses:
 - **Feasibility:** technology, data, integration, team, and operations.
 - **Viability:** value capture, costs, distribution, support, maintenance.
 - **Responsibility:** privacy, security, accessibility, safety, legal/compliance, ethics.
+- **Landscape:** build vs buy/reuse; competitor and open-source displacement risk
+  (Stage 1.5 evidence, not vibes).
+- **Budget-fit quality:** can the intended quality floor be met inside money/time/skill
+  budgets without silent amateur shortcuts?
 
 For each material risk, choose one: avoid, reduce, transfer/escalate, accept explicitly,
 or validate with an experiment. Legal/medical/financial conclusions require qualified
@@ -170,12 +253,21 @@ Vision Lock may be `READY FOR CONFIRMATION` only when:
 - success evidence and the MVP learning objective are explicit;
 - remaining assumptions have a test, owner, and expiry/reversal trigger;
 - the Project Mind coverage sweep is COMPLETE: every relevant domain has nodes or an
-  explicit `not applicable`, and no critical-path node is `UNKNOWN` or `CONFLICT`.
+  explicit `not applicable`, and no critical-path node is `UNKNOWN` or `CONFLICT`;
+- **landscape coverage** for a new product is present or explicitly waived with reason:
+  at least a short competitive/similar-project pass in `docs/RESEARCH.md` (or STATE note
+  “landscape N/A — <reason>”), and build-vs-reuse is not an unexamined `UNKNOWN`;
+- **budget × quality** constraints are visible (money/time/skill floor) when the user
+  cares about “best” outcomes or paid APIs/infra are likely.
 
 Do not create PLAN.md while status is NOT READY or merely ready for confirmation.
 “Let's just start and figure it out as we build” is not an acceptable path past this
 gate under any schedule pressure; the correct response is sharper key questions that
 close the remaining gaps quickly.
+Do not skip landscape research by role-playing a full software company of agents.
+SMART remains one orchestrator that may activate **at most a few** specialist
+capabilities for live decisions — never a permanent multi-role simulation and
+**not a multi-agent company simulation**.
 After explicit confirmation, run SMART's `smart-gates.py vision confirm --brief
 docs/PROJECT-BRIEF.md --confirmed-by <identity>`. PLAN.md creation is blocked until
 `smart-gates.py vision check` passes. Any later Brief edit invalidates the lock and
