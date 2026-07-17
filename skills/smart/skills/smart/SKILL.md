@@ -93,10 +93,14 @@ as they become useful (do not generate empty bureaucracy):
 | `docs/STATE.md` | current mode/task, progress, blockers, errors, runway, latest deltas | every meaningful work event |
 | `docs/DECISIONS.md` | consequential decisions, alternatives, rationale, evidence, reversal trigger | material decision |
 | `docs/RESEARCH.md` | claims, sources, date, confidence, unresolved questions | external/domain research |
+| `docs/USER.md` | bounded **learning memory** user profile (prefs, style, habits); not product truth | durable personalization signal |
+| `docs/AGENT-MEMORY.md` | bounded **learning memory** agent operational notes (env, quirks, lessons) | durable operational lesson |
 
 `docs/STATE.md` is the resume index, not a transcript. It points to the other records.
 Git is the line-by-line change ledger; STATE records why a meaningful change happened.
-Never duplicate large content across files.
+Never duplicate large content across files. Learning memory (`USER.md` / `AGENT-MEMORY.md`)
+is agent-curated via `add`/`replace`/`remove` (see `project-memory`); it is not a chat log
+and must not absorb product requirements that belong in Project Mind.
 
 ### First-invocation bootstrap
 
@@ -152,13 +156,19 @@ Read the minimum evidence needed in this order:
 
 1. Newest durable resume file if it exists: `docs/STATE2.md`, else `docs/STATE.md`,
    else root `STATE.md`. Prefer STATE2 when present (active packet; older STATE may be archive).
-2. `docs/PROJECT-BRIEF.md` / confirmed UI vision notes, then `docs/PLAN.md` (or PLAN6 /
+2. **Learning memory frozen snapshot** (when present): `docs/USER.md` then
+   `docs/AGENT-MEMORY.md`. Capture once into this invocation's context packet
+   (**Frozen snapshot** rule — mid-session writes update disk only; do not re-expand
+   into the prompt mid-turn). Prefer
+   `project-memory` `scripts/memory_store.py render --target user|memory --frozen`.
+   Honor known user prefs from USER without re-asking.
+3. `docs/PROJECT-BRIEF.md` / confirmed UI vision notes, then `docs/PLAN.md` (or PLAN6 /
    surface-track plan), `docs/DECISIONS.md`, and `docs/RESEARCH.md` only where STATE or
    the current request points.
-3. Machine gates under `.smart/evidence/` when present (`vision-lock.json`, verify/release).
-4. Relevant repository manifests, source tree, tests, git status/log, and CI signals —
+4. Machine gates under `.smart/evidence/` when present (`vision-lock.json`, verify/release).
+5. Relevant repository manifests, source tree, tests, git status/log, and CI signals —
    only as needed for the active task.
-5. Installed capabilities:
+6. Installed capabilities:
    `bash "${CLAUDE_PLUGIN_ROOT}/skills/smart/scripts/fetch-skill.sh" --installed`.
 
 If `${CLAUDE_PLUGIN_ROOT}` is unavailable, locate SMART's own directory and use its
@@ -341,12 +351,31 @@ lazy. Follow all gates:
    3-capability limit.
 5. **Contract first:** define triggers, non-triggers, inputs, outputs, tools, safety
    boundaries, failure behavior, examples, and acceptance/evaluation cases.
+   Authoring standards (Hermes-adapted): `name` lowercase-hyphenated ≤64 chars;
+   `description` **one sentence ≤60 characters** ending with `.` (no marketing fluff);
+   body order Title → When to Use → Prerequisites → Procedure → Pitfalls → Verification;
+   support files only under `references/`, `templates/`, `scripts/`.
 6. **Least privilege:** grant only required tools and paths; no hidden network or secret
    access. Project-specific skills stay project-specific unless deliberately promoted.
-7. **Adversarial evaluation:** test normal, ambiguous, missing-input, conflict, and
+7. **Security + structure gate:** run `skill_usage.py check-create` and `scan-content`
+   before activation; blocked threat content must not ship. Never delete protected
+   builtins (`smart`, `project-memory`, `project-planner`, `step-pilot`, `code-review`,
+   `debug-detective`, `security-check`).
+8. **Adversarial evaluation:** test normal, ambiguous, missing-input, conflict, and
    unsafe cases. A skill is not “available” until evaluations pass.
-8. **Register and remember:** add it to the project's capability inventory and record
-   why/when it should be invoked in STATE/DECISIONS.
+9. **Register and remember:** add it to the project's capability inventory, mark
+   agent-created via `skill_usage.py mark-created`, bump usage on view/use/patch, and
+   record why/when it should be invoked in STATE/DECISIONS.
+
+**`/learn`-equivalent:** when the user asks to distill a workflow, or skill review
+recommends create, gather sources → draft a **class-level** skill → pass check-create
++ scan → write layout → mark-created → inventory. Prefer patching an existing umbrella
+over a one-session narrative skill.
+
+**Patch-on-correction (self-improve):** when the user corrects style/workflow for a
+class of task: identify governing skill → `bump --kind view` (read first) → patch
+pitfalls/steps or add a support file → `bump --kind patch`. How-to lessons land in the
+skill, not only `USER.md`. Full protocol: project-memory **Procedural skill self-improvement**.
 
 Do not recursively create a “skill that creates skills”; `skill-creator` is the single
 audited factory. SMART owns gap detection and acceptance.
@@ -424,11 +453,70 @@ Before reporting:
 3. Record decisions and assumption expiry/validation triggers.
 4. Mark stale or superseded facts; never leave contradictions hidden.
 5. Keep a compact “resume packet” in STATE so the next invocation starts focused.
-6. Run `smart-gates.py memory resume-check` when finishing a meaningful invocation or
+6. **Learning memory routing** (when something durable was learned this turn):
+   - user prefs / communication style / workflow habits → `docs/USER.md` (`target=user`)
+   - env facts / tool quirks / operational lessons → `docs/AGENT-MEMORY.md` (`target=memory`)
+   - product what/why/for whom → Project Mind / brief (never USER/AGENT-MEMORY)
+   - use `memory_store.py` `add` / `replace` / `remove` only — no free-form chat dumps;
+     on overflow, consolidate then retry in the same turn (never silent-drop)
+   - threat scan always runs: if a write returns `blocked: true`, do not force-write;
+     inspect `raw_entry` / `threats` and rephrase as a safe durable note or skip
+   - when `write_approval` is on (`.smart/memory/config.json`), writes enqueue under
+     `.smart/memory/pending.json`; surface pending count and use
+     `pending list` / `pending approve` / `pending reject` — never claim saved until applied
+7. **Self-learning loop (nudges + review)** — non-blocking sidecar:
+   - after processing a meaningful user turn, run `memory_store.py loop tick`
+   - if `loop status` shows `memory_due` / `skill_due`, or an event trigger fired
+     (user correction, milestone DONE, new technique), run an **inline review** in
+     the same invocation using the Memory / Skill review protocols in project-memory
+   - after the review pass (even "Nothing to save."), run
+     `loop mark-reviewed --kind memory|skill|both` (`--force` for event triggers)
+   - never stall Task Verify, Vision Lock, release gates, or the active task to finish
+     a review; skip or defer under context-budget ≥60% if the resume packet is at risk
+   - notification: quiet by default; optional one line when something durable saved
+8. **Skill self-improve (when a how-to signal fired):**
+   - route class-level corrections to skill patch/create (not only USER.md)
+   - require prior view before patch (`skill_usage.py bump --kind view` then `patch`)
+   - new skills: authoring standards + `check-create` + `scan-content` + `mark-created`
+   - never delete protected builtins; never one-off narrative skills for single tasks
+9. **Skill library curator (idle hygiene)** — non-blocking:
+   - only agent-created skills; lifecycle `active` / `stale` / `archived` + `pinned`
+   - defaults: stale after 30d, archive after 90d, **never auto-delete**
+   - archive path `.smart/skills-archive/`; protected builtins never archived
+   - when idle / maintenance and `skill_curator.py should-run` is true (or user asks
+     for cleanup), run `skill_curator.py run` (prefer `--dry-run` first on large libs)
+   - optional consolidate (umbrella merge) is **OFF by default**; never spawn it mid-task
+   - never stall Task Verify, Vision Lock, or release for curator work
+10. **Episodic session search** — keep always-on memory bounded:
+   - `session_store.py` under `.smart/sessions/state.db` (discovery / scroll / browse)
+   - **Prefer USER.md / AGENT-MEMORY.md first** for durable prefs and env facts;
+     use session search for specifics (“what did we decide last week about X?”)
+   - log meaningful user/assistant decision notes (redacted); not full tool dumps
+   - at context-budget 60/80 before `/compact` or handoff: `extract-durable` → promote
+     only durable facts via `memory_store` add/replace → then compact
+11. **External memory providers (optional deep personalization)** — non-blocking:
+   - config `.smart/memory/config.json` → `memory.provider` = `builtin` (default) |
+     `null` | `local` | catalog-only names
+   - **at most one external** provider alongside builtin (`memory_manager.py`)
+   - fence external recall as `<memory-context>`; scrub before re-inject or display
+   - lifecycle: initialize → system block → prefetch / queue_prefetch → sync_turn →
+     tools → shutdown (never stalls Task Verify / Vision Lock)
+   - shipped offline: builtin + null + local SQLite facts; Honcho/Mem0/etc. catalog-only
+   - product facts stay in Project Mind; providers never replace Vision Lock / STATE
+12. **Identity / personality / dashboard** — non-blocking polish:
+   - optional `docs/SOUL.md` (tone/identity); threat-scanned; never product truth
+   - load order: SOUL → USER → AGENT-MEMORY (Mind/STATE stay separate)
+   - personality presets (`default|concise|mentor|strict|warm`) are overlays only
+   - multi-profile name recorded lightly; full isolation deferred
+   - `identity_store.py dashboard` for usage %, pending, last review, provider, soul
+   - pre-existing projects: `migrate` creates empty USER/AGENT-MEMORY without wipe
+13. Run `smart-gates.py memory resume-check` when finishing a meaningful invocation or
    preparing a handoff; fix any missing resume field before ending.
 
-Use `project-memory` for the exact file protocol. Memory updates accompany the work
-they describe.
+Use `project-memory` for the exact file protocol (including Learning memory, the
+self-learning loop, skill self-improve, the **Skill library curator**,
+**Episodic session search**, **External memory providers**, and **Identity /
+personality / dashboard**). Memory updates accompany the work they describe.
 
 ### Mid-mission checkpoint protocol
 
@@ -643,6 +731,26 @@ SMART never:
 - treats a specialist persona as verified professional advice;
 - hides uncertainty behind a score or polished roadmap;
 - lets memory become a raw chat log or a second conflicting plan;
+- dumps product requirements into `USER.md` / `AGENT-MEMORY.md` or free-form-appends chat into them;
+- silent-drops learning-memory entries on overflow instead of consolidating;
+- re-asks durable prefs already recorded in the learning memory frozen snapshot;
+- injects threat-scan-blocked content into always-on USER/AGENT-MEMORY snapshots;
+- claims a learning-memory write is saved when it only entered the pending approval queue;
+- stalls Task Verify, Vision Lock, or the active task solely for a self-learning review;
+- captures “tool broken forever” / environment-only failures as durable skill or memory
+  rules without a fix recipe; creates one-off narrative skills for single-session tasks;
+- patches a skill without reading it first, or deletes a protected builtin companion;
+- dumps how-to class lessons only into USER.md when a skill patch/create is the right home;
+- activates agent-created skills that fail `check-create` / threat scan;
+- auto-deletes skills instead of archiving to `.smart/skills-archive/`, or archives a protected builtin;
+- runs curator mid-hot-path or treats consolidate (OFF by default) as mandatory;
+- dumps full tool transcripts into session_store without redaction, or bloating always-on memory with episodic detail;
+- answers historical project questions only from chat luck when session search would find them;
+- registers more than one external memory provider, or enables cloud providers in default CI;
+- injects unfenced external recall as if it were new user input (must use `<memory-context>` + scrub);
+- lets an external provider replace Project Mind, Vision Lock, or STATE as product truth;
+- treats SOUL.md personality as product requirements or as a Vision Lock substitute;
+- overwrites existing USER.md / AGENT-MEMORY.md during migrate/bootstrap;
 - claims DONE without fresh acceptance/verification evidence;
 - asks a novice to make quality decisions (tests, linting, error handling, hardening) instead of applying expert defaults silently;
 - ships novice-grade output because the user did not explicitly request professional quality;

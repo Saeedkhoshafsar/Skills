@@ -5,6 +5,202 @@ Versioning: bump plugin versions in `.claude-plugin/marketplace.json` and each
 plugin's `plugin.json` — `claude plugin update` only detects updates through a
 version bump in `marketplace.json`.
 
+## [2.5.13] - 2026-07-17
+
+Hermes-port **Phase 8**: identity, personality, dashboard, migration polish.
+
+### Added
+- `identity_store.py`: optional `docs/SOUL.md` load/seed/scan/truncate;
+  personality presets; light multi-profile metadata; memory dashboard;
+  non-destructive `migrate` for empty USER/AGENT-MEMORY.
+- SMART CONSOLIDATE step 12 + anti-patterns (SOUL ≠ product truth; no wipe).
+- CLAUDE.md hard rule 22 + README learning-memory section.
+- Offline scenarios `identity-soul-not-product-truth`,
+  `identity-migrate-preserves-existing` (31 scenarios).
+
+### Changed
+- project-memory `1.11.0`; SMART `2.5.13`; marketplace metadata `2.5.13`.
+- project-memory **Identity / personality / dashboard** protocol.
+
+### Notes
+- Phase 8 of `docs/HERMES-PORT-PLAN.md` complete (C-14 DONE; C-13 light/LATER
+  full isolation). Hermes learning-memory port phases 0–8 closed; Phase 9 is
+  product-surface backlog (explicit opt-in only).
+
+## [2.5.12] - 2026-07-17
+
+Hermes-port **Phase 7**: external memory providers / mind-clone interface.
+
+### Added
+- `memory_provider.py`: MemoryProvider ABC; `<memory-context>` fence + scrub;
+  **builtin** (USER/AGENT-MEMORY), **null**, **local** SQLite fact adapter.
+- `memory_manager.py`: one-external limit; prefetch/sync/tools orchestration;
+  `build_manager`; CLI status/catalog/system-prompt/prefetch/tool-call/scrub.
+- Config `memory.provider` = `builtin` (default) | `null` | `local` | catalog.
+- Provider catalog docs (Honcho, Mem0, Supermemory, Hindsight, … optional).
+- SMART CONSOLIDATE step 11 + anti-patterns (one external, fence, no Mind replace).
+- Offline scenarios `memory-provider-builtin-default`,
+  `memory-provider-fence-external-recall` (29 scenarios).
+
+### Changed
+- project-memory `1.10.0`; SMART `2.5.12`; marketplace metadata `2.5.12`.
+- project-memory **External memory providers** protocol + commit checklist.
+
+### Notes
+- Phase 7 of `docs/HERMES-PORT-PLAN.md` complete for MVP (C-18…C-20, C-23, C-24;
+  C-21/C-22 catalog LATER). CI stays offline-green. Phase 8 next: identity/profiles.
+
+## [2.5.11] - 2026-07-17
+
+Hermes-port **Phase 6**: episodic session search (FTS5 / LIKE).
+
+### Added
+- `session_store.py`: per-project `.smart/sessions/state.db` with sessions +
+  messages, FTS5 when available, LIKE fallback.
+- Search shapes: **discovery** / **scroll** / **browse**; automation sources
+  demoted/hidden by default.
+- Privacy: redaction hooks on append (API keys, PEMs, tokens); local-only.
+- `extract-durable` candidates for pre-compact / handoff promotion (C-26 protocol).
+- SMART CONSOLIDATE step 10 + routing: prefer USER/AGENT-MEMORY first.
+- Offline scenarios `session-search-prefer-always-on`,
+  `session-search-historical-decision` (27 scenarios).
+
+### Changed
+- project-memory `1.9.0`; SMART `2.5.11`; marketplace metadata `2.5.11`.
+- project-memory **Episodic session search** protocol + commit checklist.
+
+### Notes
+- Phase 6 of `docs/HERMES-PORT-PLAN.md` complete (C-15, C-16, C-26 protocol).
+  Phase 7 next: external memory providers.
+
+## [2.5.10] - 2026-07-17
+
+Hermes-port **Phase 5**: skill library curator (lifecycle hygiene).
+
+### Added
+- `skill_curator.py`: deterministic active → stale → archived transitions;
+  pin; archive/restore under `.smart/skills-archive/`; curator-state sidecar;
+  idle/interval gate (`should-run` / `run`).
+- Defaults: stale after **30d**, archive after **90d**, **never auto-delete**;
+  consolidate **OFF** by default (Hermes parity).
+- Lifecycle APIs on `skill_usage.py`: `set-state`, `set-pinned`,
+  `list-agent-created`, `can-archive`, activity derivation.
+- Protected builtins never archived (same 7 companions as Phase 4).
+- Offline scenarios `curator-archive-stale-agent-skill`,
+  `curator-protected-never-archived` (25 scenarios).
+
+### Changed
+- project-memory `1.8.0`; SMART `2.5.10`; marketplace metadata `2.5.10`.
+- SMART CONSOLIDATE step 9 + anti-patterns for curator hygiene.
+- project-memory **Skill library curator** protocol (idle-triggered).
+
+### Notes
+- Phase 5 of `docs/HERMES-PORT-PLAN.md` complete (C-39…C-42).
+  Phase 6 next: episodic session search.
+
+## [2.5.9] - 2026-07-17
+
+Hermes-port **Phase 4**: procedural skill self-improvement.
+
+### Added
+- `skill_usage.py`: `.smart/memory/skill-usage.json` sidecar (view/use/patch
+  counters, agent-created provenance, protected builtins).
+- CLI: `status`, `bump`, `mark-created`, `can-delete`, `check-create`,
+  `scan-content`, `check-path`.
+- Patch-on-correction protocol: view-before-patch; support layout
+  `references/` / `templates/` / `scripts/`; authoring standards (description
+  ≤60 chars).
+- `/learn`-equivalent distill path in SMART CREATE + project-memory.
+- Agent-created skill threat scan via shared `scan_threats`.
+- Offline scenarios `skill-self-improve-how-to-preference`,
+  `skill-self-improve-protected-no-delete` (23 scenarios).
+
+### Changed
+- project-memory `1.7.0`; SMART `2.5.9`; marketplace metadata `2.5.9`.
+- SMART CREATE steps include authoring standards, security gate, patch-on-correction.
+- CONSOLIDATE step 8 + anti-patterns for skill self-improve.
+
+### Notes
+- Phase 4 of `docs/HERMES-PORT-PLAN.md` complete (C-35…C-38, C-43, C-45).
+  Phase 5 next: curator (library hygiene).
+
+## [2.5.8] - 2026-07-17
+
+Hermes-port **Phase 3**: self-learning loop — nudges + background/inline review.
+
+### Added
+- `memory_store.py` **loop** sidecar: `.smart/memory/loop-state.json` with
+  `user_turn_count`, `turns_since_memory`, `turns_since_skill`; CLI
+  `loop status|tick|mark-reviewed|reset`.
+- Configurable intervals: `memory_nudge_interval` default **10**,
+  `skill_nudge_interval` default **15** (config top-level or nested `loop.*`;
+  `0` disables).
+- project-memory **Self-learning loop** protocol: Memory / Skill review prompts
+  (adapted Hermes), event + interval triggers, inline vs forked review,
+  notification policy (quiet by default), skill-review anti-patterns.
+- SMART CONSOLIDATE step 7: `loop tick` → due/event review → `mark-reviewed`;
+  never blocks Task Verify / Vision.
+- Offline scenarios `learning-memory-user-correction-nudge`,
+  `learning-memory-empty-session-nothing-to-save` (21 scenarios).
+
+### Changed
+- project-memory `1.6.0`; SMART `2.5.8`; marketplace metadata `2.5.8`.
+- `status` includes `loop` due flags; anti-patterns cover stall-for-review and
+  “tool broken forever” / one-off narrative skills.
+
+### Notes
+- Phase 3 of `docs/HERMES-PORT-PLAN.md` complete (C-30…C-34, C-44 protocol-level).
+  Phase 4 next: procedural skill self-improvement.
+
+## [2.5.7] - 2026-07-17
+
+Hermes-port **Phase 2**: threat scan on learning-memory writes/loads + optional write approval.
+
+### Added
+- Threat pattern scanner in `memory_store.py` (instruction override, role markers,
+  exfil/credential phrasing, invisible/bidi Unicode). Blocks matching writes;
+  on load, blocked raw entries stay inspectable via `status` / `blocked_entries`
+  and are excluded from the frozen always-on snapshot.
+- Optional `write_approval` (default **false**; recommend **true** for novices)
+  via `.smart/memory/config.json` or `--write-approval`. Queues add/replace/remove
+  under `.smart/memory/pending.json` until `pending approve` / `pending reject`.
+- CLI: `pending list|approve|reject`; status reports `write_approval`,
+  `blocked_count`, `pending_count`.
+- Offline scenarios `learning-memory-threat-block`,
+  `learning-memory-write-approval` (19 scenarios).
+
+### Changed
+- project-memory `1.5.0`; SMART `2.5.7`; marketplace metadata `2.5.7`.
+- SMART CONSOLIDATE + anti-patterns cover blocked writes and pending-vs-saved claims.
+- project-memory Security baseline documents threat scan + approval protocol.
+
+### Notes
+- Phase 2 of `docs/HERMES-PORT-PLAN.md` complete (C-09, C-10). Phase 3 next:
+  nudges + background review.
+
+## [2.5.6] - 2026-07-17
+
+Hermes-port **Phase 1**: bounded dual learning-memory stores on top of Project Mind.
+
+### Added
+- `project-memory` **Learning memory** protocol: `docs/USER.md` (profile, 1375 chars)
+  + `docs/AGENT-MEMORY.md` (agent notes, 2200 chars), `§`-delimited entries,
+  add/replace/remove, frozen snapshot, write routing vs Project Mind.
+- `scripts/memory_store.py` CLI/library for load/save, budgets, substring match,
+  overflow-without-silent-drop, duplicate no-op, render/status.
+- SMART SENSE reads USER/AGENT-MEMORY frozen snapshot; CONSOLIDATE routes prefs
+  vs operational lessons vs product truth.
+- Unit/CLI tests `tests/test_memory_store.py` and offline scenarios
+  `learning-memory-save-preference`, `learning-memory-no-product-leak` (17 scenarios).
+
+### Changed
+- project-memory `1.4.0`; SMART `2.5.6`; marketplace metadata `2.5.6`.
+- Anti-patterns forbid product-fact leakage into learning stores and silent overflow drops.
+
+### Notes
+- Phase 0 of `docs/HERMES-PORT-PLAN.md` is complete (D1–D4 frozen).
+- Threat scan + write approval remain Phase 2.
+
 ## [2.5.5] - 2026-07-16
 
 SMART becomes the supervisor of **Claude Code host commands** as well as
