@@ -3,6 +3,12 @@ description: Activate SMART, the project intelligence orchestrator — builds a 
 argument-hint: [your idea, request, or nothing to resume]
 ---
 
+# /smart:smart
+
+Canonical entry: **`/smart:smart`** (plugin `smart` + command/skill `smart`).
+Claude Code namespaces plugin commands; bare `/smart` is not a host command and
+must not be documented or recommended as working.
+
 Activate the `smart` skill from this plugin and follow its contract exactly.
 
 User input (may be empty — an empty input on an existing project means "resume

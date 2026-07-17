@@ -1,7 +1,7 @@
 # SKILLS_CATALOG — Verified Skill Catalog (SMART's decision source)
 
 > Input for the **SMART** mother skill. Each skill: name + one-line purpose + tier.
-> Verified on 2026-07-16: includes **native Claude Code host commands** (Category 0) plus standalone skill sources and native plugin capabilities. Duplicate resolution and the supply-chain gate apply to external installs; host commands are supervised, not fetched. Context Engineering Kit remains a plugin marketplace rather than a flat skill source, and the unified installer handles it automatically.
+> Verified on 2026-07-17: includes **native Claude Code host commands** (Category 0) plus standalone skill sources and native plugin capabilities. Duplicate resolution and the supply-chain gate apply to external installs; host commands are supervised, not fetched. Context Engineering Kit remains a plugin marketplace rather than a flat skill source, and the unified installer handles it automatically.
 
 **Sources (priority order — first source that has a skill wins):**
 | # | Source | Count | Path | Content |
@@ -22,6 +22,7 @@
 | TDD | `test-driven-development` (obra) | `pair-programming` TDD-mode (ruflo) | focused, includes anti-patterns file |
 | Frontend design | `frontend-design` (anthropics ≡ cpo, identical) | — | fetch-skill resolves to anthropics |
 | Design-system depth (palettes, fonts, industry rules) | `ui-ux-pro-max` (nextlevelbuilder) | — complements `frontend-design` | 67+ styles / 161 palettes / 57 font pairings + reasoning engine; use when the task needs a FULL design system, keep `frontend-design` for creative art direction |
+| Scroll-scrubbed cinematic world landing | `scroll-world` (oso95) | not `remotion-video`, not WebGL/Three reinvent | Higgsfield pipeline + frame-locked camera chain + portable scrub engine; Remotion is programmatic React video, not scroll-driven world flight |
 | Planning | `project-planner` (local) | `writing-plans` (obra) | local interview+13-layer flow; obra's is a good supplement for plan FORMAT only |
 | Plan execution | `step-pilot` (local) | `executing-plans` (obra) | local, gated + STATE.md |
 | Verify-before-done | `step-pilot` GATE (local) | `verification-before-completion` (obra) | already enforced locally |
@@ -98,7 +99,7 @@
 
 | Command | Maps to SMART capability |
 |---|---|
-| `/smart`, `/smart:smart` | SMART orchestrator (this skill) |
+| `/smart:smart` | SMART orchestrator (canonical plugin namespace; bare `/smart` is not a host command) |
 | `/project-planner` | `project-planner` |
 | `/project-memory` | `project-memory` |
 | `/step-pilot` | `step-pilot` |
@@ -190,6 +191,22 @@ host command only when it is the lighter correct tool for the immediate action.
 | theme-factory | 10 preset visual themes + on-the-fly theme generation for any artifact | YELLOW |
 | algorithmic-art | Generative/algorithmic art with p5.js (flow fields, particles) | YELLOW |
 | slack-gif-creator | Animated GIFs optimized for Slack | YELLOW |
+| scroll-world | Immersive scroll-scrubbed "fly through the world" landing: interview → cohesive AI scene stills → frame-locked dive/connector camera clips (Higgsfield Seedance/Kling) → portable vanilla-JS scrub engine; optional native 9:16 mobile chain | YELLOW |
+
+> **`scroll-world` SMART profile (oso95/scroll-world, alias path `skills/scroll-world`)**
+>
+> | Field | Detail |
+> |---|---|
+> | **When to use** | User wants a cinematic landing/hero where **scroll drives a continuous camera** through a little generated world — diorama / miniature / industry walkthrough / Emons-style flight with **no cuts**. Triggers: "scroll world", "fly through", "diorama landing", "scroll cinematic", "3D world hero", "browse-through-the-industry", continuous camera landing. |
+> | **When NOT to use** | Full app UI/design system → `ui-ux-pro-max` / `frontend-design`. Programmatic React video/timeline/subtitles → `remotion-video`. Static posters/canvas → `canvas-design`. Marketing copy/SEO alone → `marketingskills`. Ordinary product pages without scroll-driven camera flight. |
+> | **Tier** | **YELLOW** — situational; paid external generation; only with a stated trigger and explicit spend approval. |
+> | **Prerequisites** | Authenticated [Higgsfield CLI](https://higgsfield.ai) with credits (`higgsfield auth login`); `ffmpeg`/`ffprobe`; Python 3 + Pillow for optional knockout / mobile portrait canvases; optional Codex CLI ≥0.125 with ChatGPT login for subscription-billed stills. |
+> | **Cost model** | ≈ **N stills + (2N−1) videos** for N scenes; mobile portrait chain ≈ **2× video gens**. Calibrate against live `higgsfield workspace list` balance before spend; skill must state estimate and get go-ahead. Draft tier `seedance_2_0_mini` for previz. |
+> | **What it produces** | Per scene: still + dive-in clip; architecture B also produces connector clips frame-locked on **actual neighbour frames** (seam rule); portable `scrub-engine.js` + config page; optional 9:16 mobile chain. Framework-agnostic (plain HTML / Next / Vue / Python-served). |
+> | **Critical quality rule** | Seams must be **frame-identical** — connectors use extracted rendered frames, never diorama stills. One video model for the whole chain (`seedance_2_0` default, `kling3_0`, or `seedance_2_0_mini`). Architecture A (continuous forward take) for grounded walkthroughs; B (dive + aerial connector) only for diorama/god's-eye. |
+> | **Install path** | `fetch-skill.sh scroll-world` → third-party quarantine → SMART reviews SKILL.md + `references/*` + scan report → one plain-language approve/reject → lock. Source: `oso95/scroll-world@main` path `skills/scroll-world`. |
+> | **Complement** | Brand/palette first via `ui-ux-pro-max` or `brand` when a full system is needed; then `scroll-world` for the hero flight. Do not invent WebGL/Three reimplementations when this skill fits. |
+> | **Safety** | Third-party MIT; runs local scripts (`knockout.py`, batch bash, ffmpeg) and calls Higgsfield network APIs with user credentials. Never auto-spend credits; never bypass quarantine/approve. |
 
 ## Category 9 — Anthropic Platform & Meta (anthropics/skills) (5)
 
@@ -265,6 +282,7 @@ host command only when it is the lighter correct tool for the immediate action.
 | `coreyhaines31/marketingskills` | `fetch-skill.sh <skill-name>` from `skills/` | marketing strategy, copywriting, SEO, CRO, analytics, growth, and RevOps; start with `product-marketing` to create shared context | MIT; skills intentionally reference `.agents/product-marketing.md` |
 | `hardikpandya/stop-slop` | `fetch-skill.sh stop-slop` | editing prose to remove predictable AI phrasing and structures | MIT; intentionally strict style rules, so use only when the requested voice fits |
 | `wshuyi/remotion-video-skill` | `fetch-skill.sh remotion-video` | creating React/Remotion videos, animations, subtitles, or TTS-driven scenes | MIT; requires Node.js 18+, Python for TTS, and `ffprobe` for audio-duration detection |
+| `oso95/scroll-world` | `fetch-skill.sh scroll-world` (alias → `skills/scroll-world`) | immersive scroll-scrubbed "fly through the world" landing pages — continuous camera flight through AI-generated scenes with no cuts | MIT; **requires** authenticated [Higgsfield CLI](https://higgsfield.ai) credits + `ffmpeg`/`ffprobe` + Python/Pillow; optional Codex CLI for ChatGPT-billed stills. Spends paid generation credits (≈N stills + 2N−1 videos; mobile ≈2×). Third-party — quarantine + explicit approve. Not a substitute for design systems (`ui-ux-pro-max`) or programmatic video (`remotion-video`) |
 | `NeoLabHQ/context-engineering-kit` | `fetch-skill.sh <capability>` auto-adds its marketplace and installs the selected native plugin | reflection, spec-driven development, judged subagents, TDD, review, git, docs, or context-engineering workflows | GPL-3.0; unified installation preserves commands, agents, hooks, and skills instead of flattening them |
 
 ### Capability additions
@@ -275,6 +293,7 @@ host command only when it is the lighter correct tool for the immediate action.
 | Copy, SEO, CRO, launch, pricing, analytics, or RevOps | the focused `marketingskills` entry after checking `product-marketing` |
 | Direct, human-sounding prose review | `stop-slop` |
 | Programmatic video with React and Remotion | `remotion-video` |
+| Scroll-scrubbed cinematic "fly through the world" landing / diorama hero | `scroll-world` |
 | Reflection / self-critique / durable lessons | `reflection` → CEK `reflexion` |
 | Spec-driven implementation for complex work | `spec-driven-development` → CEK `sdd` |
 | Subagent execution with judges | `subagent-development` → CEK `sadd` |
@@ -313,7 +332,7 @@ host command only when it is the lighter correct tool for the immediate action.
 
 | Project layer | Covering skills | Coverage |
 |---|---|---|
-| Frontend | **ui-ux-pro-max** + **frontend-design** + **webapp-testing** + browser + theme-factory | GOOD |
+| Frontend | **ui-ux-pro-max** + **frontend-design** + **webapp-testing** + browser + theme-factory + **scroll-world** (cinematic scroll-scrub hero only) | GOOD |
 | APIs & Backend Logic | sparc-methodology + test-driven-development + pair-programming | GOOD |
 | Database & Storage | agentdb-* is AGENT memory only, NOT the product DB! | NONE |
 | Auth & Permissions | security-check (audit only) | PARTIAL |
@@ -388,6 +407,7 @@ Every SMART invocation:
 | Marketing strategy, copy, SEO, CRO, growth, or RevOps | focused `marketingskills` entry (start with `product-marketing`) |
 | Remove predictable AI prose patterns | stop-slop |
 | Programmatic Remotion video | remotion-video |
+| Scroll-scrubbed cinematic world landing / diorama hero / continuous camera flight | scroll-world |
 | Reflection / self-critique | reflection (auto-installs CEK reflexion) |
 | Complex spec-driven development | spec-driven-development (auto-installs CEK sdd) |
 | Judged subagent development | subagent-development (auto-installs CEK sadd) |

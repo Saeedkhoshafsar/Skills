@@ -7,13 +7,15 @@ You are working with the **SMART skill-manager ecosystem**. Read this file first
 A set of 7 local skills plus a curated external catalog. Standalone sources include
 anthropics/skills, obra/superpowers, ruflo, claude-plugins-official,
 nextlevelbuilder/ui-ux-pro-max-skill, coreyhaines31/marketingskills, stop-slop,
-and remotion-video. Context Engineering Kit remains a native plugin marketplace because it
-ships commands, agents, and hooks alongside skills, but SMART now installs its selected
-plugins automatically through the same unified capability installer. The design: the user
-activates only `smart`; `smart` senses the project phase AND the task's capability needs,
-first builds an evidence-aware shared model, enforces Vision Lock before planning/code,
-maintains durable project truth and runway, then installs or creates the minimum capability
-set needed for the next decision/action. SMART selects by capability, not source or package type.
+remotion-video, and scroll-world (oso95 — scroll-scrubbed cinematic world landings via
+Higgsfield; YELLOW, paid credits, quarantine+approve). Context Engineering Kit remains a
+native plugin marketplace because it ships commands, agents, and hooks alongside skills,
+but SMART now installs its selected plugins automatically through the same unified
+capability installer. The design: the user activates only `smart`; `smart` senses the
+project phase AND the task's capability needs, first builds an evidence-aware shared model,
+enforces Vision Lock before planning/code, maintains durable project truth and runway, then
+installs or creates the minimum capability set needed for the next decision/action. SMART
+selects by capability, not source or package type.
 
 ## Reading order for an agent
 
@@ -43,7 +45,7 @@ set needed for the next decision/action. SMART selects by capability, not source
 6. **`agentdb-*` is agent memory, never the product database.**
 7. **security-check is a mandatory gate before every release.** A CRITICAL finding blocks the release.
 8. **Duplicates are resolved by the catalog table, not ad hoc.** e.g. skill authoring → `skill-creator` (anthropics), debugging → local `debug-detective`, TDD → `test-driven-development` (obra).
-9. **Current decision/action overrides phase defaults.** "Produce an Excel report" in any phase → fetch `xlsx` now; "design a full UI" → fetch `ui-ux-pro-max`.
+9. **Current decision/action overrides phase defaults.** "Produce an Excel report" in any phase → fetch `xlsx` now; "design a full UI" → fetch `ui-ux-pro-max`; "scroll-through cinematic world / diorama hero landing" → fetch `scroll-world` (not Remotion, not a hand-rolled WebGL scene).
 10. **Context Engineering Kit stays plugin-only but is auto-installed.** SMART passes a capability name to `fetch-skill.sh`; the script adds the CEK marketplace once and installs only the selected native plugin. Never flatten CEK into `.claude/skills/`, ask the user to choose a plugin/source, or merely print manual setup steps when `claude` is available.
 11. **Supply-chain gate.** External standalone skills are downloaded only into quarantine. Static scan success is not proof of safety: review `SKILL.md`, every script, provenance, license, network/secret access, and the generated manifest before explicit activation. Never approve your own unreviewed candidate, bypass a BLOCKED result, or use quarantined content.
 12. **Prefer safe reuse before creation.** Before creating a skill, search the curated catalog and reputable repositories for a narrow candidate. A discovered repository must enter through `fetch-skill.sh candidate`, remain quarantined, and pass the same review and lock workflow; discovery never grants trust.
