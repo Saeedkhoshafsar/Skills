@@ -4,7 +4,7 @@
 > learning-memory capabilities without abandoning SMART’s Project Mind, Vision Lock,
 > or excellence-by-default contracts.
 >
-> **Status:** MVP COMPLETE on `main` (Phase 0–8, PR #22) — ship target Release `v2.5.13`; Phase 9 backlog deferred by owner (Claude Code local, no always-on gateway)  
+> **Status:** SHIPPED on `main` + GitHub Release `v2.5.13` (Phase 0–8, PR #22) — Phase 9 backlog deferred by owner (Claude Code local, no always-on gateway)  
 > **Created:** 2026-07-17  
 > **Phase 0 frozen:** 2026-07-17  
 > **Phase 1 shipped:** 2026-07-17 (project-memory 1.4.0 / SMART 2.5.6)  

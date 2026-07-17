@@ -10,12 +10,12 @@
 |---|---|
 | SMART mode / lifecycle phase | MAINTENANCE / 5 |
 | Current objective | Keep SMART 2.5.13 learning-memory MVP stable for Claude Code install; field-validate only. |
-| Active task | PR #22 MERGED (`8b11a8e`). Description sync + GitHub Release `v2.5.13`. |
-| Exact progress | Hermes port Phase 0–8 COMPLETE on `main` (PR #22). Pins: SMART 2.5.13 / project-memory 1.11.0. Phase 9 deferred by owner. |
-| Last evidence | 2026-07-17 post-merge: unittest → **217 OK**; scenarios → **31 valid**; local `main` == `origin/main` @ `8b11a8e` + docs polish. |
-| Blocker / waiting on | None. Publishing Release `v2.5.13` is the last ship step. |
+| Active task | SHIPPED. GitHub Release `v2.5.13` published (Latest). Install path only remains for consumers. |
+| Exact progress | Hermes port Phase 0–8 COMPLETE. PR #22 merged; docs polish `7c1b8c8`; Release `v2.5.13` Latest. Pins SMART 2.5.13 / project-memory 1.11.0. |
+| Last evidence | 2026-07-17: unittest **217 OK** / scenarios **31**; PR #22 MERGED; tag+Release `v2.5.13` published as Latest on `7c1b8c8`. |
+| Blocker / waiting on | None. Consumers update marketplace pin to 2.5.13. |
 | Vision Lock | CONFIRMED by repository owner on 2026-07-11 (reaffirmed and extended twice): SMART must be the complete project control brain for professional development teams first, capture the user's intended product inch by inch in an atomic Project Mind network before any planning/code, never accept "start and figure it out later", deliver expert-grade quality by default, and remain lean enough that orchestration never stalls or slows project progress. |
-| Machine gates | Vision: owner-confirmed product direction; Verify: full local deterministic test suite GREEN; Release: code on main at 2.5.13; tag target `v2.5.13`. |
+| Machine gates | Vision: owner-confirmed product direction; Verify: full local deterministic test suite GREEN; Release: GitHub Releases through `v2.5.13` (Latest). |
 | Branch / head | `main` SMART `2.5.13` learning-memory MVP (merged PR #22). |
 | Mind coverage | Applied to this repo implicitly via STATE/BRIEF equivalents; the formal PROJECT-MIND protocol targets user projects. |
 
@@ -68,6 +68,7 @@
 | CORE-008 | Mid-mission progress and late-session context pressure could vanish without chat history. | M-T2 + M-T3 on main (`2.5.3`/`2.5.4`). | Zero-context resume could rebuild ceremony or lose progress. | Keep mid-mission, budget, archive, and pre-existing bootstrap contracts. | RESOLVED |
 | CORE-005 | Workflow updates may be rejected when the GitHub credential lacks `workflows` permission. | Prior push rejection and owner instruction. | Repeated retries can block unrelated product progress. | Stage exact workflow files under `ci/` and report the manual replacement after the PR. | MITIGATED |
 | SHIP-001 | GitHub Releases lagged code on main. | Release list audit 2026-07-16. | Marketplace consumers could stay on older pins. | Publish `v2.5.2`–`v2.5.4` and document the two-step update path. | RESOLVED |
+| SHIP-002 | Learning-memory code (2.5.6–2.5.13) lagged releases after v2.5.5. | Main audit 2026-07-17 pre-ship. | Install pin could stay on host-command-only build. | PR #22 + Release `v2.5.13` Latest. | RESOLVED |
 
 ## Meaningful change ledger (newest first)
 | Date / commit | What changed | Why | Evidence | Records affected |
@@ -85,8 +86,8 @@
 | 2026-07-16 / 2.5.5 | Native Claude Code host-command supervision. | SMART masters slash surface. | contract tests + scenarios | catalog, SMART, CLAUDE, command, tests, scenarios, changelog, STATE. |
 
 ## Runway
-1. **NOW — publish GitHub Release `v2.5.13`** (code already on `main` via PR #22).
-2. **THEN — install only:** `claude plugin marketplace update saeed-skills && claude plugin update smart@saeed-skills` → restart session → confirm **2.5.13**.
+1. **DONE — Release `v2.5.13` published (Latest).** Consumers install/update SMART only.
+2. **INSTALL:** `claude plugin marketplace update saeed-skills && claude plugin update smart@saeed-skills` → restart session → confirm **2.5.13**.
 3. **ALSO — field-validate host supervision:** under context pressure, confirm SMART checkpoints then recommends `/compact`; refuse premature `/loop`.
 4. **LATER — Phase 9 product-surface backlog** only with explicit owner request (messaging/cron/kanban/etc.; deferred 2026-07-17).
 5. **LATER — full multi-home profile isolation** if multi-project demand appears.
