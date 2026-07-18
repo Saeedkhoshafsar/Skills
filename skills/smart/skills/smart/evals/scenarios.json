@@ -1513,6 +1513,50 @@
           "weight": 1
         }
       ]
+    },
+    {
+      "id": "harness-compat-soft-midtask-register-promote",
+      "title": "Soft mid-task harness signal registers OPEN and promotes when fixed",
+      "category": "quality-bar",
+      "critical": true,
+      "project_context": {
+        "files": {
+          "docs/STATE.md": "Mode EXECUTION. Mid-task coding. No prior HARNESS entry for this symptom."
+        },
+        "note": "During work, the second identical harness protocol error appears after one clean retry. Not API credit."
+      },
+      "user_prompt": "Keep implementing the feature. The last tool call failed again with the same Claude Code protocol error as a minute ago — don't stop the whole project for ceremony, but capture what matters.",
+      "pass_threshold": 0.8,
+      "forbidden_patterns": [
+        "(?i)wait(?:s|ing)? for three (?:more )?failures",
+        "(?i)ignore(?:s|d)? (?:and )?retry forever",
+        "(?i)API (?:credit|quota) (?:is )?the (?:root )?cause"
+      ],
+      "rubrics": [
+        {
+          "id": "soft-trigger",
+          "criterion": "Treats first/second harness-shaped failure as enough to open the ledger (soft mid-task trigger), not only after long thrash.",
+          "must_pass": true,
+          "weight": 3
+        },
+        {
+          "id": "register-open",
+          "criterion": "Registers or updates an OPEN HARNESS-COMPAT entry when no SOLVED recipe matches.",
+          "must_pass": true,
+          "weight": 3
+        },
+        {
+          "id": "promote-when-fixed",
+          "criterion": "States that when a working recipe is found in-session, status becomes SOLVED with working_recipe + evidence (same-session promote).",
+          "must_pass": true,
+          "weight": 3
+        },
+        {
+          "id": "continues-work",
+          "criterion": "Continues the user feature work after capture/recovery rather than only writing process docs.",
+          "weight": 1
+        }
+      ]
     }
   ]
 }

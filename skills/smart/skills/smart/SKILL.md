@@ -185,6 +185,28 @@ terminal/tool assumptions that differ from Claude Code's closed loop.
 compile/test failures, generic “wrong answer” without a harness-specific root.
 Never store secrets in the ledger.
 
+### Soft mid-task trigger (do not wait for catastrophe)
+
+Fire harness-compat **during ordinary work**, not only at session start or after
+long thrash. On the **first clear signal**, or at latest the **second** same-class
+failure after one clean retry:
+
+| Soft signal (any) | Examples |
+|---|---|
+| Illegal / rejected content | `redacted_thinking`, unsupported content type, vendor reasoning blocks |
+| Tool protocol | harness rejects or never executes a tool; fake XML/JSON tools in prose |
+| Slash / plugin surface | plugin command not found; bare `/smart` dead-end; wrong namespace |
+| Path / plugin root | `${CLAUDE_PLUGIN_ROOT}` wrong; inventing cache paths that fail |
+| “Not how I was trained” | model notes Claude Code tool/slash/path differs from its priors |
+| Same harness error twice | identical protocol error after one intentional clean retry |
+
+**Still out of scope** (do not register): API credit, rate-limit alone, auth keys,
+ordinary product compile/test failures, generic wrong answers without harness root.
+
+**Bias:** when unsure whether it is harness vs product, prefer a short OPEN note
+if the failure is **about calling Claude Code** (tools/slash/blocks/paths). Prefer
+**not** registering if it is clearly the user's app/tests/build.
+
 ### Protocol (every mode, including fast path)
 
 1. **Ensure the always-on pointer (once per machine/session when missing).**
@@ -192,33 +214,42 @@ Never store secrets in the ledger.
    `bash "${CLAUDE_PLUGIN_ROOT}/skills/smart/scripts/ensure-user-claude-md.sh"`
    (or the same script under SMART's located `scripts/`). Idempotent; preserves
    content outside managed markers. Fail-soft if home is not writable — still use
-   the in-plugin ledger.
-2. **On harness friction:** search `references/HARNESS-COMPAT.md` by symptom before
-   multi-step trial-and-error.
+   the in-plugin ledger. Re-run after SMART updates so block-version stays current.
+2. **On soft mid-task signal:** search `references/HARNESS-COMPAT.md` by symptom
+   **before** multi-step trial-and-error (do not wait for three failures).
 3. **SOLVED match:** apply `working_recipe` immediately; continue the user task.
-4. **No match:** append an **OPEN** entry (schema in the ledger). Record model family
-   if known, surface, symptom, wrong assumption. Then recover with the strictest safe
-   wire policy (text + tool_use only).
-5. **When solved** (this model or a later harness-fluent model, e.g. Anthropic): fill
-   `working_recipe`, set `status: SOLVED`, add short evidence. Prefer promoting
-   universal wire rules into `claude-code-compat` rather than bloating the ledger.
-6. **Escalate, don't thrash:** three failed recovery attempts with the same symptom and
-   no new diagnostic → stay in RECOVERY, re-read the ledger, ask one key question only
-   if the user can unblock (e.g. switch `/model`), never invent parallel lore.
+4. **No match → register OPEN early:** append an **OPEN** entry (schema in the
+   ledger) as soon as the soft trigger fires. Record model family if known,
+   surface, symptom, wrong assumption. Then recover (strict wire: text + tool_use).
+5. **Same-session promote:** when a recipe works **in this turn/session**, set
+   `status: SOLVED`, fill `working_recipe` + short evidence **before** moving on.
+   Do not leave a fixed failure as forever-OPEN. A later harness-fluent model may
+   also promote entries left OPEN by a weaker model.
+6. **Universal rules:** prefer promoting durable wire rules into
+   `claude-code-compat` rather than bloating the ledger with duplicates.
+7. **Escalate, don't thrash:** after OPEN + one clean recovery path, if the same
+   symptom still fails twice more with no new diagnostic → RECOVERY; re-read
+   ledger; at most one key question (e.g. `/model`); never invent parallel lore.
 
 ### SENSE / SELECT hooks
 
-- **SENSE:** if the user message or tool error mentions content-type / thinking-block /
-  tool-loop / slash-not-found / plugin-root failures, treat harness-compat as active
-  evidence and open the ledger before broader repo scans.
-- **SELECT:** `install/env friction` and **model↔harness mismatch** map to this ledger
-  first; then host `/doctor` or `/model` only with a stated reason. Do not spend the
-  3-capability budget inventing a new “compat framework” skill when the ledger exists.
+- **SENSE (soft):** any soft mid-task signal in user text, tool error, or the
+  model's own failed attempt → treat harness-compat as active; open the ledger
+  before broader repo scans or long recovery.
+- **SELECT:** `install/env friction` and **model↔harness mismatch** map to this
+  ledger first; then host `/doctor` or `/model` only with a stated reason. Do not
+  spend the 3-capability budget inventing a new “compat framework” skill when the
+  ledger exists.
+- **CONSOLIDATE:** if this invocation registered or promoted a ledger entry, note
+  it briefly in STATE only when it affected the project runway; the ledger file
+  is the source of truth for recipes.
 
 ### Anti-patterns (harness)
 
 SMART never:
 
+- waits for three thrash attempts before looking up or registering harness friction;
+- fixes a harness issue in-session and leaves the matching OPEN entry un-promoted;
 - burns long trial-and-error on a harness error class already SOLVED in the ledger;
 - registers API credit, rate-limit-only, or product bugs as HARNESS-COMPAT entries;
 - stores tokens, keys, or personal data in the ledger;

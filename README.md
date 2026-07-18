@@ -35,10 +35,10 @@ Skills/
 
 ## Install on Claude Code (primary path — plugin marketplace)
 
-**Current stable SMART:** **`2.5.18`** (Release Latest:
-https://github.com/Saeedkhoshafsar/Skills/releases/tag/v2.5.18)
-— Harness-compat ledger + always-on `~/.claude/CLAUDE.md` pointer; Depth Reprocess;
-evidence-rooted trees; `/smart:smart`.
+**Current stable SMART:** **`2.5.19`** (Release Latest when published:
+https://github.com/Saeedkhoshafsar/Skills/releases/tag/v2.5.19)
+— Soft mid-task harness register/promote; always-on pointer; Depth Reprocess;
+`/smart:smart`.
 
 ### Fresh install (once)
 
@@ -63,7 +63,7 @@ release, run **all four steps** (not only the first two):
 claude plugin marketplace update saeed-skills
 claude plugin update smart@saeed-skills
 # always-on pointer — use plugin-cache path (any cwd) OR repo-relative path from repo root:
-bash ~/.claude/plugins/cache/saeed-skills/smart/2.5.18/skills/smart/scripts/ensure-user-claude-md.sh
+bash ~/.claude/plugins/cache/saeed-skills/smart/2.5.19/skills/smart/scripts/ensure-user-claude-md.sh
 # restart the Claude Code session (required — plugins/commands re-index at start)
 /smart:smart
 ```
@@ -84,9 +84,9 @@ contains `skills/smart/` and `README.md`). If your shell is one level up
 
 ```bash
 # 1) Preferred when the plugin is already installed (works from ANY cwd):
-bash ~/.claude/plugins/cache/saeed-skills/smart/2.5.18/skills/smart/scripts/ensure-user-claude-md.sh
-bash ~/.claude/plugins/cache/saeed-skills/smart/2.5.18/skills/smart/scripts/ensure-user-claude-md.sh --check
-# (version folder may be newer than 2.5.18 after future updates — pick the highest installed)
+bash ~/.claude/plugins/cache/saeed-skills/smart/2.5.19/skills/smart/scripts/ensure-user-claude-md.sh
+bash ~/.claude/plugins/cache/saeed-skills/smart/2.5.19/skills/smart/scripts/ensure-user-claude-md.sh --check
+# (version folder may differ — pick the highest installed SMART under cache/saeed-skills/smart/)
 
 # 2) From this repo checkout (cwd = repo root that contains skills/smart/):
 cd /path/to/Saeedkhoshafsar/Skills   # e.g. ~/projects/skills/skills on this machine
@@ -96,7 +96,7 @@ bash skills/smart/skills/smart/scripts/ensure-user-claude-md.sh --check
 # 3) Or let SMART run it on first /smart:smart when home is writable (invariant 14).
 ```
 
-Confirm the plugin version shows **`2.5.18`** in `/plugin` manage after update.
+Confirm the plugin version shows **`2.5.19`** in `/plugin` manage after update.
 
 > If you previously got `Marketplace file not found at ...\.claude-plugin\marketplace.json`,
 > remove the broken marketplace and re-add it:
@@ -129,7 +129,7 @@ Confirm the plugin version shows **`2.5.18`** in `/plugin` manage after update.
 | Symptom | Cause | Fix |
 |---|---|---|
 | `/smart:smart` not suggested in autocomplete | plugin was installed mid-session, or user typed bare `/smart` (not a real host command) | restart the session; invoke **`/smart:smart`** only — bare `/smart` never resolves for this plugin |
-| Installed SMART version is older than `2.5.18` | marketplace/plugin pin not refreshed | `claude plugin marketplace update saeed-skills && claude plugin update smart@saeed-skills`, then restart the session |
+| Installed SMART version is older than `2.5.19` | marketplace/plugin pin not refreshed | `claude plugin marketplace update saeed-skills && claude plugin update smart@saeed-skills`, then restart the session |
 | Non-Anthropic model hits `redacted_thinking` / tool-loop stall | model↔Claude Code harness mismatch | lookup SMART `references/HARNESS-COMPAT.md`; ensure always-on pointer: `bash skills/smart/skills/smart/scripts/ensure-user-claude-md.sh`; invoke `/smart:smart` |
 | `ERROR: bundled capability '<x>' requires Claude Code CLI` | the `claude` binary is not on the Bash subshell's PATH (common in Codespaces/containers) | since `2.5.2` the installer first checks the plugin cache (`~/.claude/plugins/cache`) and recognizes manually/UI-installed companions without the CLI; if truly absent, install the companion once via `/plugin install <x>@saeed-skills` |
 | `fetch-skill.sh --installed` shows nothing despite installed plugins | pre-`2.5.2` versions only listed project-local skills and CLI-visible plugins | update SMART; it now reports `bundled:<name> INSTALLED (plugin cache: …)` |
@@ -226,9 +226,11 @@ labeling + roots — not killing imagination.
 Non-Anthropic or mixed-proxy models often fail Claude Code’s closed tool/content loop
 (`redacted_thinking`, fake tool XML in prose, bare `/smart`, plugin-root paths). SMART
 ships a durable ledger at `skills/smart/skills/smart/references/HARNESS-COMPAT.md`
-(lookup → apply SOLVED → register OPEN → promote when fixed). An always-on pointer is
-installed into **`~/.claude/CLAUDE.md`** (every project on this machine, even without
-invoking SMART) via:
+(lookup → apply SOLVED → register OPEN → promote when fixed). **Soft mid-task trigger:**
+on the first clear harness signal (or second same-class failure after one clean retry),
+register OPEN and, when fixed in-session, promote to SOLVED — do not wait for long thrash.
+An always-on pointer is installed into **`~/.claude/CLAUDE.md`** (every project on this
+machine, even without invoking SMART) via:
 
 ```bash
 bash skills/smart/skills/smart/scripts/ensure-user-claude-md.sh
@@ -278,7 +280,7 @@ claude plugin marketplace update saeed-skills   # 1. refresh the marketplace cat
 claude plugin update smart@saeed-skills         # 2. pull the new plugin version
 # (or /plugin → manage → update inside a session)
 # 3. always-on harness pointer (plugin-cache path works from any cwd):
-bash ~/.claude/plugins/cache/saeed-skills/smart/2.5.18/skills/smart/scripts/ensure-user-claude-md.sh
+bash ~/.claude/plugins/cache/saeed-skills/smart/2.5.19/skills/smart/scripts/ensure-user-claude-md.sh
 # 4. restart Claude Code, then:
 /smart:smart
 ```

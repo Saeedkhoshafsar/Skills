@@ -20,16 +20,28 @@
 
 ## How models must use this ledger
 
-1. **On harness friction** (content-type error, tool loop stall, slash dead-end, “this is not how I was trained to call tools”):
-   - Search this file by symptom keywords.
-   - If a **SOLVED** entry matches → apply `working_recipe` immediately; do not re-explore.
-   - If **OPEN** matches → try listed partial notes; do not invent parallel lore.
-   - If none → create an **OPEN** entry (schema below), then continue recovery.
-2. **When solved** (any model, including a later Anthropic session): fill `working_recipe`,
-   set `status: SOLVED`, add `evidence`, keep the wrong assumption visible for others.
-3. **Never** store secrets, tokens, personal data, or full chat dumps.
-4. **Prefer** promoting durable wire rules into `claude-code-compat` skill when they are
-   universal; keep this ledger for **case recipes** and evolving friction.
+### Soft mid-task trigger
+
+Do **not** wait for catastrophe or three thrash loops. On the **first clear**
+harness signal, or at latest the **second** same-class failure after one clean
+retry, run the loop below. Soft signals: content-type / thinking-block errors;
+tool not executed / rejected by harness; plugin slash dead-end; wrong plugin
+paths; “not how I was trained to call tools”; identical protocol error twice.
+
+**Out:** API credit, rate-limit alone, auth keys, ordinary product compile/tests.
+
+### Loop (every time)
+
+1. **Search** this file by symptom keywords.
+2. **SOLVED** match → apply `working_recipe` immediately; do not re-explore.
+3. **OPEN** match → try listed partial notes; do not invent parallel lore.
+4. **No match** → create **OPEN** (schema below) **before** long recovery.
+5. **When solved in this session** (any model): fill `working_recipe`, set
+   `status: SOLVED`, add short `evidence`; keep `wrong_assumption` visible.
+   Leaving a fixed issue as forever-OPEN is a process bug.
+6. **Never** store secrets, tokens, personal data, or full chat dumps.
+7. **Prefer** promoting durable wire rules into `claude-code-compat` when
+   universal; keep this ledger for case recipes and evolving friction.
 
 ## Entry schema
 

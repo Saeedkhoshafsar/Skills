@@ -182,6 +182,9 @@ class SmartCognitionContractTests(unittest.TestCase):
             "~/.claude/CLAUDE.md",
             "lookup → apply → register →",
             "model↔Claude Code harness friction",
+            "Soft mid-task trigger",
+            "Same-session promote",
+            "waits for three thrash attempts before looking up or registering",
         ):
             with self.subTest(requirement=requirement):
                 self.assertIn(requirement, normalized)
@@ -701,10 +704,10 @@ class CatalogAndEntryContractTests(unittest.TestCase):
         self.assertIn("bare `/smart`", self.command)
 
     def test_marketplace_smart_pin_is_current(self) -> None:
-        self.assertEqual(self.marketplace["metadata"]["version"], "2.5.18")
+        self.assertEqual(self.marketplace["metadata"]["version"], "2.5.19")
         smart = next(p for p in self.marketplace["plugins"] if p["name"] == "smart")
-        self.assertEqual(smart["version"], "2.5.18")
-        self.assertEqual(self.plugin["version"], "2.5.18")
+        self.assertEqual(smart["version"], "2.5.19")
+        self.assertEqual(self.plugin["version"], "2.5.19")
         pilot = json.loads(
             text(ROOT / "skills/step-pilot/.claude-plugin/plugin.json")
         )
