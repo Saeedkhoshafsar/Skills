@@ -62,7 +62,8 @@ release, run **all four steps** (not only the first two):
 ```bash
 claude plugin marketplace update saeed-skills
 claude plugin update smart@saeed-skills
-bash skills/smart/skills/smart/scripts/ensure-user-claude-md.sh
+# always-on pointer — use plugin-cache path (any cwd) OR repo-relative path from repo root:
+bash ~/.claude/plugins/cache/saeed-skills/smart/2.5.18/skills/smart/scripts/ensure-user-claude-md.sh
 # restart the Claude Code session (required — plugins/commands re-index at start)
 /smart:smart
 ```
@@ -76,15 +77,23 @@ bash skills/smart/skills/smart/scripts/ensure-user-claude-md.sh
 
 **Where to run the ensure script**
 
+Paths below assume you are **inside the Skills repo root** (the directory that
+contains `skills/smart/` and `README.md`). If your shell is one level up
+(e.g. `~/projects/skills` while the clone is `~/projects/skills/skills`), either
+`cd` into the repo root first or use an absolute path.
+
 ```bash
-# From this repo checkout:
+# 1) Preferred when the plugin is already installed (works from ANY cwd):
+bash ~/.claude/plugins/cache/saeed-skills/smart/2.5.18/skills/smart/scripts/ensure-user-claude-md.sh
+bash ~/.claude/plugins/cache/saeed-skills/smart/2.5.18/skills/smart/scripts/ensure-user-claude-md.sh --check
+# (version folder may be newer than 2.5.18 after future updates — pick the highest installed)
+
+# 2) From this repo checkout (cwd = repo root that contains skills/smart/):
+cd /path/to/Saeedkhoshafsar/Skills   # e.g. ~/projects/skills/skills on this machine
 bash skills/smart/skills/smart/scripts/ensure-user-claude-md.sh
 bash skills/smart/skills/smart/scripts/ensure-user-claude-md.sh --check
 
-# From an installed plugin cache (version dir may differ):
-bash ~/.claude/plugins/cache/saeed-skills/smart/2.5.18/skills/smart/scripts/ensure-user-claude-md.sh
-
-# Or let SMART run it on first invoke when home is writable (invariant 14).
+# 3) Or let SMART run it on first /smart:smart when home is writable (invariant 14).
 ```
 
 Confirm the plugin version shows **`2.5.18`** in `/plugin` manage after update.
@@ -268,7 +277,8 @@ When this repo changes, update your local install with the **full four-step path
 claude plugin marketplace update saeed-skills   # 1. refresh the marketplace catalog
 claude plugin update smart@saeed-skills         # 2. pull the new plugin version
 # (or /plugin → manage → update inside a session)
-bash skills/smart/skills/smart/scripts/ensure-user-claude-md.sh   # 3. always-on harness pointer
+# 3. always-on harness pointer (plugin-cache path works from any cwd):
+bash ~/.claude/plugins/cache/saeed-skills/smart/2.5.18/skills/smart/scripts/ensure-user-claude-md.sh
 # 4. restart Claude Code, then:
 /smart:smart
 ```
