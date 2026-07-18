@@ -68,6 +68,14 @@ user choose a skill, repository, marketplace, package type, methodology, or comm
     repository/tests, dated sources, or an explicit owned assumption — or stay labeled
     provisional. **Creativity is required and protected**; it must never be smuggled
     into the truth trunk. See **Evidence-rooted thought trees** below.
+14. **Harness-compat before thrash.** When a failure is a **model ↔ Claude Code**
+    runtime mismatch (illegal content blocks, tool-loop shape, slash namespace, plugin
+    path protocol) — not mere API credit/rate-limit or product bugs — look up
+    `references/HARNESS-COMPAT.md` first, apply any SOLVED recipe, register OPEN
+    entries when new, and promote recipes when solved (including by a later more
+    harness-fluent model). Ensure the always-on user pointer via
+    `scripts/ensure-user-claude-md.sh` so non-SMART sessions still escalate here.
+    See **Harness compatibility ledger** below.
 
 ## Excellence by default — the silent quality bar
 
@@ -146,6 +154,77 @@ SMART never:
   without a new root;
 - hides uncertainty behind polished multi-step “logic” with no citations or observations;
 - blocks creative exploration in the name of rigor (rigor is labeling + roots, not silence).
+
+## Harness compatibility ledger — model ↔ Claude Code without thrash
+
+### Why this exists
+
+Claude Code's tool loop, slash surface, and content-block rules are **first-party
+Anthropic harness contracts**. Models from other providers (or mixed proxies) often
+arrive with different training priors: they invent illegal content types, paste fake
+tool markup into prose, miss `/plugin:name` namespaces, or thrash through long recovery
+paths. That is **not** a product bug and **not** an API-credit problem — it is harness
+friction. SMART owns a durable ledger so every model can **lookup → apply → register →
+promote** instead of rediscovering the same failure class.
+
+### Durable artifacts
+
+| Artifact | Role |
+|---|---|
+| `references/HARNESS-COMPAT.md` | Shared ledger: symptom, wrong assumption, working recipe, OPEN/SOLVED |
+| `scripts/ensure-user-claude-md.sh` | Idempotent install of always-on pointer into `~/.claude/CLAUDE.md` |
+| `~/.claude/CLAUDE.md` (user-level) | Loaded every session on this machine **without** invoking SMART |
+| `claude-code-compat` user skill (when present) | Wire dialect (text + tool_use only; no `redacted_thinking`) |
+
+### Scope filter
+
+**In:** illegal content blocks, tool-call shape, slash namespace, plugin path protocol,
+terminal/tool assumptions that differ from Claude Code's closed loop.
+
+**Out:** empty API balance, rate limits alone, auth key mistakes, ordinary product
+compile/test failures, generic “wrong answer” without a harness-specific root.
+Never store secrets in the ledger.
+
+### Protocol (every mode, including fast path)
+
+1. **Ensure the always-on pointer (once per machine/session when missing).**
+   When SMART can write the user home config (or the operator asks), run:
+   `bash "${CLAUDE_PLUGIN_ROOT}/skills/smart/scripts/ensure-user-claude-md.sh"`
+   (or the same script under SMART's located `scripts/`). Idempotent; preserves
+   content outside managed markers. Fail-soft if home is not writable — still use
+   the in-plugin ledger.
+2. **On harness friction:** search `references/HARNESS-COMPAT.md` by symptom before
+   multi-step trial-and-error.
+3. **SOLVED match:** apply `working_recipe` immediately; continue the user task.
+4. **No match:** append an **OPEN** entry (schema in the ledger). Record model family
+   if known, surface, symptom, wrong assumption. Then recover with the strictest safe
+   wire policy (text + tool_use only).
+5. **When solved** (this model or a later harness-fluent model, e.g. Anthropic): fill
+   `working_recipe`, set `status: SOLVED`, add short evidence. Prefer promoting
+   universal wire rules into `claude-code-compat` rather than bloating the ledger.
+6. **Escalate, don't thrash:** three failed recovery attempts with the same symptom and
+   no new diagnostic → stay in RECOVERY, re-read the ledger, ask one key question only
+   if the user can unblock (e.g. switch `/model`), never invent parallel lore.
+
+### SENSE / SELECT hooks
+
+- **SENSE:** if the user message or tool error mentions content-type / thinking-block /
+  tool-loop / slash-not-found / plugin-root failures, treat harness-compat as active
+  evidence and open the ledger before broader repo scans.
+- **SELECT:** `install/env friction` and **model↔harness mismatch** map to this ledger
+  first; then host `/doctor` or `/model` only with a stated reason. Do not spend the
+  3-capability budget inventing a new “compat framework” skill when the ledger exists.
+
+### Anti-patterns (harness)
+
+SMART never:
+
+- burns long trial-and-error on a harness error class already SOLVED in the ledger;
+- registers API credit, rate-limit-only, or product bugs as HARNESS-COMPAT entries;
+- stores tokens, keys, or personal data in the ledger;
+- claims “model is broken” when the failure is illegal content serialization;
+- skips ensuring `~/.claude/CLAUDE.md` when home is writable and the pointer is missing;
+- teaches bare `/smart` as a valid plugin invoke path.
 
 ## Depth Reprocess — multi-layer thinking before commitment
 
@@ -276,13 +355,17 @@ Never duplicate large content across files. Learning memory (`USER.md` / `AGENT-
 is agent-curated via `add`/`replace`/`remove` (see `project-memory`); it is not a chat log
 and must not absorb product requirements that belong in Project Mind.
 
-### First-invocation bootstrap
+### First-invocation bootstrap (project + machine)
 
 On a new project, create the runway in this order:
 
-1. Install and activate `project-planner` for adaptive discovery through the unified installer.
-2. Install and activate `project-memory` as soon as the first reliable project facts exist.
-3. Defer `step-pilot` until the Vision Lock and plan are approved.
+1. **Machine pointer (once):** if home is writable and `~/.claude/CLAUDE.md` lacks the
+   current HARNESS-COMPAT managed block, run
+   `bash …/skills/smart/scripts/ensure-user-claude-md.sh` (idempotent). This is not a
+   project file and not counted toward the 3-capability install budget.
+2. Install and activate `project-planner` for adaptive discovery through the unified installer.
+3. Install and activate `project-memory` as soon as the first reliable project facts exist.
+4. Defer `step-pilot` until the Vision Lock and plan are approved.
 
 These bundled first-party capabilities come from SMART's already trusted marketplace. SMART
 runs their marketplace installation itself; never ask the user to install a companion plugin,
@@ -344,6 +427,11 @@ Read the minimum evidence needed in this order:
    only as needed for the active task.
 6. Installed capabilities:
    `bash "${CLAUDE_PLUGIN_ROOT}/skills/smart/scripts/fetch-skill.sh" --installed`.
+7. **Harness-compat signal (when relevant):** if the invoke mentions content-type /
+   `redacted_thinking` / tool-loop stall / slash dead-end / plugin-root path failure,
+   or the model family is non-native/mixed-proxy, open
+   `references/HARNESS-COMPAT.md` (and run `scripts/ensure-user-claude-md.sh` when
+   home is writable and the pointer is missing) **before** broad thrash recovery.
 
 If `${CLAUDE_PLUGIN_ROOT}` is unavailable, locate SMART's own directory and use its
 `scripts/fetch-skill.sh`. Never scan the whole repository when the resume index and
@@ -516,6 +604,7 @@ Core lifecycle defaults:
 | every release | `security-check` mandatory; then release capability if needed |
 | context pressure (~40/60/80) | durable checkpoint first; host `/context` to sense; `/compact` only after resume-check GREEN |
 | rate-limit / model mismatch | host `/model` or `/effort` with a stated reason; never thrash models without evidence |
+| model↔Claude Code harness friction | `references/HARNESS-COMPAT.md` lookup first; apply SOLVED recipe or register OPEN; ensure `~/.claude/CLAUDE.md` pointer; then `/doctor` or `/model` only with evidence |
 | need recurring autonomy | host `/loop` or `/goal` only with Vision Lock + scoped stop condition |
 | install/env friction | host `/doctor`, then marketplace/plugin fix; never blame the user for harness quirks |
 
@@ -961,4 +1050,7 @@ SMART never:
 - asks a novice to make quality decisions (tests, linting, error handling, hardening) instead of applying expert defaults silently;
 - ships novice-grade output because the user did not explicitly request professional quality;
 - inflates a small project with heavyweight architecture, tooling, or process in the name of quality;
+- thrash-recovers model↔Claude Code friction without reading `references/HARNESS-COMPAT.md`;
+- records API credit / rate-limit-only / product bugs as harness-compat ledger entries;
+- stores secrets in the harness-compat ledger or teaches bare `/smart` as a plugin path;
 - releases without `security-check` and rollback readiness.

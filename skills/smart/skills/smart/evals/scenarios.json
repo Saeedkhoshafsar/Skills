@@ -1425,6 +1425,94 @@
           "weight": 2
         }
       ]
+    },
+    {
+      "id": "harness-compat-lookup-before-thrash",
+      "title": "Harness friction looks up HARNESS-COMPAT before thrash recovery",
+      "category": "quality-bar",
+      "critical": true,
+      "project_context": {
+        "files": {
+          "docs/STATE.md": "Mode EXECUTION. Vision Lock CONFIRMED. Active task P2-T1."
+        },
+        "note": "Non-Anthropic model via proxy hit Unsupported content type: redacted_thinking mid tool loop."
+      },
+      "user_prompt": "Keep going — the last tool call failed with Unsupported content type: redacted_thinking. Try whatever until it works.",
+      "pass_threshold": 0.8,
+      "forbidden_patterns": [
+        "(?i)ignore(?:s|d)? (?:the )?error and keep emitting thinking",
+        "(?i)redacted_thinking is fine",
+        "(?i)spend (?:the )?rest of (?:the )?session trial.?and.?error without (?:the )?ledger"
+      ],
+      "rubrics": [
+        {
+          "id": "opens-ledger",
+          "criterion": "Opens or cites references/HARNESS-COMPAT.md (or ensure-user-claude-md / always-on pointer) before long multi-strategy thrash.",
+          "must_pass": true,
+          "weight": 3
+        },
+        {
+          "id": "applies-strict-wire",
+          "criterion": "Applies text+tool_use only / no redacted_thinking recovery (SOLVED recipe or claude-code-compat policy).",
+          "must_pass": true,
+          "weight": 3
+        },
+        {
+          "id": "not-credit-confusion",
+          "criterion": "Does not treat the failure as API credit exhaustion or a product code bug.",
+          "must_pass": true,
+          "weight": 2
+        },
+        {
+          "id": "continues-task",
+          "criterion": "After clean recovery, continues the user's task rather than only narrating harness theory.",
+          "weight": 1
+        }
+      ]
+    },
+    {
+      "id": "harness-compat-register-and-promote",
+      "title": "New harness friction is registered OPEN and later promoted SOLVED",
+      "category": "quality-bar",
+      "critical": true,
+      "project_context": {
+        "files": {
+          "docs/STATE.md": "Mode RECOVERY. Novel tool-loop stall not in ledger."
+        },
+        "note": "Symptom is a new Claude Code content/tool protocol mismatch; not rate limit."
+      },
+      "user_prompt": "This model keeps failing Claude Code tool calls in a way I have not seen. Capture it so the next model does not rediscover it.",
+      "pass_threshold": 0.8,
+      "forbidden_patterns": [
+        "(?i)no need to (?:write|record|log)",
+        "(?i)only remember in chat",
+        "(?i)API (?:key|credit|quota) (?:as )?the (?:root )?cause"
+      ],
+      "rubrics": [
+        {
+          "id": "registers-open",
+          "criterion": "Adds or describes an OPEN HARNESS-COMPAT entry with symptom, wrong assumption, surface, and empty/partial recipe.",
+          "must_pass": true,
+          "weight": 3
+        },
+        {
+          "id": "promotes-when-solved",
+          "criterion": "States that when a working recipe is found (possibly by a later Anthropic/harness-fluent model), status becomes SOLVED with working_recipe + evidence.",
+          "must_pass": true,
+          "weight": 3
+        },
+        {
+          "id": "scope-filter",
+          "criterion": "Keeps API credit / ordinary product bugs out of the ledger scope.",
+          "must_pass": true,
+          "weight": 2
+        },
+        {
+          "id": "pointer-or-smart",
+          "criterion": "Mentions always-on ~/.claude/CLAUDE.md pointer and/or /smart:smart ownership of the ledger.",
+          "weight": 1
+        }
+      ]
     }
   ]
 }
