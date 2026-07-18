@@ -49,8 +49,8 @@ You are running inside **Claude Code**. Models that are not first-party Anthropi
    **first or second** occurrence. Do **not** wait for three thrash attempts.
    Soft signals (any is enough): content-type / thinking-block errors; tool call
    not executed or rejected by the harness; slash/command not found for a plugin
-   surface; repeated same tool/protocol failure after one clean retry; “this is
-   not how I was trained to call tools.” **Out of scope:** API credit, rate-limit
+   surface; repeated same tool/protocol failure after one clean retry; "this is
+   not how I was trained to call tools." **Out of scope:** API credit, rate-limit
    alone, auth keys, compile/test product failures.
 4. **Lookup → register → recover → promote (same session):**
    - Search the durable ledger:
