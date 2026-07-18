@@ -82,7 +82,9 @@
 | `/fewer-permission-prompts` | Allowlist common read-only tools | only with explicit user consent for permission changes |
 | `/dataviz` | Chart/visualization design system | when producing charts/dashboards |
 | `/claude-api` | Claude API / SDK reference | when building against Anthropic APIs |
-| `/claude-code-compat` | Claude Code compatibility guidance | harness/compat questions |
+| `/claude-code-compat` | Claude Code wire adapter (text+tool_use; no `redacted_thinking`) | non-native/mixed models; content-type errors |
+| SMART `HARNESS-COMPAT` ledger | Durable model↔Claude Code friction recipes (`references/HARNESS-COMPAT.md`) | lookup before thrash; register OPEN; promote SOLVED; not API credit |
+| `ensure-user-claude-md.sh` | Idempotent always-on pointer → `~/.claude/CLAUDE.md` | first SMART invoke / missing user pointer; all projects on this machine |
 
 ### Autonomy / RED (heavy — evidence + Vision gates)
 

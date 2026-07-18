@@ -5,6 +5,31 @@ Versioning: bump plugin versions in `.claude-plugin/marketplace.json` and each
 plugin's `plugin.json` — `claude plugin update` only detects updates through a
 version bump in `marketplace.json`.
 
+## [2.5.18] - 2026-07-18
+
+Harness compatibility ledger for model ↔ Claude Code friction + always-on user pointer.
+
+### Added
+- SMART invariant **14** + full **Harness compatibility ledger** protocol: lookup before
+  thrash, apply SOLVED recipes, register OPEN, promote when solved; scope filter excludes
+  API credit / rate-limit-only / ordinary product bugs.
+- Durable ledger `skills/smart/skills/smart/references/HARNESS-COMPAT.md` with seed
+  entries HC-001…HC-004 (`redacted_thinking`, bare `/smart`, fake tool prose, plugin root).
+- Idempotent installer `scripts/ensure-user-claude-md.sh` → managed block in
+  `~/.claude/CLAUDE.md` (loads every session without `/smart:smart`).
+- SENSE step 7 + SELECT row for model↔harness friction; first-invocation machine pointer.
+- Offline scenarios `harness-compat-lookup-before-thrash`,
+  `harness-compat-register-and-promote` (38 scenarios).
+- Contract test `test_harness_compat_ledger_is_contracted`.
+
+### Changed
+- SMART `2.5.18`; marketplace metadata `2.5.18`.
+- README troubleshooting + harness section; CLAUDE hard rule **15d**; catalog Category 0 rows.
+
+### Notes
+- Always-on knowledge is the thin `~/.claude/CLAUDE.md` pointer; intelligence stays in SMART.
+- Complements existing user skill `claude-code-compat` (wire dialect) without replacing it.
+
 ## [2.5.17] - 2026-07-18
 
 Depth Reprocess + evidence-rooted thought trees (no false confidence; creativity ≠ truth).

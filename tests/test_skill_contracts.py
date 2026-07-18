@@ -172,6 +172,35 @@ class SmartCognitionContractTests(unittest.TestCase):
             with self.subTest(requirement=requirement):
                 self.assertIn(requirement, normalized)
 
+    def test_harness_compat_ledger_is_contracted(self) -> None:
+        normalized = " ".join(self.smart.split())
+        for requirement in (
+            "Harness-compat before thrash",
+            "Harness compatibility ledger — model ↔ Claude Code without thrash",
+            "references/HARNESS-COMPAT.md",
+            "ensure-user-claude-md.sh",
+            "~/.claude/CLAUDE.md",
+            "lookup → apply → register →",
+            "model↔Claude Code harness friction",
+        ):
+            with self.subTest(requirement=requirement):
+                self.assertIn(requirement, normalized)
+        ledger = text(
+            ROOT / "skills/smart/skills/smart/references/HARNESS-COMPAT.md"
+        )
+        self.assertIn("HC-001", ledger)
+        self.assertIn("redacted_thinking", ledger)
+        self.assertIn("HC-002", ledger)
+        self.assertIn("/smart:smart", ledger)
+        script = ROOT / "skills/smart/skills/smart/scripts/ensure-user-claude-md.sh"
+        self.assertTrue(script.is_file(), "ensure-user-claude-md.sh must ship")
+        script_text = text(script)
+        self.assertIn("BEGIN saeed-skills HARNESS-COMPAT", script_text)
+        self.assertIn("/smart:smart", script_text)
+        self.assertIn("HARNESS-COMPAT.md", script_text)
+        agent = text(CLAUDE)
+        self.assertIn("Harness-compat before thrash", agent)
+
     def test_project_mind_network_is_the_written_understanding(self) -> None:
         normalized = " ".join(self.smart.split())
         for requirement in (
@@ -659,10 +688,10 @@ class CatalogAndEntryContractTests(unittest.TestCase):
         self.assertIn("bare `/smart`", self.command)
 
     def test_marketplace_smart_pin_is_current(self) -> None:
-        self.assertEqual(self.marketplace["metadata"]["version"], "2.5.17")
+        self.assertEqual(self.marketplace["metadata"]["version"], "2.5.18")
         smart = next(p for p in self.marketplace["plugins"] if p["name"] == "smart")
-        self.assertEqual(smart["version"], "2.5.17")
-        self.assertEqual(self.plugin["version"], "2.5.17")
+        self.assertEqual(smart["version"], "2.5.18")
+        self.assertEqual(self.plugin["version"], "2.5.18")
         pilot = json.loads(
             text(ROOT / "skills/step-pilot/.claude-plugin/plugin.json")
         )
