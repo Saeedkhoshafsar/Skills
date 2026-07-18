@@ -10,14 +10,14 @@
 |---|---|
 | SMART mode / lifecycle phase | MAINTENANCE / 5 |
 | Current objective | Keep SMART lean: field-validate; ship only proven gaps. |
-| Active task | Ship **2.5.18** — Harness-compat ledger + always-on `~/.claude/CLAUDE.md` pointer. |
-| Exact progress | Ledger + ensure-user-claude-md.sh + invariant 14 + 2 scenarios + contracts; pin **2.5.18**. Suite GREEN (226 tests / 38 scenarios). |
-| Last evidence | 2026-07-18: unittest **226 OK**; scenarios **38 valid**; `bash -n` ensure script OK; user pointer installed on this machine. |
-| Blocker / waiting on | PR → merge → GitHub Release `v2.5.18`. |
-| Next | Branch → commit → PR → merge → Release → consumer pin **2.5.18**. |
+| Active task | **2.5.18** MERGED (PR #27 @ `a5e5f71`); GitHub Release `v2.5.18` pending explicit publish. |
+| Exact progress | PR #27 MERGED validate GREEN; pin **2.5.18** on main. Suite 226/38. User pointer installed locally. Release not yet published (classifier needs explicit “publish Release v2.5.18”). |
+| Last evidence | 2026-07-18: PR #27 MERGED (`a5e5f71`); CI validate pass; 226 tests / 38 scenarios. |
+| Blocker / waiting on | Explicit owner phrase to publish public Release `v2.5.18` on Saeedkhoshafsar/Skills. |
+| Next | Publish Release `v2.5.18`; consumer marketplace update + ensure-user-claude-md.sh. |
 | Vision Lock | CONFIRMED by repository owner on 2026-07-11 (reaffirmed and extended): complete project control brain; mind before code; excellence by default; lean orchestration. Extended 2026-07-18: depth over first-pass polish; creativity ≠ truth; harness-compat before thrash (always-on pointer + SMART ledger). |
-| Machine gates | Vision: owner-confirmed; Verify: suite; Release: pending `v2.5.18`. |
-| Branch / head | Working tree for ship/v2.5.18-harness-compat (pre-PR). |
+| Machine gates | Vision: owner-confirmed; Verify: suite GREEN; Release: **pending publish** `v2.5.18`. |
+| Branch / head | `main` @ `a5e5f71` (PR #27 merge). |
 | Mind coverage | Applied to this repo implicitly via STATE/BRIEF equivalents; the formal PROJECT-MIND protocol targets user projects. |
 
 ## Epistemic delta
@@ -63,7 +63,7 @@
 | ID | Description | Evidence / location | Impact | Next diagnostic/mitigation | Status |
 |---|---|---|---|---|---|
 | SHIP-006 | Single-pass fluent confidence; creative branches mislabeled as truth. | Owner philosophy + TryAI arena lessons 2026-07-18. | Shallow maxed-looking work; false confidence trees. | PR #26 + Release `v2.5.17`. | RESOLVED |
-| SHIP-007 | Non-Anthropic models thrash on Claude Code harness mismatches; knowledge not always-on. | Owner field report 2026-07-18; multi-model settings (Bifrost). | Long trial-and-error; lost recipes across sessions/models. | 2.5.18 ledger + `~/.claude/CLAUDE.md` pointer + SMART protocol. | IN PROGRESS |
+| SHIP-007 | Non-Anthropic models thrash on Claude Code harness mismatches; knowledge not always-on. | Owner field report 2026-07-18; multi-model settings (Bifrost). | Long trial-and-error; lost recipes across sessions/models. | PR #27 merged code; publish Release `v2.5.18` for marketplace pin. | MOSTLY RESOLVED (release pending) |
 | CORE-005 | Workflow updates may be rejected when the GitHub credential lacks `workflows` permission. | Prior push rejection and owner instruction. | Repeated retries can block unrelated product progress. | Stage exact workflow files under `ci/` and report the manual replacement after the PR. | MITIGATED |
 
 ## Meaningful change ledger (newest first)
@@ -74,7 +74,7 @@
 | 2026-07-18 / 2.5.17 depth+honesty | Depth L0–L4; truth vs creative trunks; scenarios+contracts; pin 2.5.17 | Surface pass ≠ maxed; creativity ≠ truth | 225 tests / 36 scenarios; validate GREEN | SMART, step-pilot, planner, tests, changelog, RELEASE, STATE. |
 
 ## Runway
-1. **SHIP:** branch → commit → PR → merge → Release `v2.5.18`.
+1. **RELEASE:** publish GitHub Release `v2.5.18` (needs explicit owner: “publish Release v2.5.18”).
 2. **INSTALL (consumer):** marketplace update + plugin update smart → pin **2.5.18** → run `ensure-user-claude-md.sh` → restart → `/smart:smart`.
 3. **NEXT — field-validate** non-Anthropic sessions: pointer present; ledger lookup on friction.
 4. **LATER — optional** promote more wire rules into `claude-code-compat`; archive long SOLVED entries.
