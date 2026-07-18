@@ -27,8 +27,11 @@ Rules for this invocation:
    projects, resume — do not rebuild empty discovery/mind ceremony.
 3. **Harness pointer (machine, once):** if home is writable and
    `~/.claude/CLAUDE.md` lacks the current HARNESS-COMPAT managed block, run
-   `scripts/ensure-user-claude-md.sh` (idempotent). On model↔Claude Code friction,
-   open `references/HARNESS-COMPAT.md` before thrash recovery.
+   `scripts/ensure-user-claude-md.sh` (idempotent; block-version **2+**). On a
+   **soft mid-task** model↔Claude Code signal (first clear failure, or second
+   same-class after one clean retry — not API credit alone), open
+   `references/HARNESS-COMPAT.md` before thrash recovery; register OPEN when new;
+   promote SOLVED same session when fixed.
 4. Never ask the user to choose a skill, source, marketplace, package type, or
    command. Bundled companions are installed by SMART itself.
 5. No plan and no code before a machine-confirmed Vision Lock.
@@ -44,7 +47,9 @@ After each marketplace release, the full path is:
 ```bash
 claude plugin marketplace update saeed-skills
 claude plugin update smart@saeed-skills
-bash skills/smart/skills/smart/scripts/ensure-user-claude-md.sh
+# prefer installed cache (any cwd); version folder = highest installed SMART:
+bash ~/.claude/plugins/cache/saeed-skills/smart/2.5.19/skills/smart/scripts/ensure-user-claude-md.sh
+# or from this repo root: bash skills/smart/skills/smart/scripts/ensure-user-claude-md.sh
 # restart session
 /smart:smart
 ```

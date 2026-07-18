@@ -22,7 +22,7 @@ set -euo pipefail
 
 MARKER_BEGIN="<!-- BEGIN saeed-skills HARNESS-COMPAT -->"
 MARKER_END="<!-- END saeed-skills HARNESS-COMPAT -->"
-BLOCK_VERSION="1"
+BLOCK_VERSION="2"
 
 TARGET_DIR="${HOME}/.claude"
 TARGET_FILE="${TARGET_DIR}/CLAUDE.md"
@@ -44,19 +44,28 @@ You are running inside **Claude Code**. Models that are not first-party Anthropi
    reasoning blobs, or fake tool XML/JSON in prose. Prefer skill
    \`claude-code-compat\` when present (\`~/.claude/skills/claude-code-compat\`).
 2. **Plugin slash names are namespaced:** e.g. SMART is **\`/smart:smart\`**, not bare \`/smart\`.
-3. **On model↔Claude Code friction** (content-type errors, tool-loop stalls, slash
-   dead-ends, path/plugin protocol surprises — **not** API credit/rate-limit alone):
+3. **Soft mid-task trigger (register early):** While working, if a failure looks
+   like **model↔Claude Code** mismatch — not ordinary product bugs — act on the
+   **first or second** occurrence. Do **not** wait for three thrash attempts.
+   Soft signals (any is enough): content-type / thinking-block errors; tool call
+   not executed or rejected by the harness; slash/command not found for a plugin
+   surface; repeated same tool/protocol failure after one clean retry; “this is
+   not how I was trained to call tools.” **Out of scope:** API credit, rate-limit
+   alone, auth keys, compile/test product failures.
+4. **Lookup → register → recover → promote (same session):**
    - Search the durable ledger:
-     - Plugin path: \`\${CLAUDE_PLUGIN_ROOT}/skills/smart/references/HARNESS-COMPAT.md\`
-     - Or the installed SMART skill's \`references/HARNESS-COMPAT.md\`
-   - If a **SOLVED** entry matches → apply its \`working_recipe\` immediately.
-   - If missing → register an **OPEN** entry (schema in that file), then recover.
-   - Invoke **\`/smart:smart\`** so SMART owns lookup, recovery, and ledger updates.
-4. **Do not thrash.** Do not burn the session on long trial-and-error when the
-   ledger or SMART can short-circuit the same class of failure.
+     - Plugin: \`\${CLAUDE_PLUGIN_ROOT}/skills/smart/references/HARNESS-COMPAT.md\`
+     - Or installed SMART skill \`references/HARNESS-COMPAT.md\`
+   - **SOLVED** match → apply \`working_recipe\` immediately; continue the task.
+   - **No match** → append **OPEN** (schema in ledger) *before* long recovery.
+   - When a recipe works **in this session** → set **SOLVED**, fill
+     \`working_recipe\` + short evidence (do not leave forever-OPEN after a fix).
+   - Prefer **\`/smart:smart\`** for ownership when available; if SMART is not
+     active, still edit the ledger file yourself when writable.
+5. **Do not thrash.** Prefer ledger short-circuit over multi-strategy trial-and-error.
 
-SMART remains the project control brain; this block only guarantees the pointer
-loads even when SMART was not invoked yet.
+SMART remains the project control brain; this block guarantees the pointer loads
+even when SMART was not invoked yet, and soft-triggers mid-task capture.
 
 ${MARKER_END}
 EOF

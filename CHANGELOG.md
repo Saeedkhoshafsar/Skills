@@ -5,6 +5,24 @@ Versioning: bump plugin versions in `.claude-plugin/marketplace.json` and each
 plugin's `plugin.json` — `claude plugin update` only detects updates through a
 version bump in `marketplace.json`.
 
+## [2.5.19] - 2026-07-18
+
+Soft mid-task harness trigger: register OPEN early, promote SOLVED same session.
+
+### Added
+- Soft mid-task trigger table + same-session promote in SMART harness protocol.
+- Always-on pointer block-version **2** (`ensure-user-claude-md.sh`): first/second
+  harness-shaped failure → lookup → OPEN → recover → SOLVED when fixed; no wait for
+  three thrash attempts.
+- Ledger “How models must use” soft-trigger loop.
+- Scenario `harness-compat-soft-midtask-register-promote` (39 scenarios).
+- Contract strings for Soft mid-task trigger / Same-session promote.
+
+### Changed
+- SMART `2.5.19`; marketplace metadata `2.5.19`.
+- Anti-pattern: never wait for three thrash attempts before register; never leave a
+  fixed issue forever-OPEN.
+
 ## [2.5.18] - 2026-07-18
 
 Harness compatibility ledger for model ↔ Claude Code friction + always-on user pointer.

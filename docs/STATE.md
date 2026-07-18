@@ -10,14 +10,14 @@
 |---|---|
 | SMART mode / lifecycle phase | MAINTENANCE / 5 |
 | Current objective | Keep SMART lean: field-validate; ship only proven gaps. |
-| Active task | None — **2.5.18** SHIPPED (PR #27 + Release `v2.5.18` Latest). Install path formalized in README/command. |
-| Exact progress | Release Latest published; four-step consumer path in README + smart.md + CLAUDE 15d; pin **2.5.18**. |
-| Last evidence | 2026-07-18: Release https://github.com/Saeedkhoshafsar/Skills/releases/tag/v2.5.18 Latest; docs path formalized; harness contract still GREEN. |
-| Blocker / waiting on | None. Consumer: marketplace update → plugin update → ensure-user-claude-md.sh → restart → `/smart:smart`. |
-| Next | Consumer pin **2.5.18** + field-validate non-Anthropic harness recovery. |
-| Vision Lock | CONFIRMED by repository owner on 2026-07-11 (reaffirmed and extended): complete project control brain; mind before code; excellence by default; lean orchestration. Extended 2026-07-18: depth over first-pass polish; creativity ≠ truth; harness-compat before thrash (always-on pointer + SMART ledger). |
-| Machine gates | Vision: owner-confirmed; Verify: suite; Release: `v2.5.18` Latest published. |
-| Branch / head | `main` @ SMART `2.5.18` shipped (`a5e5f71` + docs). |
+| Active task | Ship **2.5.19** soft mid-task harness register/promote (PR + Release). |
+| Exact progress | Local code complete: block-version 2, soft trigger table, same-session promote, scenario + contracts, pin **2.5.19**, RELEASE notes. Pending: tests GREEN → commit → PR → merge → Release Latest. |
+| Last evidence | 2026-07-18: soft-trigger diffs on main; user `~/.claude/CLAUDE.md` already HARNESS-COMPAT block v2; prior Latest = v2.5.18. |
+| Blocker / waiting on | None for product; ship gate = suite + GitHub PR/Release. |
+| Next | Publish Release `v2.5.19`; consumer four-step with ensure block v2; field-validate non-Anthropic mid-task OPEN/SOLVED. |
+| Vision Lock | CONFIRMED by repository owner on 2026-07-11 (reaffirmed and extended): complete project control brain; mind before code; excellence by default; lean orchestration. Extended 2026-07-18: depth over first-pass polish; creativity ≠ truth; harness-compat before thrash (always-on pointer + SMART ledger); soft mid-task register/promote. |
+| Machine gates | Vision: owner-confirmed; Verify: suite (run on ship); Release: pending `v2.5.19`. |
+| Branch / head | `main` working tree → ship branch for **2.5.19** soft-trigger. |
 | Mind coverage | Applied to this repo implicitly via STATE/BRIEF equivalents; the formal PROJECT-MIND protocol targets user projects. |
 
 ## Epistemic delta
@@ -47,7 +47,7 @@
 | Capability | Type/source | Status | Invoked when | Last result / review |
 |---|---|---|---|---|
 | SMART orchestrator | Local skill | ACTIVE CORE | Every user project | Product contract requires evidence-aware orientation, Vision Lock, autonomous capability selection, action, and consolidation. |
-| Harness-compat ledger | SMART references + user CLAUDE.md pointer | ACTIVE CORE (2.5.18) | Model↔Claude Code friction | Lookup/apply/register/promote; ensure-user-claude-md.sh. |
+| Harness-compat ledger | SMART references + user CLAUDE.md pointer | ACTIVE CORE (2.5.19 soft mid-task) | Model↔Claude Code friction | Soft trigger first/second failure; lookup/apply/register/promote same session; ensure block v2. |
 | Unified capability installer | Local shell/Python tooling | VERIFIED | SMART needs a bundled companion, standalone skill, or native plugin | Bundled companions use idempotent trusted-marketplace routing; third-party capabilities retain quarantine, review, lock, and update tests. |
 | Machine gates | Local Python tooling | VERIFIED | Vision confirmation, task verification, release readiness | Deterministic gate tests are present. |
 | Offline behavioral contracts | JSON + Python stdlib validator | ACTIVE, FREE | Maintainers edit adversarial scenario definitions | No network, model, secret, endpoint, or paid workflow. |
@@ -64,20 +64,23 @@
 |---|---|---|---|---|---|
 | SHIP-006 | Single-pass fluent confidence; creative branches mislabeled as truth. | Owner philosophy + TryAI arena lessons 2026-07-18. | Shallow maxed-looking work; false confidence trees. | PR #26 + Release `v2.5.17`. | RESOLVED |
 | SHIP-007 | Non-Anthropic models thrash on Claude Code harness mismatches; knowledge not always-on. | Owner field report 2026-07-18; multi-model settings (Bifrost). | Long trial-and-error; lost recipes across sessions/models. | PR #27 + Release `v2.5.18` + four-step install docs. | RESOLVED |
+| SHIP-008 | Soft mid-task: models delay OPEN until long thrash; fixed issues left forever-OPEN. | Owner: soften register/promote trigger 2026-07-18. | Recipes not captured mid-task; weaker models lose fixes. | 2.5.19 soft trigger + same-session promote + block v2. | IN PROGRESS (ship) |
 | CORE-005 | Workflow updates may be rejected when the GitHub credential lacks `workflows` permission. | Prior push rejection and owner instruction. | Repeated retries can block unrelated product progress. | Stage exact workflow files under `ci/` and report the manual replacement after the PR. | MITIGATED |
 
 ## Meaningful change ledger (newest first)
 | Date / commit | What changed | Why | Evidence | Records affected |
 |---|---|---|---|---|
+| 2026-07-18 / 2.5.19 soft mid-task | Soft first/second trigger; same-session SOLVED; ensure block v2; scenario+contracts; pin 2.5.19 | Capture harness recipes without thrash-wait | Suite + scenario count 39 (ship pending) | SMART, ensure, ledger, tests, README, CLAUDE, smart.md, CHANGELOG, RELEASE, STATE. |
 | 2026-07-18 / 2.5.18 ship | Release v2.5.18 Latest + formal four-step consumer path in README/command/CLAUDE | Marketplace pin + always-on pointer must be taught as product docs | Release tag; harness contract GREEN | RELEASE, README, smart.md, CLAUDE, STATE. |
 | 2026-07-18 / 2.5.18 harness-compat | HARNESS-COMPAT ledger; ensure-user-claude-md.sh; invariant 14; scenarios+contracts; pin 2.5.18 | Model↔CC friction needs always-on pointer + SMART-owned recipes | 226 tests / 38 scenarios | SMART, scripts, references, tests, catalog, README, CLAUDE, changelog, RELEASE, STATE. |
 | 2026-07-18 / 2.5.17 ship | PR #26 merge + Release v2.5.17 | Pin install to Depth Reprocess + evidence-rooted trees | 225 tests / 36 scenarios; `e827b4d` | RELEASE, STATE, marketplace pin. |
 | 2026-07-18 / 2.5.17 depth+honesty | Depth L0–L4; truth vs creative trunks; scenarios+contracts; pin 2.5.17 | Surface pass ≠ maxed; creativity ≠ truth | 225 tests / 36 scenarios; validate GREEN | SMART, step-pilot, planner, tests, changelog, RELEASE, STATE. |
 
 ## Runway
-1. **INSTALL (consumer):** `claude plugin marketplace update saeed-skills` → `claude plugin update smart@saeed-skills` → `bash …/ensure-user-claude-md.sh` → restart → **`/smart:smart`** (all four steps).
-2. **NEXT — field-validate** non-Anthropic sessions: pointer present; ledger lookup on friction.
-3. **LATER — optional** promote more wire rules into `claude-code-compat`; archive long SOLVED entries.
+1. **SHIP 2.5.19:** commit → PR → merge → Release Latest; mark SHIP-008 RESOLVED.
+2. **INSTALL (consumer):** marketplace update → plugin update → ensure (block v2) → restart → **`/smart:smart`**.
+3. **NEXT — field-validate** non-Anthropic mid-task: soft OPEN + same-session SOLVED.
+4. **LATER — optional** promote more wire rules into `claude-code-compat`; archive long SOLVED entries.
 
 ## Next-session command packet
 
