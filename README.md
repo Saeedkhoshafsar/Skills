@@ -35,6 +35,13 @@ Skills/
 
 ## Install on Claude Code (primary path — plugin marketplace)
 
+**Current stable SMART:** **`2.5.18`** (Release Latest:
+https://github.com/Saeedkhoshafsar/Skills/releases/tag/v2.5.18)
+— Harness-compat ledger + always-on `~/.claude/CLAUDE.md` pointer; Depth Reprocess;
+evidence-rooted trees; `/smart:smart`.
+
+### Fresh install (once)
+
 ```bash
 # 1. Add the marketplace (once):
 claude plugin marketplace add Saeedkhoshafsar/Skills
@@ -45,14 +52,42 @@ claude plugin install smart@saeed-skills
 
 # No companion setup is required. SMART installs project-planner, project-memory,
 # step-pilot, code-review, debug-detective, or security-check itself when needed.
-
-# update later (required after every new release — marketplace installs are pinned):
-claude plugin marketplace update saeed-skills && claude plugin update smart@saeed-skills
 ```
 
-**Current stable SMART:** `2.5.18` (code on `main`; publish Release `v2.5.18` when shipping)
-— Harness-compat ledger + always-on `~/.claude/CLAUDE.md` pointer; Depth Reprocess; `/smart:smart`.
-After install or update, confirm the plugin version shows `2.5.18` in `/plugin` manage.
+### Required update path (after every new release)
+
+Marketplace installs are **pinned** — they do not auto-update. After each SMART
+release, run **all four steps** (not only the first two):
+
+```bash
+claude plugin marketplace update saeed-skills
+claude plugin update smart@saeed-skills
+bash skills/smart/skills/smart/scripts/ensure-user-claude-md.sh
+# restart the Claude Code session (required — plugins/commands re-index at start)
+/smart:smart
+```
+
+| Step | Why |
+|---|---|
+| `marketplace update` | Refresh catalog pins from GitHub |
+| `plugin update smart@saeed-skills` | Pull the new SMART version into the local plugin cache |
+| `ensure-user-claude-md.sh` | Install/refresh the **always-on** harness pointer in `~/.claude/CLAUDE.md` (every project on this machine, even without SMART). Idempotent; preserves your other user notes outside the managed markers. |
+| **restart** then **`/smart:smart`** | Session start reloads plugins; bare `/smart` never works — only `/smart:smart` |
+
+**Where to run the ensure script**
+
+```bash
+# From this repo checkout:
+bash skills/smart/skills/smart/scripts/ensure-user-claude-md.sh
+bash skills/smart/skills/smart/scripts/ensure-user-claude-md.sh --check
+
+# From an installed plugin cache (version dir may differ):
+bash ~/.claude/plugins/cache/saeed-skills/smart/2.5.18/skills/smart/scripts/ensure-user-claude-md.sh
+
+# Or let SMART run it on first invoke when home is writable (invariant 14).
+```
+
+Confirm the plugin version shows **`2.5.18`** in `/plugin` manage after update.
 
 > If you previously got `Marketplace file not found at ...\.claude-plugin\marketplace.json`,
 > remove the broken marketplace and re-add it:
@@ -76,6 +111,9 @@ After install or update, confirm the plugin version shows `2.5.18` in `/plugin` 
 - On an existing project, SMART resumes from `docs/STATE2.md` (preferred) or
   `docs/STATE.md` — it does not rebuild discovery ceremony when vision/state
   already exist.
+- **Always-on harness pointer:** after install/update, run
+  `ensure-user-claude-md.sh` (see update path above) so non-Anthropic models in
+  *any* project get the friction ledger pointer without waiting for SMART.
 
 ### Troubleshooting
 
@@ -223,13 +261,20 @@ Details and tiers for all skills → [`SKILLS_CATALOG.md`](SKILLS_CATALOG.md)
 ## Updating (marketplace installs)
 
 Plugins installed from a marketplace are **pinned copies** — they do NOT auto-update.
-When this repo changes, update your local install in two steps:
+When this repo changes, update your local install with the **full four-step path**
+(marketplace → plugin → always-on pointer → restart + `/smart:smart`):
 
 ```bash
 claude plugin marketplace update saeed-skills   # 1. refresh the marketplace catalog
 claude plugin update smart@saeed-skills         # 2. pull the new plugin version
 # (or /plugin → manage → update inside a session)
+bash skills/smart/skills/smart/scripts/ensure-user-claude-md.sh   # 3. always-on harness pointer
+# 4. restart Claude Code, then:
+/smart:smart
 ```
+
+Skipping step 3 leaves non-Anthropic sessions without the machine-wide friction pointer.
+Skipping restart leaves autocomplete on the old plugin index.
 
 Bundled SMART companions are native plugins from the same trusted marketplace. When SMART selects one, its unified installer adds the marketplace if needed and activates only that plugin; the user does not run setup commands or choose a source. Third-party standalone capabilities use a fail-closed trusted-install workflow: a first install resolves the configured ref to a full commit, downloads into quarantine, runs a static pre-screen, and remains unavailable until an accountable review explicitly activates it. Activation writes `.smart-lock.json`; later installs use exactly that commit. Only `update` resolves a newer commit, and the active version remains unchanged until the new candidate is reviewed.
 

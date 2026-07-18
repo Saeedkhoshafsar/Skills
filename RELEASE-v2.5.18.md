@@ -13,16 +13,21 @@ This release makes recovery **lookup-first and durable**:
 2. SMART-owned ledger `references/HARNESS-COMPAT.md` (SOLVED recipes + OPEN capture)
 3. Protocol: search → apply → register → promote (including by a later harness-fluent model)
 
-## Install / update
+## Install / update (canonical four-step path)
+
+Documented in README **Install on Claude Code** and **Updating**. Run **all** steps:
 
 ```bash
 claude plugin marketplace update saeed-skills
 claude plugin update smart@saeed-skills
-# restart session
-bash "$(claude plugin …)"  # or from checkout:
 bash skills/smart/skills/smart/scripts/ensure-user-claude-md.sh
-bash skills/smart/skills/smart/scripts/ensure-user-claude-md.sh --check
+# restart the Claude Code session
 /smart:smart
+```
+
+```bash
+# verify always-on pointer:
+bash skills/smart/skills/smart/scripts/ensure-user-claude-md.sh --check
 ```
 
 ## Artifacts

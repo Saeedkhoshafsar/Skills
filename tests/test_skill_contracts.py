@@ -200,6 +200,19 @@ class SmartCognitionContractTests(unittest.TestCase):
         self.assertIn("HARNESS-COMPAT.md", script_text)
         agent = text(CLAUDE)
         self.assertIn("Harness-compat before thrash", agent)
+        readme = text(ROOT / "README.md")
+        for fragment in (
+            "claude plugin marketplace update saeed-skills",
+            "claude plugin update smart@saeed-skills",
+            "ensure-user-claude-md.sh",
+            "/smart:smart",
+            "full four-step path",
+        ):
+            with self.subTest(fragment=fragment):
+                self.assertIn(fragment, readme)
+        self.assertIn("Consumer update path", text(
+            ROOT / "skills/smart/commands/smart.md"
+        ))
 
     def test_project_mind_network_is_the_written_understanding(self) -> None:
         normalized = " ".join(self.smart.split())
